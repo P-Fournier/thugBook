@@ -2,6 +2,7 @@ package domaine;
 
 import java.util.ArrayList;
 
+
 public class Utilisateur {
 	private int idU;
 	private String nom;

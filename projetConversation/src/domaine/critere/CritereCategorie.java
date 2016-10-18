@@ -1,6 +1,10 @@
-package domaine;
+package domaine.critere;
 
-public class CritereCISimpleCategorie extends CritereCentreInteret{
+import domaine.CategorieCI;
+import domaine.SouscategorieCI;
+import domaine.Utilisateur;
+
+public class CritereCategorie extends CritereCentreInteret{
 	private CategorieCI critere ;
 
 	/**

@@ -2,6 +2,8 @@ package domaine;
 
 import java.util.ArrayList;
 
+
+
 public class CategorieCI {
 	private String nom;
 	private int idCat;

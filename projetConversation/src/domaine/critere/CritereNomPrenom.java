@@ -1,4 +1,6 @@
-package domaine;
+package domaine.critere;
+
+import domaine.Utilisateur;
 
 public class CritereNomPrenom implements CritereRecherche {
 	private String nom ; 
