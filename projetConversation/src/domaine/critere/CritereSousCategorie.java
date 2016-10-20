@@ -1,16 +1,16 @@
 package domaine.critere;
 
-import domaine.SouscategorieCI;
+import domaine.SousCategorieCI;
 import domaine.Utilisateur;
 
 public class CritereSousCategorie extends CritereCentreInteret {
-	private SouscategorieCI critere ;
+	private SousCategorieCI critere ;
 
-	public SouscategorieCI getCritere() {
+	public SousCategorieCI getCritere() {
 		return critere;
 	}
 
-	public void setCritere(SouscategorieCI critere) {
+	public void setCritere(SousCategorieCI critere) {
 		this.critere = critere;
 	}
 

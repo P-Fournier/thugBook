@@ -4,10 +4,11 @@ import java.util.ArrayList;
 
 
 public class Administrateur extends Utilisateur {
-	
-	public Administrateur(int idU, String nom, String prenom, String userName,
-			String passWord, ArrayList<CategorieCI> liste) {
-		super(idU, nom, prenom, userName, passWord, liste);
+
+	public Administrateur(int id, String nom, String prenom, String ndc,
+			String password, ArrayList<SousCategorieCI> ci) {
+		super(id, nom, prenom, ndc, password, ci);
+		// TODO Auto-generated constructor stub
 	}
 
 }

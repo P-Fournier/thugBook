@@ -7,7 +7,7 @@ import java.util.ArrayList;
 public class CategorieCI {
 	private String nom;
 	private int idCat;
-	private ArrayList<SouscategorieCI> listeSousCategorie;
+	private ArrayList<SousCategorieCI> listeSousCategorie;
 
 	public String getNom() {
 		return nom;
@@ -25,12 +25,12 @@ public class CategorieCI {
 		this.idCat = idCat;
 	}
 
-	public ArrayList<SouscategorieCI> getListeSousCategorie() {
+	public ArrayList<SousCategorieCI> getListeSousCategorie() {
 		return listeSousCategorie;
 	}
 
 	public void setListeSousCategorie(
-			ArrayList<SouscategorieCI> listeSousCategorie) {
+			ArrayList<SousCategorieCI> listeSousCategorie) {
 		this.listeSousCategorie = listeSousCategorie;
 	}
 

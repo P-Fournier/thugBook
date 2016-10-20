@@ -1,9 +1,14 @@
 package domaine;
 
-public class SouscategorieCI {
+public class SousCategorieCI {
 	
 	private int idSousCategorie;
 	private String nom;
+
+	public SousCategorieCI(Integer idCI, String nom) {
+		this.idSousCategorie = idCI;
+		this.nom = nom;
+	}
 
 	public int getSsCat() {
 		return idSousCategorie;

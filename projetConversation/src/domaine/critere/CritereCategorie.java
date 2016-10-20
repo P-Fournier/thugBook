@@ -1,7 +1,7 @@
 package domaine.critere;
 
 import domaine.CategorieCI;
-import domaine.SouscategorieCI;
+import domaine.SousCategorieCI;
 import domaine.Utilisateur;
 
 public class CritereCategorie extends CritereCentreInteret{
@@ -22,7 +22,7 @@ public class CritereCategorie extends CritereCentreInteret{
 	}
 
 	public boolean evaluer(Utilisateur user) {
-		for (SouscategorieCI ssc : user.getListeInteret() ) {
+		for (SousCategorieCI ssc : user.getListeInteret() ) {
 			if(critere.getListeSousCategorie().contains(ssc)){
 				return true;
 			}
