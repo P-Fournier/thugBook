@@ -35,6 +35,13 @@ public class UtilisateurMapper {
 		}
 	}
 	
+	/**
+	 * retourn un utilisateur par son id avec info incomplète
+	 * @param id
+	 * @return
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
 	public Utilisateur findById (int id) throws ClassNotFoundException, SQLException{
 		String req = "SELECT nom , prenom , ndc FROM Utilisateur WHERE id = ? ";
 		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
@@ -50,6 +57,14 @@ public class UtilisateurMapper {
 		return null;
 	}
 	
+	/**
+	 * récupère un utilisateur à la connection, avec toutes ses info
+	 * @param ndc
+	 * @param password
+	 * @return
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
 	public Utilisateur connection (String ndc , String password) throws ClassNotFoundException, SQLException{
 		String req = "SELECT id , nom , prenom FROM Utilisateur WHERE  ndc = ? and password = ? ";
 		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
@@ -75,17 +90,22 @@ public class UtilisateurMapper {
 		}
 	}
 
-	public void insert (String ndc, String password, String nom, String prenom) throws ClassNotFoundException, SQLException{
+	/**
+	 * insere un utilisateur en base (utilisé par l'admin)
+	 * @param u
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
+	public void insert (Utilisateur u) throws ClassNotFoundException, SQLException{
 		String req = "INSERT INTO Utilisateur Values (?,?,?,?,?)";
 		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
 		ps.setInt(1, id);
-		ps.setString(2,ndc);
-		ps.setString(3,nom);
-		ps.setString(4, prenom);
-		ps.setString(5, password);
+		ps.setString(2,u.getNdc());
+		ps.setString(3,u.getNom());
+		ps.setString(4, u.getPrenom());
+		ps.setString(5, u.getPassword());
 		ps.executeUpdate();
 		id ++;
 	}
-	
 	
 }

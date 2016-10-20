@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import domaine.CategorieCI;
 import domaine.SousCategorieCI;
 
 public class SousCategorieCIMapper {
@@ -53,5 +54,17 @@ public class SousCategorieCIMapper {
 			}
 		}
 		return result;
+	}
+
+	public void insert(CategorieCI cate, SousCategorieCI scci) throws ClassNotFoundException, SQLException {
+		String req = "INSERT INTO SousCategorieCI VALUES (?,?,?)";
+		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
+		scci.setSsCat(id);
+		ps.setInt(1, id);
+		ps.setString(2, scci.getNom());
+		ps.setInt(3, cate.getIdCat());
+		ps.executeUpdate();
+		id ++;
+		
 	}
 }

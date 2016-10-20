@@ -44,6 +44,7 @@ public class GroupeDiscussionMapper {
 	public void insert(GroupeDiscussion grp) throws SQLException, ClassNotFoundException{
 		String req = "INSERT INTO Groupe VALUES (?,?,?) ";
 		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
+		grp.setId(id);
 		ps.setInt(1,id);
 		ps.setInt(2,grp.getModerateur().getIdU());
 		ps.setString(3, grp.getNom());
