@@ -44,8 +44,7 @@ public class UtilisateurMapper {
 			String nom = rs.getString("nom");
 			String prenom = rs.getString("prenom");
 			String ndc = rs.getString("ndc");
-			ArrayList<SousCategorieCI> ci = SousCategorieCIMapper.getInstance().findByUser(id);
-			Utilisateur u = new Utilisateur (id,nom,prenom,ndc,ci);
+			Utilisateur u = new Utilisateur (id,nom,prenom,ndc);
 			return u;
 		}
 		return null;
@@ -61,12 +60,15 @@ public class UtilisateurMapper {
 			int id = rs.getInt("id");
 			String nom = rs.getString("nom");
 			String prenom = rs.getString("prenom");
+			Utilisateur u = new Utilisateur (id,nom,prenom,ndc,password);
 			ArrayList<SousCategorieCI> ci = SousCategorieCIMapper.getInstance().findByUser(id);
-			Utilisateur u = new Utilisateur (id,nom,prenom,ndc,password,ci);
+			u.setListeInteret(ci);
 			ArrayList<Utilisateur> demande = DemandeAmiMapper.getInstance().restituerDemande(u);
 			u.setDemandeAmis(demande);
 			ArrayList<Utilisateur> amis = AmiMapper.getInstance().restituerAmis(u);
 			u.setAmis(amis);
+			ArrayList<String> notif = NotificationMapper.getInstance().restituerNotification(u);
+			u.setNotifications(notif);
 			return u;
 		}else{
 			return null;
@@ -84,5 +86,6 @@ public class UtilisateurMapper {
 		ps.executeUpdate();
 		id ++;
 	}
+	
 	
 }

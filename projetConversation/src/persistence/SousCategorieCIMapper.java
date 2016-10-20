@@ -11,15 +11,26 @@ public class SousCategorieCIMapper {
 	private static SousCategorieCIMapper inst;
 	private static int id;
 	
-	public static SousCategorieCIMapper getInstance(){
+	public static SousCategorieCIMapper getInstance() throws ClassNotFoundException, SQLException{
 		if (inst == null){
 			inst = new SousCategorieCIMapper();
 		}
 		return inst;
 	}
 	
-	public SousCategorieCIMapper (){
-		id = 0;
+	public SousCategorieCIMapper () throws ClassNotFoundException, SQLException{
+		id = getCurrentId();
+	}
+	
+	private int getCurrentId() throws SQLException, ClassNotFoundException{
+		String req = "SELECT max(id) FROM SousCategorieCIMapper";
+		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
+		ResultSet rs = ps.executeQuery();
+		if (rs.next()){
+			return rs.getInt(1)+1;
+		}else{
+			return 1;
+		}
 	}
 	
 	public ArrayList<SousCategorieCI> findByUser (int idUser) throws ClassNotFoundException, SQLException{

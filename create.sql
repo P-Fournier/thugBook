@@ -57,9 +57,11 @@ Create Table Groupe (
 );
 
 Create Table AssociationGroupe (
-	id int(6) primary key,
+    idG int(6),
     idU int(6),
-    CONSTRAINT c9 FOREIGN KEY (idU) REFERENCES Utilisateur(id) ON DELETE CASCADE
+    primary key (idG,idU),
+    CONSTRAINT c9 FOREIGN KEY (idU) REFERENCES Utilisateur(id) ON DELETE CASCADE,
+    CONSTRAINT c15 FOREIGN KEY (idG) REFERENCES Groupe(id) ON DELETE CASCADE
 );
 
 
@@ -77,4 +79,11 @@ CREATE TABLE DemandeAmi (
     primary key (idExp, idDest),
     CONSTRAINT c13 FOREIGN KEY (idExp) REFERENCES Utilisateur(id) ON DELETE CASCADE,
     CONSTRAINT c14 FOREIGN KEY (idDest) REFERENCES Utilisateur(id) ON DELETE CASCADE
-)  
+);  
+
+CREATE TABLE Notification (
+	id int(6) primary key,
+	message text,
+	idU int(6),
+	CONSTRAINT c16 FOREIGN KEY (idU) REFERENCES Utilisateur(id) ON DELETE CASCADE
+);

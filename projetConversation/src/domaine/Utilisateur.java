@@ -13,27 +13,34 @@ public class Utilisateur {
 	private ArrayList<Utilisateur> amis;
 	private ArrayList<Utilisateur> demandeAmis;
 	private ArrayList<GroupeDiscussion> groupeDiscussion;
+	private ArrayList<String> notifications;
 
 
 	public Utilisateur(int id, String nom, String prenom, String ndc,
-			String password, ArrayList<SousCategorieCI> ci) {
+			String password) {
 		this.idU = id;
 		this.nom = nom;
 		this.prenom = prenom;
 		this.ndc = ndc;
 		this.password = password;
-		this.listeInteret = ci;
-		// ajout groupe + demandes amis + amis 
+		this.listeInteret = new ArrayList<SousCategorieCI> ();
+		this.amis = new ArrayList<Utilisateur>();
+		this.demandeAmis = new ArrayList<Utilisateur>();
+		this.groupeDiscussion = new ArrayList<GroupeDiscussion>();
+		this.notifications = new ArrayList<String>();
+		 
 	}
 
-	public Utilisateur(int id, String nom, String prenom, String ndc,
-			ArrayList<SousCategorieCI> ci) {
+	public Utilisateur(int id, String nom, String prenom, String ndc) {
 		this.idU = id;
 		this.nom = nom;
 		this.prenom = prenom;
 		this.ndc = ndc;
-		this.listeInteret = ci;
-		// pas fini 
+		this.listeInteret = new ArrayList<SousCategorieCI> ();
+		this.amis = new ArrayList<Utilisateur>();
+		this.demandeAmis = new ArrayList<Utilisateur>();
+		this.groupeDiscussion = new ArrayList<GroupeDiscussion>();
+		this.notifications = new ArrayList<String>();
 	}
 
 	public ArrayList<SousCategorieCI> getListeInteret() {
@@ -59,6 +66,8 @@ public class Utilisateur {
 	public void setDemandeAmis(ArrayList<Utilisateur> demandeAmis) {
 		this.demandeAmis = demandeAmis;
 	}
+	
+	
 	
 	public ArrayList<Utilisateur> getAmis() {
 		return amis;
@@ -108,6 +117,14 @@ public class Utilisateur {
 		this.nom = nom;
 	}
 	
+	public ArrayList<String> getNotifications() {
+		return notifications;
+	}
+
+	public void setNotifications(ArrayList<String> notifications) {
+		this.notifications = notifications;
+	}
+
 	public String toString (){
 		String s = "Nom de compte : "+ndc;
 		s += "\nNom : "+nom;

@@ -51,7 +51,7 @@ public class DemandeAmiMapper {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * gestion de l'acceptation de la demande d'ami de l'utilisateur exp à l'utilisateur dest
 	 * @param dest
@@ -64,6 +64,7 @@ public class DemandeAmiMapper {
 		AmiMapper.getInstance().insert(dest,exp);
 		dest.getDemandeAmis().remove(exp);
 		dest.getAmis().add(exp);
+		NotificationMapper.getInstance().insert(exp, dest.getNdc()+" a accepte votre demande d'ami");
 	}
 
 	/**
@@ -76,7 +77,9 @@ public class DemandeAmiMapper {
 	public void refuserDemande(Utilisateur dest, Utilisateur exp) throws ClassNotFoundException, SQLException{
 		DemandeAmiMapper.getInstance().delete(dest, exp);
 		dest.getDemandeAmis().remove(exp);
+		NotificationMapper.getInstance().insert(exp, dest.getNdc()+" a refusé votre demande d'ami");
 	}
+	
 	
 	/**
 	 * suppression de la ligne de la table concernée
