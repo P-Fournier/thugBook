@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import domaine.CategorieCI;
 import domaine.SousCategorieCI;
@@ -24,7 +25,7 @@ public class SousCategorieCIMapper {
 	}
 	
 	private int getCurrentId() throws SQLException, ClassNotFoundException{
-		String req = "SELECT max(id) FROM SousCategorieCIMapper";
+		String req = "SELECT max(id) FROM SousCategorieCI";
 		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
 		ResultSet rs = ps.executeQuery();
 		if (rs.next()){
@@ -34,24 +35,44 @@ public class SousCategorieCIMapper {
 		}
 	}
 	
-	public ArrayList<SousCategorieCI> findByUser (int idUser) throws ClassNotFoundException, SQLException{
+	public HashMap<CategorieCI, ArrayList<SousCategorieCI>> findByUser (int idUser) throws ClassNotFoundException, SQLException{
 		String req = "SELECT idSC FROM AssociationCI WHERE idU = ?";
 		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
 		ps.setInt(1,idUser);
 		ResultSet rs = ps.executeQuery();
+		
 		ArrayList<Integer> idSCs = new ArrayList<Integer>();
+		
 		while (rs.next()){
+			
 			idSCs.add(rs.getInt("idSC"));
+		
 		}
-		ArrayList<SousCategorieCI> result = new ArrayList<SousCategorieCI> ();
-		req = "SELECT nom FROM SousCategorieCI WHERE id = ? ";
-		for (Integer idCI : idSCs){
+		
+		HashMap<CategorieCI,ArrayList<SousCategorieCI>> result = new HashMap<CategorieCI,ArrayList<SousCategorieCI>> ();
+		
+		req = "SELECT nom , idC FROM SousCategorieCI WHERE id = ? ";
+		
+		for (Integer idSCCI : idSCs){
+			
 			ps = DBConfig.getInstance().getConnection().prepareStatement(req);
-			ps.setInt(1, idCI);
+			ps.setInt(1, idSCCI);
 			rs = ps.executeQuery();
+			
 			if (rs.next()){
-				result.add(new SousCategorieCI (idCI,rs.getString("nom")));
+				String nom = rs.getString("nom");
+				CategorieCI cate = CategorieCIMapper.getInstance().findByIdLazy(rs.getInt("idC"));
+				ArrayList<SousCategorieCI> sscate;
+				if (result.containsKey(cate)){
+					sscate = result.get(cate);
+				}else{
+					sscate = new ArrayList<SousCategorieCI>();
+				}
+				sscate.add(new SousCategorieCI(idSCCI,nom));
+				
+				result.put(cate, sscate);
 			}
+			
 		}
 		return result;
 	}
@@ -65,6 +86,5 @@ public class SousCategorieCIMapper {
 		ps.setInt(3, cate.getIdCat());
 		ps.executeUpdate();
 		id ++;
-		
 	}
 }

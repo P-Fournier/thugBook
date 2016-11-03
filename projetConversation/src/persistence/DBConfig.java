@@ -27,9 +27,11 @@ static Scanner sc = new Scanner (System.in);
 		this.url = "jdbc:mysql://localhost:3306/java";	//URL de connexion à la bdd ici
 		this.JDBC_DRIVER="com.mysql.jdbc.Driver";
 		System.out.println("User : ");
-		this.user = sc.next();
+		this.user = "root"; 
+				//sc.next();
 		System.out.println("\nPassword : ");
-		this.password = sc.next();
+		this.password = "1Legspu@";
+				//sc.next();
 		System.out.println("\n");
 	}
 	

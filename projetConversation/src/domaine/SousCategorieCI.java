@@ -26,4 +26,14 @@ public class SousCategorieCI {
 		this.nom = nom;
 	}
 
+	public int getIdSousCategorie() {
+		return idSousCategorie;
+	}
+
+	public void setIdSousCategorie(int idSousCategorie) {
+		this.idSousCategorie = idSousCategorie;
+	}
+	
+	
+
 }

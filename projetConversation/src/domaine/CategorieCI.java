@@ -9,6 +9,11 @@ public class CategorieCI {
 	private int idCat;
 	private ArrayList<SousCategorieCI> listeSousCategorie;
 
+	public CategorieCI (int idCat , String nom){
+		this.idCat = idCat;
+		this.nom = nom;
+	}
+	
 	public String getNom() {
 		return nom;
 	}

@@ -4,7 +4,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
+import domaine.CategorieCI;
+import domaine.Notification;
 import domaine.SousCategorieCI;
 import domaine.Utilisateur;
 
@@ -76,13 +79,13 @@ public class UtilisateurMapper {
 			String nom = rs.getString("nom");
 			String prenom = rs.getString("prenom");
 			Utilisateur u = new Utilisateur (id,nom,prenom,ndc,password);
-			ArrayList<SousCategorieCI> ci = SousCategorieCIMapper.getInstance().findByUser(id);
+			HashMap<CategorieCI,ArrayList<SousCategorieCI>> ci = SousCategorieCIMapper.getInstance().findByUser(id);
 			u.setListeInteret(ci);
 			ArrayList<Utilisateur> demande = DemandeAmiMapper.getInstance().restituerDemande(u);
 			u.setDemandeAmis(demande);
 			ArrayList<Utilisateur> amis = AmiMapper.getInstance().restituerAmis(u);
 			u.setAmis(amis);
-			ArrayList<String> notif = NotificationMapper.getInstance().restituerNotification(u);
+			ArrayList<Notification> notif = NotificationMapper.getInstance().restituerNotification(u);
 			u.setNotifications(notif);
 			return u;
 		}else{
@@ -106,6 +109,24 @@ public class UtilisateurMapper {
 		ps.setString(5, u.getPassword());
 		ps.executeUpdate();
 		id ++;
+	}
+	
+	/**
+	 * teste si l'utilisateur passé en paramètre est l'administrateur
+	 * @param u
+	 * @return
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
+	public boolean isAdministrateur (Utilisateur u) throws ClassNotFoundException, SQLException{
+		String req = "SELECT COUNT(*) FROM Administrateur WHERE id = ?";
+		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
+		ps.setInt(1, u.getIdU());
+		ResultSet rs = ps.executeQuery();
+		if (rs.next()){
+			return (rs.getInt(1)>0);
+		}
+		return false;
 	}
 	
 }

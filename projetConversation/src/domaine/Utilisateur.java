@@ -1,6 +1,7 @@
 package domaine;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class Utilisateur {
@@ -9,11 +10,11 @@ public class Utilisateur {
 	private String prenom;
 	private String ndc;
 	private String password;
-	private ArrayList<SousCategorieCI> listeInteret;
+	private HashMap<CategorieCI,ArrayList<SousCategorieCI>> listeInteret;
 	private ArrayList<Utilisateur> amis;
 	private ArrayList<Utilisateur> demandeAmis;
 	private ArrayList<GroupeDiscussion> groupeDiscussion;
-	private ArrayList<String> notifications;
+	private ArrayList<Notification> notifications;
 
 
 	public Utilisateur(int id, String nom, String prenom, String ndc,
@@ -23,11 +24,11 @@ public class Utilisateur {
 		this.prenom = prenom;
 		this.ndc = ndc;
 		this.password = password;
-		this.listeInteret = new ArrayList<SousCategorieCI> ();
+		this.listeInteret = new HashMap<CategorieCI,ArrayList<SousCategorieCI>> ();
 		this.amis = new ArrayList<Utilisateur>();
 		this.demandeAmis = new ArrayList<Utilisateur>();
 		this.groupeDiscussion = new ArrayList<GroupeDiscussion>();
-		this.notifications = new ArrayList<String>();
+		this.notifications = new ArrayList<Notification>();
 		 
 	}
 
@@ -36,18 +37,18 @@ public class Utilisateur {
 		this.nom = nom;
 		this.prenom = prenom;
 		this.ndc = ndc;
-		this.listeInteret = new ArrayList<SousCategorieCI> ();
+		this.listeInteret = new HashMap<CategorieCI,ArrayList<SousCategorieCI>> ();
 		this.amis = new ArrayList<Utilisateur>();
 		this.demandeAmis = new ArrayList<Utilisateur>();
 		this.groupeDiscussion = new ArrayList<GroupeDiscussion>();
-		this.notifications = new ArrayList<String>();
+		this.notifications = new ArrayList<Notification>();
 	}
 
-	public ArrayList<SousCategorieCI> getListeInteret() {
+	public HashMap<CategorieCI,ArrayList<SousCategorieCI>> getListeInteret() {
 		return listeInteret;
 	}
 
-	public void setListeInteret(ArrayList<SousCategorieCI> listeInteret) {
+	public void setListeInteret(HashMap<CategorieCI,ArrayList<SousCategorieCI>> listeInteret) {
 		this.listeInteret = listeInteret;
 	}
 
@@ -117,26 +118,20 @@ public class Utilisateur {
 		this.nom = nom;
 	}
 	
-	public ArrayList<String> getNotifications() {
+	public ArrayList<Notification> getNotifications() {
 		return notifications;
 	}
 
-	public void setNotifications(ArrayList<String> notifications) {
+	public void setNotifications(ArrayList<Notification> notifications) {
 		this.notifications = notifications;
 	}
-
-	public String toString (){
-		String s = "Nom de compte : "+ndc;
-		s += "\nNom : "+nom;
-		s += "\nPrenom : "+prenom;
-		s += "\nCentre d'interets : ";
-		if (this.listeInteret.size() == 0){
-			s += "\n=> Aucun";
-		}else{
-			for (SousCategorieCI scci : listeInteret){
-				s += "\n=> "+scci.getNom();
-			}
+	
+	public int nbCI (){
+		int result = 0;
+		for (CategorieCI cate : listeInteret.keySet()){
+			result += listeInteret.get(cate).size();
 		}
-		return s;
+		return result;
 	}
+	
 }
