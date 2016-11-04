@@ -87,8 +87,8 @@ public class EcranConnexion extends JPanel implements ActionListener{
 
 	public void actionPerformed(ActionEvent arg0) {
 		try {
-			fen.changerEcran(Service.connection(user.getText(),new String(password.getPassword())));
-			fen.changerTitre("Réseau social - Profil");
+			fen.changerEcran(Service.connexion(user.getText(),new String(password.getPassword()),fen));
+			fen.changerTitre("Réseau social - Accueil");
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

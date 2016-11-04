@@ -41,12 +41,15 @@ public class EcranUtilisateur extends JPanel implements ActionListener{
 	private JButton notificationBoutton;
 	
 	private JButton deconnexionBoutton;
+	
+	private Fenetre fen;
+	
 
-	public EcranUtilisateur (Utilisateur u){
+	public EcranUtilisateur (Utilisateur u,Fenetre fen){
 		
 		// paramètre généraux
-		
 		this.u = u ;
+		this.fen = fen;
 		
 		maxWidth = this.getWidth();
 		
@@ -229,10 +232,35 @@ public class EcranUtilisateur extends JPanel implements ActionListener{
 		
 	}
 
-	public void actionPerformed(ActionEvent arg0) {
-		// TODO Auto-generated method stub
+	public void actionPerformed(ActionEvent e) {
+		if(e.getSource()==deconnexionBoutton){
+			fen.changerEcran(new EcranConnexion(fen));
+			fen.changerTitre("Réseau social - Connexion");
+		}
+		if(e.getSource()==profilBoutton){
+			fen.changerEcran(new EcranProfilUtilisateur (fen,this));
+			fen.changerTitre("Réseau social - Mon profil");
+		}
+		if(e.getSource()==amiBoutton){
+			fen.changerEcran(new EcranAmi(fen,this));
+			fen.changerTitre("Réseau social - Mes amis");
+		}
+		if(e.getSource()==notificationBoutton){
+			fen.changerEcran(new EcranNotification(fen,this));
+			fen.changerTitre("Réseau social - Mes notifications");
+		}
+		if(e.getSource()==groupeBoutton){
+			fen.changerEcran(new EcranGroupe(fen,this));
+			fen.changerTitre("Réseau social - Mes groupes");
+		}
+		if(e.getSource()==messageBoutton){
+			fen.changerEcran(new EcranMessage(fen,this));
+			fen.changerTitre("Réseau social - Mes messages");
+		}
 		
 	}
+	
+	
 	
 
 }
