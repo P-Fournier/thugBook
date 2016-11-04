@@ -11,6 +11,7 @@ public class Fenetre {
 	static private JFrame fenetre ;
 	static private Fenetre inst;
 	static private JScrollPane current;
+	static Color BLEU_CIEL = new Color (44,117,255);
 	
 	public static Fenetre getInstance () throws InterruptedException{
 		if (inst == null){
@@ -22,7 +23,7 @@ public class Fenetre {
 	public Fenetre () throws InterruptedException{    
 		fenetre = new JFrame();
 		
-		fenetre.setTitle("Réseau social - Connection");
+		fenetre.setTitle("Réseau social - Connexion");
 	    
 	    fenetre.setSize(1000,600);
 	    
@@ -34,7 +35,7 @@ public class Fenetre {
 	    		
 	    fenetre.setBackground(Color.white);
 	    
-	    current = new JScrollPane(new EcranConnection(this));
+	    current = new JScrollPane(new EcranConnexion(this));
 	    
 		fenetre.add(current);
 		

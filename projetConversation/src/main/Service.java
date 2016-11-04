@@ -12,15 +12,15 @@ import domaine.Utilisateur;
 
 public class Service {
 
-	public static JPanel connection(String text, String password) throws ClassNotFoundException, SQLException , ConnectionException {
-		if (text == null || password == null){
-			System.out.println("Il faut renseigner tout les champs");
+	public static JPanel connection(String text, String password) throws ClassNotFoundException, SQLException , ConnexionException {
+		if (text.equals("") || password.equals("")){
+			throw new ConnexionException("Il faut renseigner tout les champs");
 		}
 		
 		Utilisateur u = UtilisateurMapper.getInstance().connection(text, password);
 		
 		if (u == null){
-			throw new ConnectionException();
+			throw new ConnexionException("Mot de passe ou nom de compte incorrect");
 		}
 		if (UtilisateurMapper.getInstance().isAdministrateur(u)){
 			return new EcranAdministrateur(u);
