@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -20,6 +21,7 @@ import javax.swing.event.ChangeListener;
 
 import main.Service;
 
+import java.sql.SQLException;
 import java.util.*;
 
 import domaine.CategorieCI;
@@ -35,7 +37,10 @@ public class EcranGestionProfil extends JPanel implements ActionListener{
 	private HashMap<CategorieCI,ArrayList<SousCategorieCI>> ciASupprimer ;
 	private int maxHeight;
 	private int maxWidth;
+	private JComboBox comboCate;
+	private JComboBox comboCi; 
 	private JButton bouttonSuppression;
+	private JButton bouttonAjout;
 	private static EcranGestionProfil inst;
 	
 	public static EcranGestionProfil getInstance(Fenetre fen , EcranUtilisateur accueil){
@@ -83,8 +88,53 @@ public class EcranGestionProfil extends JPanel implements ActionListener{
 		this.add(labelPrenom);
 		this.add(labelNom);
 		
+		// carré ajoute centre d'intérêt
+		
+		JLabel ajoutCi = new JLabel("Ajout intérêt");
+		
+		ajoutCi.setBounds(220, 235,150, 10);
+		ajoutCi.setForeground(Fenetre.BLEU_CIEL);
+		
+		this.add(ajoutCi);
+		
+		JLabel labelComboCate = new JLabel ("Catégorie :");
+		JLabel labelComboCi = new JLabel ("Centre d'interët :");
+		this.comboCate = new JComboBox ();
+		this.comboCi = new JComboBox();
+		this.bouttonAjout = new JButton("Ajouter");
+		
+		labelComboCate.setForeground(Color.white);
+		labelComboCate.setBounds(90, 270, 150, 30);
+		labelComboCi.setForeground(Color.white);
+		labelComboCi.setBounds(90, 320, 150, 30);
+		comboCate.setBounds(240, 270, 150, 30);
+		try {
+			for (String s : Service.recupererLesCategories()){
+				comboCate.addItem(s);
+			}
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		comboCate.setSelectedItem(null);
+		comboCate.addActionListener(this);
+		comboCi.setBounds(240, 320, 150, 30);
+		bouttonAjout.setBounds(280, 360, 150, 30);
+		bouttonAjout.setForeground(Color.white);
+		bouttonAjout.setBackground(Fenetre.BLEU_CIEL);
+		bouttonAjout.addActionListener(this);
+		bouttonAjout.setBorder(new CompoundBorder(new LineBorder(Color.white),new EmptyBorder(5,15,5,15)));
+		
+		this.add(labelComboCate);
+		this.add(labelComboCi);
+		this.add(comboCate);
+		this.add(comboCi);
+		this.add(bouttonAjout);
 
-		// carré centre d'intéret
+		// carré suppression centre d'intéret
 		
 		JLabel centreInte = new JLabel ("Centres d'intérêts");
 		
@@ -152,7 +202,17 @@ public class EcranGestionProfil extends JPanel implements ActionListener{
 		g.setColor(Fenetre.BLEU_CIEL);
 		g.drawRoundRect(200,20,200,40,50,50);
 		
-		// carré centre d'interet
+		// carré ajout centre d'interet
+		
+		g.setColor(Fenetre.BLEU_CIEL);
+		g.fillRoundRect(40, 240, 400, 170,50,50);
+		
+		g.setColor(Color.white);
+		g.fillRoundRect(200,220,200,40,50,50);
+		g.setColor(Fenetre.BLEU_CIEL);
+		g.drawRoundRect(200,220,200,40,50,50);
+		
+		// carré suppression centre d'interet
 		
 		int hauteurBoite = 10; 
 		
@@ -219,6 +279,44 @@ public class EcranGestionProfil extends JPanel implements ActionListener{
 			this.accueil=EcranUtilisateur.getInstance(accueil.getU(), fen);
 			this.inst = EcranGestionProfil.getInstance(fen, accueil);
 			fen.changerEcran(inst);
+		}
+		if (e.getSource()==comboCate){
+			comboCi.removeAllItems();
+			try {
+				for (String s : Service.recupererLesSousCategories((String)comboCate.getSelectedItem())){
+					comboCi.addItem(s);
+				}
+				comboCi.setSelectedItem(null);
+			} catch (ClassNotFoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		if (e.getSource()==bouttonAjout){
+			try {
+				CategorieCI categorie = Service.getCategorieByNomLazy((String)comboCate.getSelectedItem());
+				SousCategorieCI sousCategorie = Service.getSousCategorieByNom((String)comboCi.getSelectedItem());
+				ArrayList<SousCategorieCI> lstCi;
+				if(accueil.getU().getListeInteret().containsKey(categorie)){
+					lstCi = accueil.getU().getListeInteret().get(categorie);
+				}else{
+					lstCi = new ArrayList<SousCategorieCI>();
+				}
+				lstCi.add(sousCategorie);
+				accueil.getU().getListeInteret().put(categorie, lstCi);
+				this.accueil=EcranUtilisateur.getInstance(accueil.getU(), fen);
+				this.inst = EcranGestionProfil.getInstance(fen, accueil);
+				fen.changerEcran(inst);
+			} catch (ClassNotFoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 	}
 

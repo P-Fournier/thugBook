@@ -10,6 +10,8 @@ import IHM.EcranAdministrateur;
 import IHM.EcranUtilisateur;
 import IHM.Fenetre;
 
+import persistence.CategorieCIMapper;
+import persistence.SousCategorieCIMapper;
 import persistence.UtilisateurMapper;
 import domaine.CategorieCI;
 import domaine.SousCategorieCI;
@@ -47,6 +49,22 @@ public class Service {
 				u.getListeInteret().put(cate, result);
 			}
 		}
+	}
+
+	public static ArrayList<String> recupererLesCategories() throws ClassNotFoundException, SQLException {
+		return CategorieCIMapper.getInstance().allLibelle();
+	}
+
+	public static ArrayList<String> recupererLesSousCategories(String categorie) throws ClassNotFoundException, SQLException {
+		return SousCategorieCIMapper.getInstance().allLibelleCategorie(categorie);
+	}
+
+	public static CategorieCI getCategorieByNomLazy(String nom) throws ClassNotFoundException, SQLException {
+		return CategorieCIMapper.getInstance().findByNomLazy(nom);
+	}
+
+	public static SousCategorieCI getSousCategorieByNom(String nom) throws ClassNotFoundException, SQLException {
+		return SousCategorieCIMapper.getInstance().findByNom(nom);
 	}
 	
 	

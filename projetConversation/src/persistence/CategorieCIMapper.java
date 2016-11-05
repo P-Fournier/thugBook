@@ -3,6 +3,7 @@ package persistence;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import domaine.CategorieCI;
@@ -64,6 +65,32 @@ public class CategorieCIMapper {
 			CategorieCI result = new CategorieCI (idC,rs.getString("nom"));
 			lazyLoaded.put(idC,result);
 			return result;
+		}
+		return null;
+	}
+
+	public ArrayList<String> allLibelle() throws ClassNotFoundException, SQLException {
+		ArrayList<String> result = new ArrayList<String>();
+		String req = "SELECT nom FROM CategorieCI";
+		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
+		ResultSet rs = ps.executeQuery();
+		while (rs.next()){
+			result.add(rs.getString("nom"));
+		}
+		return result;
+	}
+
+	public CategorieCI findByNomLazy(String nom) throws ClassNotFoundException, SQLException {
+		String req = "SELECT id FROM CategorieCI WHERE nom = ?";
+		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
+		ps.setString(1, nom);
+		ResultSet rs = ps.executeQuery();
+		if (rs.next()){
+			int id = rs.getInt("id");
+			if (lazyLoaded.containsKey(id)){
+				return lazyLoaded.get(id);
+			}
+			return new CategorieCI (id,nom);
 		}
 		return null;
 	}

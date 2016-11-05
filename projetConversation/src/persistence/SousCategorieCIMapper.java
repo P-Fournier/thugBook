@@ -12,6 +12,7 @@ import domaine.SousCategorieCI;
 public class SousCategorieCIMapper {
 	private static SousCategorieCIMapper inst;
 	private static int id;
+	private static HashMap<Integer,SousCategorieCI> loaded;
 	
 	public static SousCategorieCIMapper getInstance() throws ClassNotFoundException, SQLException{
 		if (inst == null){
@@ -22,6 +23,7 @@ public class SousCategorieCIMapper {
 	
 	public SousCategorieCIMapper () throws ClassNotFoundException, SQLException{
 		id = getCurrentId();
+		loaded = new HashMap<Integer,SousCategorieCI>();
 	}
 	
 	private int getCurrentId() throws SQLException, ClassNotFoundException{
@@ -68,8 +70,9 @@ public class SousCategorieCIMapper {
 				}else{
 					sscate = new ArrayList<SousCategorieCI>();
 				}
-				sscate.add(new SousCategorieCI(idSCCI,nom));
-				
+				SousCategorieCI create = new SousCategorieCI(idSCCI,nom);
+				sscate.add(create);
+				loaded.put(idSCCI, create);
 				result.put(cate, sscate);
 			}
 			
@@ -85,6 +88,35 @@ public class SousCategorieCIMapper {
 		ps.setString(2, scci.getNom());
 		ps.setInt(3, cate.getIdCat());
 		ps.executeUpdate();
+		loaded.put(id, scci);
 		id ++;
+	}
+
+	public ArrayList<String> allLibelleCategorie(String categorie) throws ClassNotFoundException, SQLException {
+		String req = "SELECT s.nom FROM SousCategorieCI s JOIN CategorieCI c on s.idC = c.id WHERE c.nom = ?";
+		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
+		ps.setString(1, categorie);
+		ResultSet rs = ps.executeQuery();
+		ArrayList<String> result = new ArrayList<String>();
+		while (rs.next()){
+			result.add(rs.getString(1));
+		}
+		return result;
+	}
+
+	public SousCategorieCI findByNom(String nom) throws ClassNotFoundException, SQLException {
+		String req = "SELECT id FROM SousCategorieCI WHERE nom = ?";
+		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
+		ps.setString(1,nom);
+		ResultSet rs = ps.executeQuery();
+		if (rs.next()){
+			int id = rs.getInt("id");
+			if (loaded.containsKey(id)){
+				return loaded.get(id);
+			}else{
+				return new SousCategorieCI(id,nom);
+			}
+		}
+		return null;
 	}
 }
