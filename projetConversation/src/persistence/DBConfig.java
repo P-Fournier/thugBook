@@ -23,7 +23,7 @@ static Scanner sc = new Scanner (System.in);
 	private String password;
 	
 	public DBConfig (){
-		System.out.println("Connection à la base de donnée");
+		System.out.println("Connexion à la base de données");
 		this.url = "jdbc:mysql://localhost:3306/java";	//URL de connexion à la bdd ici
 		this.JDBC_DRIVER="com.mysql.jdbc.Driver";
 		System.out.println("User : ");

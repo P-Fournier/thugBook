@@ -129,4 +129,35 @@ public class UtilisateurMapper {
 		return false;
 	}
 	
+	/**
+	 * mis à jour du profil de l'utilisateur
+	 * @param u
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
+	public void updateProfil(Utilisateur u) throws ClassNotFoundException, SQLException {
+		String req = "UPDATE Utilisateur SET nom = ? , prenom = ? , password = ? WHERE id = ?";
+		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
+		ps.setString(1,u.getNom());
+		ps.setString(2, u.getPrenom());
+		ps.setString(3,u.getPassword());
+		ps.setInt(4, u.getIdU());
+		ps.executeUpdate();
+		
+		req = "DELETE FROM AssociationCI WHERE idU = ?";
+		ps = DBConfig.getInstance().getConnection().prepareStatement(req);
+		ps.setInt(1, u.getIdU());
+		ps.executeUpdate();
+		
+		req = "INSERT INTO AssociationCI VALUES (?,?)";
+		for (CategorieCI cate : u.getListeInteret().keySet()){
+			for (SousCategorieCI sscate : u.getListeInteret().get(cate)){
+				ps = DBConfig.getInstance().getConnection().prepareStatement(req);
+				ps.setInt(1, u.getIdU());
+				ps.setInt(2, sscate.getIdSousCategorie());
+				ps.executeUpdate();
+			}
+		}
+	}
+	
 }

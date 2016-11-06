@@ -9,6 +9,7 @@ import java.sql.SQLException;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
@@ -90,10 +91,10 @@ public class EcranConnexion extends JPanel implements ActionListener{
 			fen.changerEcran(Service.connexion(user.getText(),new String(password.getPassword()),fen));
 			fen.changerTitre("Réseau social - Accueil");
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
+			JOptionPane.showMessageDialog(this, e.getMessage());
 			e.printStackTrace();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			JOptionPane.showMessageDialog(this, e.getMessage());
 			e.printStackTrace();
 		}catch (ConnexionException e){
 			messageErreur.setText(e.getMessageErreur());

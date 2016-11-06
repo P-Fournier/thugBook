@@ -6,6 +6,8 @@ import java.awt.Graphics;
 import java.awt.Scrollbar;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -255,7 +257,17 @@ public class EcranUtilisateur extends JPanel implements ActionListener{
 			fen.changerTitre("Réseau social - Connexion");
 		}
 		if(e.getSource()==profilBoutton){
-			fen.changerEcran(EcranGestionProfil.getInstance(fen,this));
+			HashMap<CategorieCI,ArrayList<SousCategorieCI>> ci = new HashMap<CategorieCI,ArrayList<SousCategorieCI>>();
+			for (CategorieCI cate : u.getListeInteret().keySet()){
+				ArrayList<SousCategorieCI> sscate = new ArrayList<SousCategorieCI>();
+				for (SousCategorieCI ssc : u.getListeInteret().get(cate)){
+					sscate.add(ssc);
+				}
+				ci.put(cate, sscate);
+			}
+			Utilisateur temp = new Utilisateur (u.getIdU(),u.getNom(),u.getPrenom(),u.getNdc());
+			temp.setListeInteret(ci);
+			fen.changerEcran(EcranGestionProfil.getInstance(fen,this,temp));
 			fen.changerTitre("Réseau social - Mon profil");
 		}
 		if(e.getSource()==amiBoutton){

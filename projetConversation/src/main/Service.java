@@ -37,16 +37,16 @@ public class Service {
 		
 	}
 
-	public static void deleteCI(Utilisateur u,
+	public static void deleteCI(HashMap<CategorieCI, ArrayList<SousCategorieCI>> ci,
 			HashMap<CategorieCI, ArrayList<SousCategorieCI>> suppr) {
 	
 		for (CategorieCI cate : suppr.keySet()){
-			ArrayList<SousCategorieCI> result = u.getListeInteret().get(cate);
+			ArrayList<SousCategorieCI> result = ci.get(cate);
 			result.removeAll(suppr.get(cate));
 			if (result.isEmpty()){
-				u.getListeInteret().remove(cate);
+				ci.remove(cate);
 			}else{
-				u.getListeInteret().put(cate, result);
+				ci.put(cate, result);
 			}
 		}
 	}
@@ -65,6 +65,10 @@ public class Service {
 
 	public static SousCategorieCI getSousCategorieByNom(String nom) throws ClassNotFoundException, SQLException {
 		return SousCategorieCIMapper.getInstance().findByNom(nom);
+	}
+
+	public static void updateProfil(Utilisateur u) throws ClassNotFoundException, SQLException {
+		UtilisateurMapper.getInstance().updateProfil(u);
 	}
 	
 	

@@ -6,6 +6,10 @@ import domaine.CategorieCI;
 import domaine.SousCategorieCI;
 
 public class CheckBoxSuppression extends JCheckBox {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1710822897850606999L;
 	private SousCategorieCI cible;
 	private CategorieCI cate;
 	
