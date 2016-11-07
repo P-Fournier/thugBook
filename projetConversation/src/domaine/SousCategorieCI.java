@@ -34,6 +34,9 @@ public class SousCategorieCI {
 		this.idSousCategorie = idSousCategorie;
 	}
 	
+	public String toString (){
+		return this.nom;
+	}
 	
 
 }

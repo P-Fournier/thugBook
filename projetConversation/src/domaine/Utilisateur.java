@@ -126,10 +126,12 @@ public class Utilisateur {
 		this.notifications = notifications;
 	}
 	
-	public int nbCI (){
+	public int nbNotifNonVues (){
 		int result = 0;
-		for (CategorieCI cate : listeInteret.keySet()){
-			result += listeInteret.get(cate).size();
+		for (Notification n : notifications){
+			if (!n.isVue()){
+				result ++;
+			}
 		}
 		return result;
 	}

@@ -161,7 +161,7 @@ public class EcranUtilisateur extends JPanel implements ActionListener{
 		amiBoutton.addActionListener(this);
 		this.add(amiBoutton);
 		
-		notificationBoutton = new JButton ("Notifications ("+u.getNotifications().size()+")");
+		notificationBoutton = new JButton ("Notifications ("+u.nbNotifNonVues()+")");
 		notificationBoutton.setBounds(250, 310, 170, 30);
 		notificationBoutton.setBackground(Fenetre.BLEU_CIEL);
 		notificationBoutton.setForeground(Color.white);
@@ -233,7 +233,7 @@ public class EcranUtilisateur extends JPanel implements ActionListener{
 			y = longueurCate+y+10; // 10 pour le décalage
 		}
 		
-		if (y>maxHeight){
+		if (y>maxHeight+10){
 			maxHeight = y+10;
 		}
 		

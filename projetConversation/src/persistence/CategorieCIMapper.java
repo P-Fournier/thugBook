@@ -14,7 +14,7 @@ public class CategorieCIMapper {
 	private static CategorieCIMapper inst;
 	private static int id;
 	
-	private static HashMap<Integer,CategorieCI> lazyLoaded;
+	private static HashMap<Integer,CategorieCI> loaded;
 	
 	public static CategorieCIMapper getInstance() throws ClassNotFoundException, SQLException{
 		if (inst == null){
@@ -25,7 +25,7 @@ public class CategorieCIMapper {
 	
 	public CategorieCIMapper() throws ClassNotFoundException, SQLException{
 		id = getCurrentId();
-		lazyLoaded = new HashMap<Integer,CategorieCI>();
+		loaded = new HashMap<Integer,CategorieCI>();
 	}
 	
 	private int getCurrentId() throws SQLException, ClassNotFoundException{
@@ -49,13 +49,13 @@ public class CategorieCIMapper {
 		for (SousCategorieCI scci : cate.getListeSousCategorie()){
 			SousCategorieCIMapper.getInstance().insert(cate,scci);
 		}
-		lazyLoaded.put(id, cate);
+		loaded.put(id, cate);
 		id ++;
 	}
 
-	public CategorieCI findByIdLazy(int idC) throws ClassNotFoundException, SQLException {
-		if (lazyLoaded.containsKey(idC)){
-			return lazyLoaded.get(idC);
+	public CategorieCI findById(int idC) throws ClassNotFoundException, SQLException {
+		if (loaded.containsKey(idC)){
+			return loaded.get(idC);
 		}
 		String req = "SELECT nom FROM CategorieCI WHERE id = ? ";
 		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
@@ -63,37 +63,29 @@ public class CategorieCIMapper {
 		ResultSet rs = ps.executeQuery();
 		if (rs.next()){
 			CategorieCI result = new CategorieCI (idC,rs.getString("nom"));
-			lazyLoaded.put(idC,result);
+			result.setListeSousCategorie(SousCategorieCIMapper.getInstance().findByIdCategorie(idC));
+			loaded.put(idC,result);
 			return result;
 		}
 		return null;
 	}
 
-	public ArrayList<String> allLibelle() throws ClassNotFoundException, SQLException {
-		ArrayList<String> result = new ArrayList<String>();
-		String req = "SELECT nom FROM CategorieCI";
+	public ArrayList<CategorieCI> all() throws ClassNotFoundException, SQLException {
+		ArrayList<CategorieCI> result = new ArrayList<CategorieCI>();
+		String req = "SELECT id , nom FROM CategorieCI";
 		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
 		ResultSet rs = ps.executeQuery();
 		while (rs.next()){
-			result.add(rs.getString("nom"));
+			if (loaded.containsKey(rs.getInt("id"))){
+				result.add(loaded.get(rs.getInt("id")));
+			}else{
+				CategorieCI cate = new CategorieCI (rs.getInt("id"),rs.getString("nom"));
+				cate.setListeSousCategorie(SousCategorieCIMapper.getInstance().findByIdCategorie(rs.getInt("id")));
+				loaded.put(rs.getInt("id"), cate);
+				result.add(cate);
+			}
 		}
 		return result;
 	}
-
-	public CategorieCI findByNomLazy(String nom) throws ClassNotFoundException, SQLException {
-		String req = "SELECT id FROM CategorieCI WHERE nom = ?";
-		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
-		ps.setString(1, nom);
-		ResultSet rs = ps.executeQuery();
-		if (rs.next()){
-			int id = rs.getInt("id");
-			if (lazyLoaded.containsKey(id)){
-				return lazyLoaded.get(id);
-			}
-			return new CategorieCI (id,nom);
-		}
-		return null;
-	}
-	
 	
 }

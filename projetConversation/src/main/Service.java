@@ -11,7 +11,7 @@ import IHM.EcranUtilisateur;
 import IHM.Fenetre;
 
 import persistence.CategorieCIMapper;
-import persistence.SousCategorieCIMapper;
+import persistence.NotificationMapper;
 import persistence.UtilisateurMapper;
 import domaine.CategorieCI;
 import domaine.SousCategorieCI;
@@ -51,24 +51,17 @@ public class Service {
 		}
 	}
 
-	public static ArrayList<String> recupererLesCategories() throws ClassNotFoundException, SQLException {
-		return CategorieCIMapper.getInstance().allLibelle();
+	public static ArrayList<CategorieCI> recupererLesCategories() throws ClassNotFoundException, SQLException {
+		return CategorieCIMapper.getInstance().all();
 	}
-
-	public static ArrayList<String> recupererLesSousCategories(String categorie) throws ClassNotFoundException, SQLException {
-		return SousCategorieCIMapper.getInstance().allLibelleCategorie(categorie);
-	}
-
-	public static CategorieCI getCategorieByNomLazy(String nom) throws ClassNotFoundException, SQLException {
-		return CategorieCIMapper.getInstance().findByNomLazy(nom);
-	}
-
-	public static SousCategorieCI getSousCategorieByNom(String nom) throws ClassNotFoundException, SQLException {
-		return SousCategorieCIMapper.getInstance().findByNom(nom);
-	}
-
+	
 	public static void updateProfil(Utilisateur u) throws ClassNotFoundException, SQLException {
 		UtilisateurMapper.getInstance().updateProfil(u);
+	}
+
+	public static void updateNotification(Utilisateur u) throws ClassNotFoundException, SQLException {
+		NotificationMapper.getInstance().update(u);
+		
 	}
 	
 	

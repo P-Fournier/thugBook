@@ -38,5 +38,9 @@ public class CategorieCI {
 			ArrayList<SousCategorieCI> listeSousCategorie) {
 		this.listeSousCategorie = listeSousCategorie;
 	}
+	
+	public String toString (){
+		return this.nom;
+	}
 
 }

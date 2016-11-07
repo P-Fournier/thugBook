@@ -56,23 +56,26 @@ public class SousCategorieCIMapper {
 		req = "SELECT nom , idC FROM SousCategorieCI WHERE id = ? ";
 		
 		for (Integer idSCCI : idSCs){
-			
 			ps = DBConfig.getInstance().getConnection().prepareStatement(req);
 			ps.setInt(1, idSCCI);
 			rs = ps.executeQuery();
 			
 			if (rs.next()){
 				String nom = rs.getString("nom");
-				CategorieCI cate = CategorieCIMapper.getInstance().findByIdLazy(rs.getInt("idC"));
+				CategorieCI cate = CategorieCIMapper.getInstance().findById(rs.getInt("idC"));
 				ArrayList<SousCategorieCI> sscate;
 				if (result.containsKey(cate)){
 					sscate = result.get(cate);
 				}else{
 					sscate = new ArrayList<SousCategorieCI>();
 				}
-				SousCategorieCI create = new SousCategorieCI(idSCCI,nom);
-				sscate.add(create);
-				loaded.put(idSCCI, create);
+				if (!loaded.containsKey(idSCCI)){
+					SousCategorieCI create = new SousCategorieCI(idSCCI,nom);
+					sscate.add(create);
+					loaded.put(idSCCI, create);
+				}else{
+					sscate.add(loaded.get(idSCCI));
+				}
 				result.put(cate, sscate);
 			}
 			
@@ -92,31 +95,21 @@ public class SousCategorieCIMapper {
 		id ++;
 	}
 
-	public ArrayList<String> allLibelleCategorie(String categorie) throws ClassNotFoundException, SQLException {
-		String req = "SELECT s.nom FROM SousCategorieCI s JOIN CategorieCI c on s.idC = c.id WHERE c.nom = ?";
+	public ArrayList<SousCategorieCI> findByIdCategorie(int idCategorie) throws ClassNotFoundException, SQLException {
+		ArrayList<SousCategorieCI> result = new ArrayList<SousCategorieCI>();
+		String req = "SELECT id , nom FROM SousCategorieCI WHERE idC = ?";
 		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
-		ps.setString(1, categorie);
+		ps.setInt(1, idCategorie);
 		ResultSet rs = ps.executeQuery();
-		ArrayList<String> result = new ArrayList<String>();
 		while (rs.next()){
-			result.add(rs.getString(1));
-		}
-		return result;
-	}
-
-	public SousCategorieCI findByNom(String nom) throws ClassNotFoundException, SQLException {
-		String req = "SELECT id FROM SousCategorieCI WHERE nom = ?";
-		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
-		ps.setString(1,nom);
-		ResultSet rs = ps.executeQuery();
-		if (rs.next()){
-			int id = rs.getInt("id");
-			if (loaded.containsKey(id)){
-				return loaded.get(id);
+			if (loaded.containsKey(rs.getInt("id"))){
+				result.add(loaded.get(rs.getInt("id")));
 			}else{
-				return new SousCategorieCI(id,nom);
+				SousCategorieCI sscate = new SousCategorieCI (rs.getInt("id"),rs.getString("nom"));
+				result.add(sscate);
+				loaded.put(rs.getInt("id"),sscate);
 			}
 		}
-		return null;
+		return result;
 	}
 }

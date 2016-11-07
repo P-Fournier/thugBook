@@ -45,8 +45,8 @@ public class EcranGestionProfil extends JPanel implements ActionListener{
 	private Utilisateur modif;
 	private int maxHeight;
 	private int maxWidth;
-	private JComboBox<String> comboCate;
-	private JComboBox<String> comboCi; 
+	private JComboBox<CategorieCI> comboCate;
+	private JComboBox<SousCategorieCI> comboCi; 
 	private JLabel messageSauvegarde;
 	private JButton bouttonSuppression;
 	private JButton bouttonAjout;
@@ -125,8 +125,8 @@ public class EcranGestionProfil extends JPanel implements ActionListener{
 		
 		JLabel labelComboCate = new JLabel ("Catégorie :");
 		JLabel labelComboCi = new JLabel ("Centre d'interët :");
-		this.comboCate = new JComboBox<String> ();
-		this.comboCi = new JComboBox<String>();
+		this.comboCate = new JComboBox<CategorieCI> ();
+		this.comboCi = new JComboBox<SousCategorieCI>();
 		this.bouttonAjout = new JButton("Ajouter");
 		
 		labelComboCate.setForeground(Color.white);
@@ -135,8 +135,8 @@ public class EcranGestionProfil extends JPanel implements ActionListener{
 		labelComboCi.setBounds(90, 430, 150, 30);
 		comboCate.setBounds(240, 380, 150, 30);
 		try {
-			for (String s : Service.recupererLesCategories()){
-				comboCate.addItem(s);
+			for (CategorieCI cate : Service.recupererLesCategories()){
+				comboCate.addItem(cate);
 			}
 		} catch (ClassNotFoundException e) {
 			JOptionPane.showMessageDialog(this, e.getMessage());
@@ -300,6 +300,10 @@ public class EcranGestionProfil extends JPanel implements ActionListener{
 			y = longueurCate+y+10; // 10 pour le décalage
 		}
 			
+		if (y>maxHeight+10){
+			maxHeight = y+10;
+		}
+		
 		this.setPreferredSize(new Dimension(maxWidth,maxHeight));
 		
 		
@@ -337,42 +341,29 @@ public class EcranGestionProfil extends JPanel implements ActionListener{
 		}
 		if (e.getSource()==comboCate){
 			comboCi.removeAllItems();
-			try {
-				for (String s : Service.recupererLesSousCategories((String)comboCate.getSelectedItem())){
-					comboCi.addItem(s);
+			CategorieCI selected = (CategorieCI)comboCate.getSelectedItem();
+			for (SousCategorieCI sscate : selected.getListeSousCategorie()){
+				if (!modif.getListeInteret().get(selected).contains(sscate)){
+					comboCi.addItem(sscate);
 				}
-				comboCi.setSelectedItem(null);
-			} catch (ClassNotFoundException e1) {
-				JOptionPane.showMessageDialog(this, e1.getMessage());
-				e1.printStackTrace();
-			} catch (SQLException e1) {
-				JOptionPane.showMessageDialog(this, e1.getMessage());
-				e1.printStackTrace();
 			}
+			comboCi.setSelectedItem(null);
 		}
-		if (e.getSource()==bouttonAjout){
-			try {
-				CategorieCI categorie = Service.getCategorieByNomLazy((String)comboCate.getSelectedItem());
-				SousCategorieCI sousCategorie = Service.getSousCategorieByNom((String)comboCi.getSelectedItem());
-				ArrayList<SousCategorieCI> lstCi;
-				if(modif.getListeInteret().containsKey(categorie)){
-					lstCi = modif.getListeInteret().get(categorie);
-				}else{
-					lstCi = new ArrayList<SousCategorieCI>();
-				}
-				lstCi.add(sousCategorie);
-				modif.getListeInteret().put(categorie, lstCi);
-				modif.setNom(nom.getText());
-				modif.setPrenom(prenom.getText());
-				inst = EcranGestionProfil.getInstance(fen, accueil,modif);
-				fen.changerEcran(inst);
-			} catch (ClassNotFoundException e1) {
-				JOptionPane.showMessageDialog(this, e1.getMessage());
-				e1.printStackTrace();
-			} catch (SQLException e1) {
-				JOptionPane.showMessageDialog(this, e1.getMessage());
-				e1.printStackTrace();
+		if (e.getSource()==bouttonAjout && comboCate.getSelectedItem()!= null && comboCi.getSelectedItem() != null){
+			CategorieCI categorie = (CategorieCI)comboCate.getSelectedItem();
+			SousCategorieCI sousCategorie = (SousCategorieCI)comboCi.getSelectedItem();
+			ArrayList<SousCategorieCI> lstCi;
+			if(modif.getListeInteret().containsKey(categorie)){
+				lstCi = modif.getListeInteret().get(categorie);
+			}else{
+				lstCi = new ArrayList<SousCategorieCI>();
 			}
+			lstCi.add(sousCategorie);
+			modif.getListeInteret().put(categorie, lstCi);
+			modif.setNom(nom.getText());
+			modif.setPrenom(prenom.getText());
+			inst = EcranGestionProfil.getInstance(fen, accueil,modif);
+			fen.changerEcran(inst);
 		}
 		if (e.getSource()==bouttonSauvegarde){
 			accueil.getU().setNom(nom.getText());
