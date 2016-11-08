@@ -26,10 +26,43 @@ CREATE TABLE SousCategorieCI(
 CREATE Table Message (
 	id int(6) primary key,
     idExp int(6),
-    idDest int(6),
     contenu text,
-    CONSTRAINT c3 FOREIGN KEY (idExp) REFERENCES Utilisateur(id) ON DELETE CASCADE,
-    CONSTRAINT c4 FOREIGN KEY (idDest) REFERENCES Utilisateur(id) ON DELETE CASCADE
+    CONSTRAINT c3 FOREIGN KEY (idExp) REFERENCES Utilisateur(id) ON DELETE CASCADE
+);
+
+CREATE Table MessageUtilisateur (
+	idM int(6) primary key,
+    idDest int(6),
+    CONSTRAINT c17 FOREIGN KEY (idM) REFERENCES Message(id) ON DELETE CASCADE,
+    CONSTRAINT c18 foreign key (idDest) REFERENCES Utilisateur(id) ON DELETE CASCADE
+);
+
+CREATE Table MessageGroupe (
+	idM int(6) primary key,
+    idG int(6),
+    CONSTRAINT c19 FOREIGN KEY (idM) REFERENCES Message(id) ON DELETE CASCADE,
+    CONSTRAINT c20 foreign key (idG) REFERENCES Groupe(id) ON DELETE CASCADE
+);
+
+CREATE TABLE MessagePriorite (
+	idM int(6) primary key,
+    CONSTRAINT C21 FOREIGN KEY (idM) REFERENCES Message(id) ON DELETE CASCADE
+);
+
+CREATE TABLE MessageAccuse (
+	idM int(6) primary key,
+    CONSTRAINT C22 FOREIGN KEY (idM) REFERENCES Message(id) ON DELETE CASCADE
+);
+
+CREATE TABLE MessageDate (
+	idM int(6) primary key,
+    dateLivraison Date,
+    CONSTRAINT c23 FOREIGN KEY (idM) REFERENCES Message(id) ON DELETE CASCADE
+);
+
+CREATE TABLE MessageChiffre (
+	idM int(6) primary key,
+    CONSTRAINT c24 FOREIGN KEY (idM) REFERENCES Message(id) ON DELETE CASCADE
 );
 
 CREATE Table Ami(
