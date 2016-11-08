@@ -45,17 +45,17 @@ CREATE Table MessageGroupe (
 );
 
 CREATE TABLE MessagePriorite (
-	idM int(6) primary key,
+    idM int(6) primary key,
     CONSTRAINT C21 FOREIGN KEY (idM) REFERENCES Message(id) ON DELETE CASCADE
 );
 
 CREATE TABLE MessageAccuse (
-	idM int(6) primary key,
+    idM int(6) primary key,
     CONSTRAINT C22 FOREIGN KEY (idM) REFERENCES Message(id) ON DELETE CASCADE
 );
 
 CREATE TABLE MessageDate (
-	idM int(6) primary key,
+    idM int(6) primary key,
     dateLivraison Date,
     CONSTRAINT c23 FOREIGN KEY (idM) REFERENCES Message(id) ON DELETE CASCADE
 );
@@ -63,6 +63,10 @@ CREATE TABLE MessageDate (
 CREATE TABLE MessageChiffre (
 	idM int(6) primary key,
     CONSTRAINT c24 FOREIGN KEY (idM) REFERENCES Message(id) ON DELETE CASCADE
+);
+
+CREATE TABLE MessageVu (
+	
 );
 
 CREATE Table Ami(
@@ -118,5 +122,7 @@ CREATE TABLE Notification (
 	id int(6) primary key,
 	message text,
 	idU int(6),
+	vue boolean,
+	dateEnvoie Time,
 	CONSTRAINT c16 FOREIGN KEY (idU) REFERENCES Utilisateur(id) ON DELETE CASCADE
 );

@@ -64,7 +64,7 @@ public class EcranNotification extends JPanel implements ActionListener{
 			labelNotif.setBounds(100, y , 800, 30);
 			labelNotif.addMouseListener(new NotificationListener(fen,accueil,notif));
 			
-			JButton suppression = new JButton (new ImageIcon("src/IHM/croix.png"));
+			JButton suppression = new JButton (new ImageIcon("src/img/croix.png"));
 			
 			suppression.setBorder(null);
 			suppression.addActionListener(this);
@@ -75,6 +75,8 @@ public class EcranNotification extends JPanel implements ActionListener{
 			this.add(labelNotif);
 			y += 60;
 		}
+		
+		//boutton retour
 		
 		this.retour = new JButton ("Retour");
 		retour.setBounds (100,40,150,30);

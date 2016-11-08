@@ -34,13 +34,13 @@ public class DemandeAmiMapper {
 	}
 	
 	/**
-	 * restituer les demandes d'amis à destination de l'utilisateur dest
+	 * restituer les demandes d'amis à destination de l'utilisateur u
 	 * @param u
 	 * @return
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-	public ArrayList<Utilisateur> restituerDemande(Utilisateur u) throws ClassNotFoundException, SQLException {
+	public ArrayList<Utilisateur> restituerDemandesRecues(Utilisateur u) throws ClassNotFoundException, SQLException {
 		String req = "SELECT idExp FROM DemandeAmi WHERE idDest = ?";
 		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
 		ps.setInt(1, u.getIdU());
@@ -48,6 +48,25 @@ public class DemandeAmiMapper {
 		ArrayList<Utilisateur> result = new ArrayList<Utilisateur> ();
 		while (rs.next()){
 			result.add(UtilisateurMapper.getInstance().findById(rs.getInt("idExp")));
+		}
+		return result;
+	}
+	
+	/**
+	 * restituer les demandes d'amis émise par l'utilisateur u
+	 * @param u
+	 * @return
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
+	public ArrayList<Utilisateur> restituerDemandesSoumises(Utilisateur u) throws ClassNotFoundException, SQLException {
+		String req = "SELECT idDest FROM DemandeAmi WHERE idExp = ?";
+		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
+		ps.setInt(1, u.getIdU());
+		ResultSet rs = ps.executeQuery();
+		ArrayList<Utilisateur> result = new ArrayList<Utilisateur> ();
+		while (rs.next()){
+			result.add(UtilisateurMapper.getInstance().findById(rs.getInt("idDest")));
 		}
 		return result;
 	}
@@ -60,9 +79,9 @@ public class DemandeAmiMapper {
 	 * @throws ClassNotFoundException 
 	 */
 	public void accepterDemande(Utilisateur dest, Utilisateur exp) throws ClassNotFoundException, SQLException{
-		DemandeAmiMapper.getInstance().delete(dest, exp);
+		DemandeAmiMapper.getInstance().delete(exp, dest);
 		AmiMapper.getInstance().insert(dest,exp);
-		dest.getDemandeAmis().remove(exp);
+		dest.getDemandeAmisRecues().remove(exp);
 		dest.getAmis().add(exp);
 		NotificationMapper.getInstance().insert(exp, dest.getNdc()+" a accepte votre demande d'ami");
 	}
@@ -75,8 +94,8 @@ public class DemandeAmiMapper {
 	 * @throws ClassNotFoundException 
 	 */
 	public void refuserDemande(Utilisateur dest, Utilisateur exp) throws ClassNotFoundException, SQLException{
-		DemandeAmiMapper.getInstance().delete(dest, exp);
-		dest.getDemandeAmis().remove(exp);
+		DemandeAmiMapper.getInstance().delete(exp, dest);
+		dest.getDemandeAmisRecues().remove(exp);
 		NotificationMapper.getInstance().insert(exp, dest.getNdc()+" a refusé votre demande d'ami");
 	}
 	

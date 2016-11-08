@@ -81,8 +81,10 @@ public class UtilisateurMapper {
 			Utilisateur u = new Utilisateur (id,nom,prenom,ndc,password);
 			HashMap<CategorieCI,ArrayList<SousCategorieCI>> ci = SousCategorieCIMapper.getInstance().findByUser(id);
 			u.setListeInteret(ci);
-			ArrayList<Utilisateur> demande = DemandeAmiMapper.getInstance().restituerDemande(u);
-			u.setDemandeAmis(demande);
+			ArrayList<Utilisateur> demandeRecues = DemandeAmiMapper.getInstance().restituerDemandesRecues(u);
+			u.setDemandeAmisRecues(demandeRecues);
+			ArrayList<Utilisateur> demandeSoumises = DemandeAmiMapper.getInstance().restituerDemandesSoumises(u);
+			u.setDemandesAmisSoumises(demandeSoumises);
 			ArrayList<Utilisateur> amis = AmiMapper.getInstance().restituerAmis(u);
 			u.setAmis(amis);
 			ArrayList<Notification> notif = NotificationMapper.getInstance().restituerNotification(u);
@@ -158,6 +160,19 @@ public class UtilisateurMapper {
 				ps.executeUpdate();
 			}
 		}
+	}
+
+	public ArrayList<Utilisateur> findByNom(String nom, String prenom) throws ClassNotFoundException, SQLException {
+		String req = "SELECT id , ndc FROM Utilisateur WHERE nom = ? AND prenom = ?";
+		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
+		ps.setString(1,nom);
+		ps.setString(2,prenom);
+		ResultSet rs = ps.executeQuery();
+		ArrayList<Utilisateur> result = new ArrayList<Utilisateur>();
+		while (rs.next()){
+			result.add(new Utilisateur(rs.getInt("id"),nom,prenom,rs.getString("ndc")));
+		}
+		return result;
 	}
 	
 }

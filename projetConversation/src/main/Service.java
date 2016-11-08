@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import IHM.EcranAdministrateur;
@@ -11,6 +12,7 @@ import IHM.EcranUtilisateur;
 import IHM.Fenetre;
 
 import persistence.CategorieCIMapper;
+import persistence.DemandeAmiMapper;
 import persistence.NotificationMapper;
 import persistence.UtilisateurMapper;
 import domaine.CategorieCI;
@@ -62,6 +64,25 @@ public class Service {
 	public static void updateNotification(Utilisateur u) throws ClassNotFoundException, SQLException {
 		NotificationMapper.getInstance().update(u);
 		
+	}
+
+	public static ArrayList<Utilisateur> rechercherUtilisateurParNom(
+			String nom, String prenom) throws ClassNotFoundException, SQLException {
+		return UtilisateurMapper.getInstance().findByNom(nom,prenom);
+		
+	}
+
+	public static void demandeAmi(Utilisateur exp, Utilisateur dest) throws ClassNotFoundException, SQLException {
+		DemandeAmiMapper.getInstance().demandeAmi(exp, dest);
+		
+	}
+
+	public static void refuserInvitation(Utilisateur u, Utilisateur dest) throws ClassNotFoundException, SQLException {
+		DemandeAmiMapper.getInstance().refuserDemande(u, dest);
+	}
+
+	public static void accepterInvitation(Utilisateur u, Utilisateur dest) throws ClassNotFoundException, SQLException {
+		DemandeAmiMapper.getInstance().accepterDemande(u, dest);
 	}
 	
 	

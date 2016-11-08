@@ -12,7 +12,8 @@ public class Utilisateur {
 	private String password;
 	private HashMap<CategorieCI,ArrayList<SousCategorieCI>> listeInteret;
 	private ArrayList<Utilisateur> amis;
-	private ArrayList<Utilisateur> demandeAmis;
+	private ArrayList<Utilisateur> demandeAmisRecues;
+	private ArrayList<Utilisateur> demandesAmisSoumises;
 	private ArrayList<GroupeDiscussion> groupeDiscussion;
 	private ArrayList<Notification> notifications;
 
@@ -26,7 +27,8 @@ public class Utilisateur {
 		this.password = password;
 		this.listeInteret = new HashMap<CategorieCI,ArrayList<SousCategorieCI>> ();
 		this.amis = new ArrayList<Utilisateur>();
-		this.demandeAmis = new ArrayList<Utilisateur>();
+		this.demandeAmisRecues = new ArrayList<Utilisateur>();
+		this.demandesAmisSoumises = new ArrayList<Utilisateur>();
 		this.groupeDiscussion = new ArrayList<GroupeDiscussion>();
 		this.notifications = new ArrayList<Notification>();
 		 
@@ -39,7 +41,8 @@ public class Utilisateur {
 		this.ndc = ndc;
 		this.listeInteret = new HashMap<CategorieCI,ArrayList<SousCategorieCI>> ();
 		this.amis = new ArrayList<Utilisateur>();
-		this.demandeAmis = new ArrayList<Utilisateur>();
+		this.demandeAmisRecues = new ArrayList<Utilisateur>();
+		this.demandesAmisSoumises = new ArrayList<Utilisateur>();
 		this.groupeDiscussion = new ArrayList<GroupeDiscussion>();
 		this.notifications = new ArrayList<Notification>();
 	}
@@ -60,16 +63,22 @@ public class Utilisateur {
 		this.ndc = ndc;
 	}
 
-	public ArrayList<Utilisateur> getDemandeAmis() {
-		return demandeAmis;
+	public ArrayList<Utilisateur> getDemandeAmisRecues() {
+		return demandeAmisRecues;
 	}
 
-	public void setDemandeAmis(ArrayList<Utilisateur> demandeAmis) {
-		this.demandeAmis = demandeAmis;
+	public void setDemandeAmisRecues(ArrayList<Utilisateur> demandeAmisRecues) {
+		this.demandeAmisRecues = demandeAmisRecues;
 	}
 	
-	
-	
+	public ArrayList<Utilisateur> getDemandesAmisSoumises() {
+		return demandesAmisSoumises;
+	}
+
+	public void setDemandesAmisSoumises(ArrayList<Utilisateur> demandesAmisSoumises) {
+		this.demandesAmisSoumises = demandesAmisSoumises;
+	}
+
 	public ArrayList<Utilisateur> getAmis() {
 		return amis;
 	}

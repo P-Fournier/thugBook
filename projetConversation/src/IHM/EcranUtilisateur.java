@@ -271,7 +271,7 @@ public class EcranUtilisateur extends JPanel implements ActionListener{
 			fen.changerTitre("Réseau social - Mon profil");
 		}
 		if(e.getSource()==amiBoutton){
-			fen.changerEcran(new EcranAmi(fen,this));
+			fen.changerEcran(new EcranAmi(fen,this,new HashMap<JButton,Utilisateur>()));
 			fen.changerTitre("Réseau social - Mes amis");
 		}
 		if(e.getSource()==notificationBoutton){

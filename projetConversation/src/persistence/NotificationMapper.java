@@ -43,13 +43,13 @@ public class NotificationMapper {
 	 * @throws SQLException
 	 */
 	public void insert (Utilisateur u , String msg) throws ClassNotFoundException, SQLException{
-		String req = "INSERT INTO Notification VALUES (?,?,?,?)";
+		String req = "INSERT INTO Notification VALUES (?,?,?,?,now())";
 		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
 		ps.setInt(1,id);
 		ps.setString(2, msg);
 		ps.setInt(3,u.getIdU());
 		ps.setBoolean(4,false);
-		ps.executeQuery();
+		ps.executeUpdate();
 	}
 	
 	/**
@@ -61,7 +61,7 @@ public class NotificationMapper {
 	 */
 	public ArrayList<Notification> restituerNotification(Utilisateur u) throws ClassNotFoundException, SQLException{
 		ArrayList<Notification> result = new ArrayList<Notification> ();
-		String req = "SELECT id , message , vue FROM Notification WHERE idU = ? order by vue";
+		String req = "SELECT id , message , vue FROM Notification WHERE idU = ? order by vue , dateEnvoie desc";
 		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
 		ps.setInt(1, u.getIdU());
 		ResultSet rs = ps.executeQuery();
