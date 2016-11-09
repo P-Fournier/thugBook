@@ -68,20 +68,22 @@ public class AmiMapper {
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-	public void suppressionAmi (Utilisateur u1 , Utilisateur u2) throws ClassNotFoundException, SQLException{
+	public void suppressionAmi (Utilisateur u , Utilisateur suppr) throws ClassNotFoundException, SQLException{
 		String req = "DELETE FROM Ami WHERE idA = ? and idB = ?";
 		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
-		ps.setInt(1, u1.getIdU());
-		ps.setInt(2, u2.getIdU());
+		ps.setInt(1, u.getIdU());
+		ps.setInt(2, suppr.getIdU());
 		ps.executeUpdate();
 		
 		req = "DELETE FROM Ami WHERE idA = ? and idB = ?";
 		ps = DBConfig.getInstance().getConnection().prepareStatement(req);
-		ps.setInt(2, u1.getIdU());
-		ps.setInt(1, u2.getIdU());
+		ps.setInt(2, u.getIdU());
+		ps.setInt(1, suppr.getIdU());
 		ps.executeUpdate();
 		
-		u1.getAmis().remove(u2);
-		u2.getAmis().remove(u1);
+		u.getAmis().remove(suppr);
+		suppr.getAmis().remove(u);
+		
+		NotificationMapper.getInstance().insert(suppr, u.getNdc()+" vous a supprimer de sa liste d'ami");
 	}
 }

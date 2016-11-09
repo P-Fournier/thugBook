@@ -35,13 +35,7 @@ public class EcranAmi extends JPanel implements ActionListener{
 	private HashMap<JButton,Utilisateur> resultRechercheParNom;
 	private HashMap<JButton,Utilisateur> refusInvitation;
 	private HashMap<JButton,Utilisateur> accepteInvitation;
-	private static EcranAmi inst;
-	
-	public static EcranAmi getInstance (Fenetre fen , EcranUtilisateur ecran , HashMap<JButton,Utilisateur> resultRechercheParNom){
-		inst = new EcranAmi(fen,ecran,resultRechercheParNom);
-		return inst ;
-	}
-
+	private HashMap<JButton,Utilisateur> suppressionAmi;
 	
 	public EcranAmi (Fenetre fen,EcranUtilisateur ecran,HashMap<JButton,Utilisateur> resultRechercheParNom) {
 		
@@ -50,6 +44,7 @@ public class EcranAmi extends JPanel implements ActionListener{
 		this.resultRechercheParNom = resultRechercheParNom;
 		this.accepteInvitation = new HashMap<JButton,Utilisateur>();
 		this.refusInvitation = new HashMap<JButton,Utilisateur>();
+		this.suppressionAmi = new HashMap<JButton,Utilisateur>();
 		this.add(new Scrollbar());
 		this.setLayout(null);
 		
@@ -136,7 +131,7 @@ public class EcranAmi extends JPanel implements ActionListener{
 			noDemande.setForeground(Color.white);
 			noDemande.setBounds(560,y,400,30);
 			this.add(noDemande);
-			y =+ 60;
+			y += 60;
 		}else{
 			for (Utilisateur u : ecran.getU().getDemandeAmisRecues()){
 				JLabel demande = new JLabel (u.getNdc());
@@ -167,6 +162,44 @@ public class EcranAmi extends JPanel implements ActionListener{
 			}
 		}
 		
+		y+= 30;
+		
+		// carré amis
+		
+		JLabel amis = new JLabel("Mes amis");
+		
+		amis.setBounds(690, y,250, 20);
+		amis.setForeground(Fenetre.BLEU_CIEL);
+				
+		this.add(amis);
+		
+		if (ecran.getU().getAmis().isEmpty()){
+			y+= 60;
+			JLabel noAmis = new JLabel ("Aucune ami");
+			noAmis.setForeground(Color.white);
+			noAmis.setBounds(560,y,400,30);
+			this.add(noAmis);
+		}else{
+			for (Utilisateur u : ecran.getU().getAmis()){
+				y+= 60;
+				JLabel showAmi = new JLabel (u.getNdc());
+				showAmi.setForeground(Fenetre.BLEU_CIEL);
+				showAmi.setBounds(560,y,100,30);
+				
+				JButton supprimer = new JButton ("Supprimer");
+				
+				supprimer.setForeground(Color.white);
+				supprimer.setBackground(Fenetre.BLEU_CIEL);
+				supprimer.addActionListener(this);
+				supprimer.setBorder(new CompoundBorder(new LineBorder(Color.white),new EmptyBorder(5,15,5,15)));
+				supprimer.setBounds(760, y, 150, 30);
+				
+				this.add(showAmi);
+				this.add(supprimer);
+				suppressionAmi.put(supprimer, u);
+			}
+		}
+		
 	}
 	
 	public void paintComponent (Graphics g){
@@ -193,24 +226,52 @@ public class EcranAmi extends JPanel implements ActionListener{
 		// carré ajout ami par critère
 		
 		//carré gestion demande ami
+		int hauteurDemande ;
 		
 		g.setColor(Fenetre.BLEU_CIEL);
 		if (accueil.getU().getDemandeAmisRecues().isEmpty()){
-			g.fillRoundRect(510, 40, 450, 110,50,50);
+			hauteurDemande = 110;
 		}else{
-			g.fillRoundRect(510, 40, 450, 50+(60*accueil.getU().getDemandeAmisRecues().size()),50,50);
-			for (int i=0; i<accueil.getU().getDemandeAmisRecues().size() ;i++){
-				g.setColor(Color.WHITE);
-				g.fillRoundRect(530, 80+(i*60), 400, 50 , 25, 25);
-			} 
+			hauteurDemande = 50+(60*accueil.getU().getDemandeAmisRecues().size()); 
 		}
-				
+		
+		g.fillRoundRect(510, 40, 450, hauteurDemande,50,50);
+		
+		for (int i=0; i<accueil.getU().getDemandeAmisRecues().size() ;i++){
+			g.setColor(Color.WHITE);
+			g.fillRoundRect(530, 80+(i*60), 400, 50 , 25, 25);
+		}
+		
 		g.setColor(Color.white);
 		g.fillRoundRect(670,20,250,40,50,50);
 		g.setColor(Fenetre.BLEU_CIEL);
 		g.drawRoundRect(670,20,250,40,50,50);
 		
+		//carré ami
 		
+		int hauteurAmi ; 
+		
+		if (accueil.getU().getAmis().size()==0){
+			hauteurAmi = 110;
+		}else{
+			hauteurAmi = 50+(60*accueil.getU().getAmis().size()); 
+		}
+		
+		g.fillRoundRect(510, hauteurDemande+80, 450, hauteurAmi, 50, 50);
+		
+		g.setColor(Color.white);
+		g.fillRoundRect(670,hauteurDemande+60,250,40,50,50);
+		g.setColor(Fenetre.BLEU_CIEL);
+		g.drawRoundRect(670,hauteurDemande+60,250,40,50,50);
+		
+		for (int i=0; i<accueil.getU().getAmis().size() ;i++){
+			g.setColor(Color.WHITE);
+			g.fillRoundRect(530, hauteurDemande+120+(i*60), 400, 50 , 25, 25);
+		}
+		
+		if (this.MaxHeight<hauteurDemande+120+(accueil.getU().getAmis().size()*60)){
+			this.MaxHeight=hauteurDemande+120+(accueil.getU().getAmis().size()*60);
+		}
 	}
 
 	public void actionPerformed(ActionEvent e) {
@@ -228,7 +289,7 @@ public class EcranAmi extends JPanel implements ActionListener{
 				if (resultRechercheParNom.isEmpty()){
 					JOptionPane.showMessageDialog(this,"Aucun résultat");
 				}
-				fen.changerEcran(EcranAmi.getInstance(fen, accueil, resultRechercheParNom));
+				refresh();
 			} catch (ClassNotFoundException e1) {
 				JOptionPane.showMessageDialog(this, e1.getMessage());
 				e1.printStackTrace();
@@ -241,6 +302,9 @@ public class EcranAmi extends JPanel implements ActionListener{
 			Utilisateur dest = resultRechercheParNom.get(e.getSource());
 			try {
 				Service.demandeAmi(accueil.getU(),dest);
+				JOptionPane.showMessageDialog(this, "Demande d'ami envoyée");
+				this.resultRechercheParNom = new HashMap<JButton,Utilisateur>();
+				refresh();
 			} catch (ClassNotFoundException e1) {
 				JOptionPane.showMessageDialog(this, e1.getMessage());
 				e1.printStackTrace();
@@ -253,7 +317,7 @@ public class EcranAmi extends JPanel implements ActionListener{
 			Utilisateur dest = refusInvitation.get(e.getSource());
 			try {
 				Service.refuserInvitation(accueil.getU(),dest);
-				fen.changerEcran(EcranAmi.getInstance(fen, accueil, resultRechercheParNom));
+				refresh();
 			} catch (ClassNotFoundException e1) {
 				JOptionPane.showMessageDialog(this, e1.getMessage());
 				e1.printStackTrace();
@@ -266,7 +330,7 @@ public class EcranAmi extends JPanel implements ActionListener{
 			Utilisateur dest = accepteInvitation.get(e.getSource());
 			try {
 				Service.accepterInvitation(accueil.getU(),dest);
-				fen.changerEcran(EcranAmi.getInstance(fen, accueil, resultRechercheParNom));
+				refresh();
 			} catch (ClassNotFoundException e1) {
 				JOptionPane.showMessageDialog(this, e1.getMessage());
 				e1.printStackTrace();
@@ -276,8 +340,31 @@ public class EcranAmi extends JPanel implements ActionListener{
 			}
 		}
 		if (e.getSource() == retour){
-			fen.changerEcran(EcranUtilisateur.getInstance(accueil.getU(), fen));
+			fen.changerEcran(new EcranUtilisateur(accueil.getU(), fen));
 			fen.changerTitre("Réseau social - Accueil");
 		}
+		if (suppressionAmi.containsKey(e.getSource())){
+			Utilisateur suppr = suppressionAmi.get(e.getSource());
+			int result = JOptionPane.showConfirmDialog(this, "Êtes-vous sur de vouloir supprimer "+suppr.getNdc()+" de vos amis ?");
+			switch (result){
+				case JOptionPane.YES_OPTION:
+				try {
+					Service.supprimerAmitie (accueil.getU(),suppr);
+				} catch (ClassNotFoundException e1) {
+					JOptionPane.showMessageDialog(this, e1.getMessage());
+					e1.printStackTrace();
+				} catch (SQLException e1) {
+					JOptionPane.showMessageDialog(this, e1.getMessage());
+					e1.printStackTrace();
+				}
+					break;
+				default:
+			}
+			refresh();
+		}
+	}
+	
+	public void refresh (){
+		fen.changerEcran(new EcranAmi(fen, accueil, resultRechercheParNom));
 	}
 }

@@ -30,17 +30,10 @@ public class EcranNotification extends JPanel implements ActionListener{
 	
 	private Fenetre fen;
 	private EcranUtilisateur accueil;
-	private static EcranNotification inst;
 	private HashMap<JButton,Notification> suppr ;
 	private JButton retour;
 	private int maxHeight;
 	private int maxWidth;
-	
-	
-	public static EcranNotification getInstance (Fenetre fen , EcranUtilisateur accueil){
-		inst = new EcranNotification (fen,accueil);
-		return inst;
-	}
 	
 	public EcranNotification (Fenetre fen , EcranUtilisateur accueil){
 		
@@ -117,7 +110,7 @@ public class EcranNotification extends JPanel implements ActionListener{
 		if (suppr.containsKey(e.getSource())){
 			Notification action = suppr.get(e.getSource());
 			accueil.getU().getNotifications().remove(action);
-			fen.changerEcran(EcranNotification.getInstance(fen, accueil));
+			refresh();
 		}
 		if (e.getSource()==retour){
 			try {
@@ -129,8 +122,12 @@ public class EcranNotification extends JPanel implements ActionListener{
 				JOptionPane.showMessageDialog(this, e1.getMessage());
 				e1.printStackTrace();
 			}
-			fen.changerEcran(EcranUtilisateur.getInstance(accueil.getU(), fen));
+			fen.changerEcran(new EcranUtilisateur(accueil.getU(), fen));
 			fen.changerTitre("Réseau social - Accueil");
 		}
+	}
+	
+	public void refresh (){
+		fen.changerEcran(new EcranNotification(fen, accueil));
 	}
 }

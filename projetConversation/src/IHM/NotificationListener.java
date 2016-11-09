@@ -19,7 +19,7 @@ public class NotificationListener implements MouseListener {
 	
 	public void mouseClicked(MouseEvent arg0) {
 		notif.setVue(true);
-		fen.changerEcran(EcranNotification.getInstance(fen,accueil));
+		fen.changerEcran(new EcranNotification(fen,accueil));
 		
 	}
 

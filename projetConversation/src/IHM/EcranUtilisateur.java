@@ -45,13 +45,6 @@ public class EcranUtilisateur extends JPanel implements ActionListener{
 	private JButton deconnexionBoutton;
 	
 	private Fenetre fen;
-	
-	private static EcranUtilisateur inst;
-	
-	public static EcranUtilisateur getInstance(Utilisateur u, Fenetre fen){
-		inst = new EcranUtilisateur(u,fen);
-		return inst;
-	}
 
 	public EcranUtilisateur (Utilisateur u,Fenetre fen){
 		
@@ -267,7 +260,7 @@ public class EcranUtilisateur extends JPanel implements ActionListener{
 			}
 			Utilisateur temp = new Utilisateur (u.getIdU(),u.getNom(),u.getPrenom(),u.getNdc());
 			temp.setListeInteret(ci);
-			fen.changerEcran(EcranGestionProfil.getInstance(fen,this,temp));
+			fen.changerEcran(new EcranGestionProfil(fen,this,temp));
 			fen.changerTitre("Réseau social - Mon profil");
 		}
 		if(e.getSource()==amiBoutton){

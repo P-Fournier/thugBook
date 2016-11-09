@@ -52,12 +52,6 @@ public class EcranGestionProfil extends JPanel implements ActionListener{
 	private JButton bouttonAjout;
 	private JButton bouttonRetour ; 
 	private JButton bouttonSauvegarde ; 
-	private static EcranGestionProfil inst;
-	
-	public static EcranGestionProfil getInstance(Fenetre fen , EcranUtilisateur accueil , Utilisateur modif){
-		inst = new EcranGestionProfil(fen,accueil,modif);
-		return inst;
-	}
 	
 	public EcranGestionProfil(Fenetre fen, EcranUtilisateur accueil,Utilisateur modif){
 		this.fen = fen;
@@ -336,8 +330,7 @@ public class EcranGestionProfil extends JPanel implements ActionListener{
 			Service.deleteCI(modif.getListeInteret(),ciASupprimer);
 			modif.setNom(nom.getText());
 			modif.setPrenom(prenom.getText());
-			inst = EcranGestionProfil.getInstance(fen, accueil,modif);
-			fen.changerEcran(inst);
+			refresh();
 		}
 		if (e.getSource()==comboCate){
 			comboCi.removeAllItems();
@@ -362,8 +355,7 @@ public class EcranGestionProfil extends JPanel implements ActionListener{
 			modif.getListeInteret().put(categorie, lstCi);
 			modif.setNom(nom.getText());
 			modif.setPrenom(prenom.getText());
-			inst = EcranGestionProfil.getInstance(fen, accueil,modif);
-			fen.changerEcran(inst);
+			refresh();
 		}
 		if (e.getSource()==bouttonSauvegarde){
 			accueil.getU().setNom(nom.getText());
@@ -417,13 +409,17 @@ public class EcranGestionProfil extends JPanel implements ActionListener{
 						e1.printStackTrace();
 					}
 				case JOptionPane.NO_OPTION:
-					fen.changerEcran(EcranUtilisateur.getInstance(accueil.getU(), fen));
+					fen.changerEcran(new EcranUtilisateur(accueil.getU(), fen));
 					fen.changerTitre("Réseau social - Accueil");
 					break;
 				case JOptionPane.CANCEL_OPTION:
 					break;
 			}
 		}
+	}
+	
+	public void refresh(){
+		fen.changerEcran(new EcranGestionProfil(fen, accueil,modif));
 	}
 
 	

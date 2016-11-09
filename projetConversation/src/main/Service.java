@@ -11,6 +11,7 @@ import IHM.EcranAdministrateur;
 import IHM.EcranUtilisateur;
 import IHM.Fenetre;
 
+import persistence.AmiMapper;
 import persistence.CategorieCIMapper;
 import persistence.DemandeAmiMapper;
 import persistence.NotificationMapper;
@@ -83,6 +84,10 @@ public class Service {
 
 	public static void accepterInvitation(Utilisateur u, Utilisateur dest) throws ClassNotFoundException, SQLException {
 		DemandeAmiMapper.getInstance().accepterDemande(u, dest);
+	}
+
+	public static void supprimerAmitie(Utilisateur u, Utilisateur suppr) throws ClassNotFoundException, SQLException {
+		AmiMapper.getInstance().suppressionAmi(u, suppr);
 	}
 	
 	

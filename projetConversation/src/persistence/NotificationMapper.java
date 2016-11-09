@@ -50,6 +50,7 @@ public class NotificationMapper {
 		ps.setInt(3,u.getIdU());
 		ps.setBoolean(4,false);
 		ps.executeUpdate();
+		id ++;
 	}
 	
 	/**
@@ -61,12 +62,12 @@ public class NotificationMapper {
 	 */
 	public ArrayList<Notification> restituerNotification(Utilisateur u) throws ClassNotFoundException, SQLException{
 		ArrayList<Notification> result = new ArrayList<Notification> ();
-		String req = "SELECT id , message , vue FROM Notification WHERE idU = ? order by vue , dateEnvoie desc";
+		String req = "SELECT id , message , vue , dateEnvoie FROM Notification WHERE idU = ? order by vue , dateEnvoie desc";
 		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
 		ps.setInt(1, u.getIdU());
 		ResultSet rs = ps.executeQuery();
 		while (rs.next()){
-			result.add(new Notification(rs.getString("message"),rs.getBoolean("vue"),rs.getInt("id")));
+			result.add(new Notification(rs.getString("message"),rs.getBoolean("vue"),rs.getInt("id"),rs.getTime("dateEnvoie")));
 		}
 		return result;
 	}
@@ -77,13 +78,14 @@ public class NotificationMapper {
 		ps.setInt(1, u.getIdU());
 		ps.executeUpdate();
 		
-		req = "INSERT INTO Notification VALUES (?,?,?,?)";
+		req = "INSERT INTO Notification VALUES (?,?,?,?,?)";
 		for (Notification n : u.getNotifications()){
 			ps = DBConfig.getInstance().getConnection().prepareStatement(req);
 			ps.setInt(1, n.getId());
 			ps.setString(2, n.getMessage());
 			ps.setInt (3,u.getIdU());
 			ps.setBoolean(4, n.isVue());
+			ps.setTime(5, n.getDateEnvoie());
 			ps.executeUpdate();
 		}
 	}
