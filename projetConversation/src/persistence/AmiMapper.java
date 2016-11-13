@@ -4,18 +4,25 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import domaine.Utilisateur;
+import domaine.messages.Discussion;
+import domaine.notification.NotificationSimple;
 
 public class AmiMapper {
 	
 	private static AmiMapper inst;
 	
-	public static AmiMapper getInstance(){
+	public static AmiMapper getInstance() throws ClassNotFoundException, SQLException{
 		if (inst == null){
 			inst = new AmiMapper();
 		}
 		return inst;
+	}
+	
+	public AmiMapper () throws ClassNotFoundException, SQLException{
+		DiscussionMapper.getInstance();
 	}
 	
 	/**
@@ -26,13 +33,27 @@ public class AmiMapper {
 	 * @throws SQLException
 	 */
 	public void insert(Utilisateur u1 , Utilisateur u2) throws ClassNotFoundException, SQLException{
-		String req = "INSERT INTO Ami VALUES (?,?)";
+		String req = "INSERT INTO Discussion VALUES (?)";
 		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
-		ps.setInt(1, u1.getIdU());
-		ps.setInt(2, u2.getIdU());
+		ps.setInt(1, DiscussionMapper.id);
 		ps.executeUpdate();
-		u1.getAmis().add(u2);
-		u2.getAmis().add(u1);
+		
+		Discussion discute = new Discussion (DiscussionMapper.id);
+		u1.getAmis().put(u2,discute);
+		u2.getAmis().put(u1,discute);
+		
+		req = "INSERT INTO DiscussionUtilisateur VALUES (?,?)";
+		ps = DBConfig.getInstance().getConnection().prepareStatement(req);
+		ps.setInt(1, DiscussionMapper.id);
+		ps.setInt(2,u1.getIdU());
+		ps.executeUpdate();
+		
+		ps = DBConfig.getInstance().getConnection().prepareStatement(req);
+		ps.setInt(1, DiscussionMapper.id);
+		ps.setInt(2,u2.getIdU());
+		ps.executeUpdate();
+		
+		DiscussionMapper.id ++;
 	}
 	
 	/**
@@ -42,21 +63,28 @@ public class AmiMapper {
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-	public ArrayList<Utilisateur> restituerAmis (Utilisateur u) throws ClassNotFoundException, SQLException{
-		ArrayList<Utilisateur> result = new ArrayList<Utilisateur> ();
-		String req = "SELECT idA FROM Ami WHERE idB = ?";
+	public HashMap<Utilisateur,Discussion> restituerAmis (Utilisateur u) throws ClassNotFoundException, SQLException{
+		ArrayList<Integer> idDiscussions = new ArrayList<Integer> ();
+		HashMap<Utilisateur,Discussion> result = new HashMap<Utilisateur,Discussion>();
+		String req = "SELECT idD FROM DiscussionUtilisateur WHERE idU = ?";
 		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
 		ps.setInt(1,u.getIdU());
 		ResultSet rs = ps.executeQuery();
 		while (rs.next()){
-			result.add(UtilisateurMapper.getInstance().findById(rs.getInt("idA")));
+			idDiscussions.add(rs.getInt("idD"));
 		}
-		req = "SELECT idB FROM Ami WHERE idA = ?";
-		ps = DBConfig.getInstance().getConnection().prepareStatement(req);
-		ps.setInt(1, u.getIdU());
-		rs = ps.executeQuery();
-		while (rs.next()){
-			result.add(UtilisateurMapper.getInstance().findById(rs.getInt("idB")));
+		
+		req = "SELECT idU FROM DiscussionUtilisateur WHERE idD = ? and idU != ?";
+		for (Integer i : idDiscussions){
+			ps = DBConfig.getInstance().getConnection().prepareStatement(req);
+			ps.setInt(1, i);
+			ps.setInt(2, u.getIdU());
+			rs = ps.executeQuery();
+			rs.next();
+			Utilisateur ami = UtilisateurMapper.getInstance().findById(rs.getInt("idU"));
+			//Discussion discute = new Discussion();
+			//ArrayList<Message> messages = MessageMapper.findByDiscussion (i);
+			result.put(ami,null);
 		}
 		return result;
 	}
@@ -69,21 +97,25 @@ public class AmiMapper {
 	 * @throws SQLException
 	 */
 	public void suppressionAmi (Utilisateur u , Utilisateur suppr) throws ClassNotFoundException, SQLException{
-		String req = "DELETE FROM Ami WHERE idA = ? and idB = ?";
+		String req = "SELECT d.idD FROM DiscussionUtilisateur d WHERE d.idU = ? and "+
+				"d.idD IN (SELECT e.idD FROM DiscussionUtilisateur e WHERE e.idU = ?)";
 		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
 		ps.setInt(1, u.getIdU());
 		ps.setInt(2, suppr.getIdU());
-		ps.executeUpdate();
+		ResultSet rs = ps.executeQuery();
 		
-		req = "DELETE FROM Ami WHERE idA = ? and idB = ?";
+		rs.next();
+		
+		int idDiscussionASupprimer = rs.getInt("d.idD");
+		
+		req = "DELETE FROM Discussion WHERE id = ?";
 		ps = DBConfig.getInstance().getConnection().prepareStatement(req);
-		ps.setInt(2, u.getIdU());
-		ps.setInt(1, suppr.getIdU());
+		ps.setInt(1, idDiscussionASupprimer);
 		ps.executeUpdate();
 		
 		u.getAmis().remove(suppr);
 		suppr.getAmis().remove(u);
-		
-		NotificationMapper.getInstance().insert(suppr, u.getNdc()+" vous a supprimer de sa liste d'ami");
+		NotificationSimple n = new NotificationSimple (u.getNdc()+" vous a supprimer de sa liste d'ami",false,suppr);
+		NotificationMapper.getInstance().insert(n);
 	}
 }

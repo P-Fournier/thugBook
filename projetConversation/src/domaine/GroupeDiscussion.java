@@ -2,23 +2,25 @@ package domaine;
 
 import java.util.ArrayList;
 
+import domaine.messages.Discussion;
 public class GroupeDiscussion {
 	private String nom;
 	private Utilisateur moderateur;
 	private ArrayList<Utilisateur> listeUser;
 	private int id;
+	private Discussion discussion ;
 	
-	public GroupeDiscussion (int id , String nom , Utilisateur moderateur){
+	public GroupeDiscussion (int id , String nom , Utilisateur moderateur , Discussion discussion){
 		this.id = id;
 		this.nom = nom;
 		this.moderateur = moderateur;
 		moderateur.getGroupeDiscussion().add(this);
+		this.discussion = discussion;
 		this.listeUser = new ArrayList<Utilisateur>();
-		listeUser.add(moderateur);
 	}
 	
 	public void addUser (Utilisateur u){
-		if (!listeUser.contains(u)){
+		if (!listeUser.contains(u)&&u!=moderateur){
 			listeUser.add(u);
 			u.getGroupeDiscussion().add(this);
 		}
@@ -55,6 +57,15 @@ public class GroupeDiscussion {
 	public void setNom(String nom) {
 		this.nom = nom;
 	}
+
+	public Discussion getDiscussion() {
+		return discussion;
+	}
+
+	public void setDiscussion(Discussion discussion) {
+		this.discussion = discussion;
+	}
+	
 	
 
 }

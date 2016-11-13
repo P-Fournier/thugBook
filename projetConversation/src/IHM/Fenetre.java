@@ -36,8 +36,9 @@ public class Fenetre {
 	    fenetre.setBackground(Color.white);
 	    
 	    current = new JScrollPane(new EcranConnexion(this));
-	    
-		fenetre.add(current);
+	    current.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		
+	    fenetre.add(current);
 		
 		fenetre.setVisible(true);
 		
@@ -47,6 +48,7 @@ public class Fenetre {
 		if (pan != null){
 			fenetre.remove(current);
 			current = new JScrollPane(pan);
+			current.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 			fenetre.add(current);
 			fenetre.setVisible(true);
 		}

@@ -7,14 +7,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import domaine.CategorieCI;
-import domaine.Notification;
+import domaine.GroupeDiscussion;
 import domaine.SousCategorieCI;
 import domaine.Utilisateur;
+import domaine.messages.Discussion;
+import domaine.notification.Notification;
 
 public class UtilisateurMapper {
 	
 	private static UtilisateurMapper inst;
 	private static int id;
+	private static HashMap<Integer,Utilisateur> loaded;
 	
 	public static UtilisateurMapper getInstance() throws ClassNotFoundException, SQLException{
 		if (inst == null){
@@ -25,6 +28,7 @@ public class UtilisateurMapper {
 	
 	public UtilisateurMapper() throws ClassNotFoundException, SQLException{
 		id = getCurrentId();
+		loaded = new HashMap<Integer,Utilisateur>();
 	}
 	
 	private int getCurrentId() throws SQLException, ClassNotFoundException{
@@ -45,16 +49,20 @@ public class UtilisateurMapper {
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-	public Utilisateur findById (int id) throws ClassNotFoundException, SQLException{
+	public Utilisateur findById (int idC) throws ClassNotFoundException, SQLException{
+		if (loaded.containsKey(idC)){
+			return loaded.get(idC);
+		}
 		String req = "SELECT nom , prenom , ndc FROM Utilisateur WHERE id = ? ";
 		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
-		ps.setInt(1, id);
+		ps.setInt(1, idC);
 		ResultSet rs = ps.executeQuery();
 		if (rs.next()){
 			String nom = rs.getString("nom");
 			String prenom = rs.getString("prenom");
 			String ndc = rs.getString("ndc");
-			Utilisateur u = new Utilisateur (id,nom,prenom,ndc);
+			Utilisateur u = new Utilisateur (idC,nom,prenom,ndc);
+			loaded.put(idC, u);
 			return u;
 		}
 		return null;
@@ -75,18 +83,23 @@ public class UtilisateurMapper {
 		ps.setString(2, password);
 		ResultSet rs = ps.executeQuery();
 		if (rs.next()){
-			int id = rs.getInt("id");
+			int idC = rs.getInt("id");
 			String nom = rs.getString("nom");
 			String prenom = rs.getString("prenom");
-			Utilisateur u = new Utilisateur (id,nom,prenom,ndc,password);
-			HashMap<CategorieCI,ArrayList<SousCategorieCI>> ci = SousCategorieCIMapper.getInstance().findByUser(id);
+			
+			Utilisateur u = new Utilisateur (idC,nom,prenom,ndc,password);
+			loaded.put(idC, u);
+			
+			HashMap<CategorieCI,ArrayList<SousCategorieCI>> ci = SousCategorieCIMapper.getInstance().findByUser(idC);
 			u.setListeInteret(ci);
 			ArrayList<Utilisateur> demandeRecues = DemandeAmiMapper.getInstance().restituerDemandesRecues(u);
 			u.setDemandeAmisRecues(demandeRecues);
 			ArrayList<Utilisateur> demandeSoumises = DemandeAmiMapper.getInstance().restituerDemandesSoumises(u);
 			u.setDemandesAmisSoumises(demandeSoumises);
-			ArrayList<Utilisateur> amis = AmiMapper.getInstance().restituerAmis(u);
+			HashMap<Utilisateur,Discussion> amis = AmiMapper.getInstance().restituerAmis(u);
 			u.setAmis(amis);
+			ArrayList<GroupeDiscussion> groupes = GroupeDiscussionMapper.getInstance().restituerGroupe(u);
+			u.setGroupeDiscussion(groupes);
 			ArrayList<Notification> notif = NotificationMapper.getInstance().restituerNotification(u);
 			u.setNotifications(notif);
 			return u;
@@ -110,6 +123,8 @@ public class UtilisateurMapper {
 		ps.setString(4, u.getPrenom());
 		ps.setString(5, u.getPassword());
 		ps.executeUpdate();
+		u.setIdU(id);
+		loaded.put(id, u);
 		id ++;
 	}
 	
@@ -170,7 +185,14 @@ public class UtilisateurMapper {
 		ResultSet rs = ps.executeQuery();
 		ArrayList<Utilisateur> result = new ArrayList<Utilisateur>();
 		while (rs.next()){
-			result.add(new Utilisateur(rs.getInt("id"),nom,prenom,rs.getString("ndc")));
+			int idC = rs.getInt("id");
+			if (loaded.containsKey(idC)){
+				result.add(loaded.get(idC));
+			}else{
+				Utilisateur u = new Utilisateur(idC,nom,prenom,rs.getString("ndc"));
+				result.add(u);
+				loaded.put(idC, u);
+			}
 		}
 		return result;
 	}

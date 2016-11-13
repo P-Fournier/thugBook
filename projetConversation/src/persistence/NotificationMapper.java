@@ -1,14 +1,21 @@
 package persistence;
 
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Time;
 import java.util.ArrayList;
 
-import domaine.Notification;
 import domaine.Utilisateur;
+import domaine.messages.Discussion;
+import domaine.notification.Notification;
+import domaine.notification.NotificationDemandeAmi;
+import domaine.notification.NotificationDiscussion;
+import domaine.notification.NotificationSimple;
+import domaine.notification.VisiteurNotification;
 
-public class NotificationMapper {
+public class NotificationMapper extends VisiteurNotification{
 	
 	public static NotificationMapper inst;
 	public static int id;
@@ -42,14 +49,17 @@ public class NotificationMapper {
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-	public void insert (Utilisateur u , String msg) throws ClassNotFoundException, SQLException{
+	public void insert (Notification n) throws ClassNotFoundException, SQLException{
 		String req = "INSERT INTO Notification VALUES (?,?,?,?,now())";
 		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
 		ps.setInt(1,id);
-		ps.setString(2, msg);
-		ps.setInt(3,u.getIdU());
+		ps.setString(2, n.getMessage());
+		ps.setInt(3,n.getDestinataire().getIdU());
 		ps.setBoolean(4,false);
 		ps.executeUpdate();
+		
+		visiter(n);
+		
 		id ++;
 	}
 	
@@ -67,9 +77,41 @@ public class NotificationMapper {
 		ps.setInt(1, u.getIdU());
 		ResultSet rs = ps.executeQuery();
 		while (rs.next()){
-			result.add(new Notification(rs.getString("message"),rs.getBoolean("vue"),rs.getInt("id"),rs.getTime("dateEnvoie")));
-		}
+			int idN = rs.getInt("id");
+			String message = rs.getString("message");
+			boolean vue = rs.getBoolean("vue");
+			String dateEnvoie = rs.getString("dateEnvoie");
+			Discussion discussion = NotificationMapper.getInstance().findDiscussionNotifiée(idN);
+			if (discussion != null){
+				result.add(new NotificationDiscussion(message,vue,idN,dateEnvoie,u,discussion));
+			}else{
+				Utilisateur demandeur = NotificationMapper.getInstance().findDemandeur(idN);
+				if (demandeur != null){
+					result.add(new NotificationDemandeAmi(message,vue,idN,dateEnvoie,u,demandeur));
+				}else{
+					result.add(new NotificationSimple(message,vue,idN,dateEnvoie,u));
+				}
+			}
+			}
 		return result;
+	}
+
+	private Utilisateur findDemandeur(int idN) throws ClassNotFoundException, SQLException {
+		String req = "SELECT idD FROM NotificationDemandeAmi WHERE id = ?";
+		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
+		ps.setInt(1, idN);
+		ResultSet rs = ps.executeQuery();
+		if (rs.next()){
+			int idD = rs.getInt("idD");
+			return UtilisateurMapper.getInstance().findById(idD);
+		}else{
+			return null;
+		}
+	}
+
+	private Discussion findDiscussionNotifiée(int idN) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	public void update(Utilisateur u) throws ClassNotFoundException, SQLException {
@@ -85,9 +127,32 @@ public class NotificationMapper {
 			ps.setString(2, n.getMessage());
 			ps.setInt (3,u.getIdU());
 			ps.setBoolean(4, n.isVue());
-			ps.setTime(5, n.getDateEnvoie());
+			ps.setString(5, n.getDateEnvoie());
 			ps.executeUpdate();
 		}
+	}
+	
+	@Override
+	public void visiter(NotificationSimple n) {
+		// rien de plus à faire pour la notification simple
+	}
+	
+	@Override
+	public void visiter(NotificationDiscussion n) throws ClassNotFoundException, SQLException {
+		String req = "INSERT INTO NotificationDiscussion VALUES (?,?)";
+		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
+		ps.setInt(1, id);
+		ps.setInt(2, n.getDiscussion().getId());
+		ps.executeUpdate();
+	}
+
+	@Override
+	public void visiter(NotificationDemandeAmi n) throws ClassNotFoundException, SQLException {
+		String req = "INSERT INTO NotificationDemandeAmi VALUES (?,?)";
+		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
+		ps.setInt(1, id);
+		ps.setInt(2, n.getDemandeur().getIdU());
+		ps.executeUpdate();
 	}
 	
 }

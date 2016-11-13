@@ -38,6 +38,7 @@ public class EcranConnexion extends JPanel implements ActionListener{
 	public EcranConnexion (Fenetre fen){
 		this.fen = fen;
 		this.setLayout(null);
+		fen.changerTitre("Réseau social - Connexion");
 		user = new JTextField();
 		password = new JPasswordField();
 		messageErreur = new JLabel();

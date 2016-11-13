@@ -3,7 +3,7 @@ package IHM;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-import domaine.Notification;
+import domaine.notification.Notification;
 
 public class NotificationListener implements MouseListener {
 	
@@ -19,7 +19,7 @@ public class NotificationListener implements MouseListener {
 	
 	public void mouseClicked(MouseEvent arg0) {
 		notif.setVue(true);
-		fen.changerEcran(new EcranNotification(fen,accueil));
+		accueil.refresh();
 		
 	}
 

@@ -27,69 +27,55 @@ CREATE Table Message (
 	id int(6) primary key,
     idExp int(6),
     contenu text,
-    CONSTRAINT c3 FOREIGN KEY (idExp) REFERENCES Utilisateur(id) ON DELETE CASCADE
+    dateEnvoie datetime,
+    idDiscussion int(6),
+    CONSTRAINT c3 FOREIGN KEY (idExp) REFERENCES Utilisateur(id) ON DELETE CASCADE,
+    CONSTRAINT c17 FOREIGN KEY (idDiscussion) REFERENCES Discussion(id) ON DELETE CASCADE
 );
 
-CREATE Table MessageUtilisateur (
+CREATE Table DelaiExpiration (
 	idM int(6) primary key,
-    idDest int(6),
-    CONSTRAINT c17 FOREIGN KEY (idM) REFERENCES Message(id) ON DELETE CASCADE,
-    CONSTRAINT c18 foreign key (idDest) REFERENCES Utilisateur(id) ON DELETE CASCADE
+	dateExpiration datetime,
+	CONSTRAINT c30 FOREIGN KEY (idM) REFERENCES Message(id) ON DELETE CASCADE
 );
 
-CREATE Table MessageGroupe (
+CREATE Table Prioritaire (
 	idM int(6) primary key,
-    idG int(6),
-    CONSTRAINT c19 FOREIGN KEY (idM) REFERENCES Message(id) ON DELETE CASCADE,
-    CONSTRAINT c20 foreign key (idG) REFERENCES Groupe(id) ON DELETE CASCADE
+	CONSTRAINT c31 FOREIGN KEY (idM) REFERENCES Message(id) ON DELETE CASCADE
 );
 
-CREATE TABLE MessagePriorite (
-    idM int(6) primary key,
-    CONSTRAINT C21 FOREIGN KEY (idM) REFERENCES Message(id) ON DELETE CASCADE
-);
-
-CREATE TABLE MessageAccuse (
-    idM int(6) primary key,
-    CONSTRAINT C22 FOREIGN KEY (idM) REFERENCES Message(id) ON DELETE CASCADE
-);
-
-CREATE TABLE MessageDate (
-    idM int(6) primary key,
-    dateLivraison Date,
-    CONSTRAINT c23 FOREIGN KEY (idM) REFERENCES Message(id) ON DELETE CASCADE
-);
-
-CREATE TABLE MessageChiffre (
+CREATE Table Chiffrement (
 	idM int(6) primary key,
-    CONSTRAINT c24 FOREIGN KEY (idM) REFERENCES Message(id) ON DELETE CASCADE
+	CONSTRAINT c32 FOREIGN KEY (idM) REFERENCES Message(id) ON DELETE CASCADE
 );
 
-CREATE TABLE MessageVu (
-	
+CREATE Table AccuseDeReception (
+	idM int(6),
+	idU int(6),
+	vu boolean,
+	primary key (idM,idU),
+	CONSTRAINT c33 FOREIGN KEY (idM) REFERENCES Message(id) ON DELETE CASCADE,
+	CONSTRAINT c34 FOREIGN KEY (idU) REFERENCES Utilisateur(id) ON DELETE CASCADE
 );
 
-CREATE Table Ami(
-	idA int(6),
-    idB int(6),
-    Primary key (idA,idB),
-    CONSTRAINT c5 FOREIGN KEY (idA) REFERENCES Utilisateur(id) ON DELETE CASCADE,
-    CONSTRAINT c6 FOREIGN KEY (idB) REFERENCES Utilisateur(id) ON DELETE CASCADE
+CREATE Table Discussion (
+	id int(6) primary key
 );
 
-CREATE Table ParamMessage(
-	idM int(6) primary key,
-    accuse boolean,
-    dateMax date,
-    priorite boolean,
-    chiffre boolean,
-    CONSTRAINT c7 FOREIGN KEY (idM) REFERENCES Message(id) ON DELETE CASCADE
+
+CREATE Table DiscussionUtilisateur (
+	idD int(6) ,
+	idU int(6),
+    primary key(idD,idU),
+    constraint c20 foreign key(idD) REFERENCES Discussion(id) ON DELETE CASCADE,
+    constraint c21 foreign key(idU) references Utilisateur(id) on delete cascade
 );
 
-Create Table Groupe (
-	id int(6) primary key,
+Create Table DiscussionGroupe (
+	idD int(6) primary key,
     idM int(6),
     nom varchar(30) unique,
+    constraint c18 foreign key(idD) REFERENCES Discussion(id) ON DELETE CASCADE,
     CONSTRAINT c8 FOREIGN KEY (idM) REFERENCES Utilisateur(id) ON DELETE CASCADE
 );
 
@@ -98,7 +84,7 @@ Create Table AssociationGroupe (
     idU int(6),
     primary key (idG,idU),
     CONSTRAINT c9 FOREIGN KEY (idU) REFERENCES Utilisateur(id) ON DELETE CASCADE,
-    CONSTRAINT c15 FOREIGN KEY (idG) REFERENCES Groupe(id) ON DELETE CASCADE
+    CONSTRAINT c15 FOREIGN KEY (idG) REFERENCES DiscussionGroupe(id) ON DELETE CASCADE
 );
 
 
@@ -125,4 +111,20 @@ CREATE TABLE Notification (
 	vue boolean,
 	dateEnvoie Time,
 	CONSTRAINT c16 FOREIGN KEY (idU) REFERENCES Utilisateur(id) ON DELETE CASCADE
+);
+
+CREATE TABLE NotificationDiscussion (
+	id int(6),
+	idD int(6),
+    primary key (id),
+	CONSTRAINT c22 FOREIGN KEY (id) REFERENCES Notification(id) ON DELETE CASCADE,
+    CONSTRAINT c23 FOREIGN KEY (idD) REFERENCES Discussion(id) ON DELETE CASCADE
+);
+
+CREATE TABLE NotificationDemandeAmi (
+	id int(6),
+	idD int(6),
+    primary key (id),
+	CONSTRAINT c24 FOREIGN KEY (id) REFERENCES Notification(id) ON DELETE CASCADE,
+    CONSTRAINT c25 FOREIGN KEY (idD) REFERENCES Utilisateur(id) ON DELETE CASCADE
 );

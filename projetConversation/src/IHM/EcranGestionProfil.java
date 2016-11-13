@@ -55,6 +55,7 @@ public class EcranGestionProfil extends JPanel implements ActionListener{
 	
 	public EcranGestionProfil(Fenetre fen, EcranUtilisateur accueil,Utilisateur modif){
 		this.fen = fen;
+		fen.changerTitre("Réseau social - Mon profil");
 		this.accueil=accueil;
 		this.maxWidth = this.getWidth();
 		this.maxHeight = 700;
@@ -409,8 +410,7 @@ public class EcranGestionProfil extends JPanel implements ActionListener{
 						e1.printStackTrace();
 					}
 				case JOptionPane.NO_OPTION:
-					fen.changerEcran(new EcranUtilisateur(accueil.getU(), fen));
-					fen.changerTitre("Réseau social - Accueil");
+					accueil.refresh();
 					break;
 				case JOptionPane.CANCEL_OPTION:
 					break;

@@ -3,6 +3,9 @@ package domaine;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import domaine.messages.Discussion;
+import domaine.notification.Notification;
+
 
 public class Utilisateur {
 	private int idU;
@@ -11,11 +14,12 @@ public class Utilisateur {
 	private String ndc;
 	private String password;
 	private HashMap<CategorieCI,ArrayList<SousCategorieCI>> listeInteret;
-	private ArrayList<Utilisateur> amis;
+	private HashMap<Utilisateur,Discussion> amis;
 	private ArrayList<Utilisateur> demandeAmisRecues;
 	private ArrayList<Utilisateur> demandesAmisSoumises;
 	private ArrayList<GroupeDiscussion> groupeDiscussion;
 	private ArrayList<Notification> notifications;
+	private ArrayList<Discussion> discussions;
 
 
 	public Utilisateur(int id, String nom, String prenom, String ndc,
@@ -26,12 +30,12 @@ public class Utilisateur {
 		this.ndc = ndc;
 		this.password = password;
 		this.listeInteret = new HashMap<CategorieCI,ArrayList<SousCategorieCI>> ();
-		this.amis = new ArrayList<Utilisateur>();
+		this.amis = new HashMap<Utilisateur,Discussion>();
 		this.demandeAmisRecues = new ArrayList<Utilisateur>();
 		this.demandesAmisSoumises = new ArrayList<Utilisateur>();
 		this.groupeDiscussion = new ArrayList<GroupeDiscussion>();
 		this.notifications = new ArrayList<Notification>();
-		 
+		this.discussions = new ArrayList<Discussion>(); 
 	}
 
 	public Utilisateur(int id, String nom, String prenom, String ndc) {
@@ -40,11 +44,12 @@ public class Utilisateur {
 		this.prenom = prenom;
 		this.ndc = ndc;
 		this.listeInteret = new HashMap<CategorieCI,ArrayList<SousCategorieCI>> ();
-		this.amis = new ArrayList<Utilisateur>();
+		this.amis = new HashMap<Utilisateur,Discussion>();
 		this.demandeAmisRecues = new ArrayList<Utilisateur>();
 		this.demandesAmisSoumises = new ArrayList<Utilisateur>();
 		this.groupeDiscussion = new ArrayList<GroupeDiscussion>();
 		this.notifications = new ArrayList<Notification>();
+		this.discussions = new ArrayList<Discussion>(); 
 	}
 
 	public HashMap<CategorieCI,ArrayList<SousCategorieCI>> getListeInteret() {
@@ -79,11 +84,11 @@ public class Utilisateur {
 		this.demandesAmisSoumises = demandesAmisSoumises;
 	}
 
-	public ArrayList<Utilisateur> getAmis() {
+	public HashMap<Utilisateur,Discussion> getAmis() {
 		return amis;
 	}
 
-	public void setAmis(ArrayList<Utilisateur> amis) {
+	public void setAmis(HashMap<Utilisateur,Discussion> amis) {
 		this.amis = amis;
 	}
 
@@ -135,6 +140,14 @@ public class Utilisateur {
 		this.notifications = notifications;
 	}
 	
+	public ArrayList<Discussion> getDiscussions() {
+		return discussions;
+	}
+
+	public void setDiscussions(ArrayList<Discussion> discussions) {
+		this.discussions = discussions;
+	}
+
 	public int nbNotifNonVues (){
 		int result = 0;
 		for (Notification n : notifications){
@@ -143,6 +156,10 @@ public class Utilisateur {
 			}
 		}
 		return result;
+	}
+	
+	public String toString (){
+		return this.ndc;
 	}
 	
 }

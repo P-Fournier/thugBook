@@ -1,6 +1,7 @@
 package IHM;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Scrollbar;
 import java.awt.event.ActionEvent;
@@ -10,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -21,13 +23,19 @@ import javax.swing.border.LineBorder;
 import main.Service;
 
 import domaine.Utilisateur;
+import domaine.critere.Critere;
+import domaine.critere.CritereSimple;
 
 public class EcranAmi extends JPanel implements ActionListener{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4630560523226763002L;
 	private Fenetre fen;
 	private EcranUtilisateur accueil;
-	private int MaxHeight;
-	private int MaxWidth;
+	private int maxHeight;
+	private int maxWidth;
 	private JButton retour;
 	private JTextField nom;
 	private JTextField prenom;
@@ -36,11 +44,19 @@ public class EcranAmi extends JPanel implements ActionListener{
 	private HashMap<JButton,Utilisateur> refusInvitation;
 	private HashMap<JButton,Utilisateur> accepteInvitation;
 	private HashMap<JButton,Utilisateur> suppressionAmi;
+	private HashMap<JComboBox,JComboBox> choixTypeCritere;
+	private HashMap<JComboBox,CritereSimple> choixCritereSimple;
+	//private HashMap<JButton,CritereOu> 
+	private Critere critereDeRecherche ;
+	
 	
 	public EcranAmi (Fenetre fen,EcranUtilisateur ecran,HashMap<JButton,Utilisateur> resultRechercheParNom) {
 		
 		this.fen = fen;
+		fen.changerTitre("Réseau social - Mes amis");
 		this.accueil = ecran;
+		this.maxWidth = this.getWidth();
+		this.maxHeight = this.getHeight();
 		this.resultRechercheParNom = resultRechercheParNom;
 		this.accepteInvitation = new HashMap<JButton,Utilisateur>();
 		this.refusInvitation = new HashMap<JButton,Utilisateur>();
@@ -113,7 +129,9 @@ public class EcranAmi extends JPanel implements ActionListener{
 			y += 60;
 		}
 		
-		// carré ajout critère
+		// carré recherche ci
+		
+		
 		
 		// carré gestion demande d'amis
 		
@@ -127,7 +145,7 @@ public class EcranAmi extends JPanel implements ActionListener{
 		y = 90;
 		
 		if (ecran.getU().getDemandeAmisRecues().isEmpty()){
-			JLabel noDemande = new JLabel ("Aucune demande d'ami recue");
+			JLabel noDemande = new JLabel ("Aucune demande d'ami reçue");
 			noDemande.setForeground(Color.white);
 			noDemande.setBounds(560,y,400,30);
 			this.add(noDemande);
@@ -180,7 +198,7 @@ public class EcranAmi extends JPanel implements ActionListener{
 			noAmis.setBounds(560,y,400,30);
 			this.add(noAmis);
 		}else{
-			for (Utilisateur u : ecran.getU().getAmis()){
+			for (Utilisateur u : ecran.getU().getAmis().keySet()){
 				y+= 60;
 				JLabel showAmi = new JLabel (u.getNdc());
 				showAmi.setForeground(Fenetre.BLEU_CIEL);
@@ -209,8 +227,10 @@ public class EcranAmi extends JPanel implements ActionListener{
 		
 		// carré ajout ami par nom prenom
 		
+		int hauteurRechercheParNom = 190+(60*resultRechercheParNom.size());
+		
 		g.setColor(Fenetre.BLEU_CIEL);
-		g.fillRoundRect(40, 140, 450, 190+(60*resultRechercheParNom.size()),50,50);
+		g.fillRoundRect(40, 140, 450,hauteurRechercheParNom ,50,50);
 				
 		g.setColor(Color.white);
 		g.fillRoundRect(200,120,250,40,50,50);
@@ -224,6 +244,14 @@ public class EcranAmi extends JPanel implements ActionListener{
 		}
 		
 		// carré ajout ami par critère
+		
+		g.setColor(Fenetre.BLEU_CIEL);
+		g.fillRoundRect(40, 190+hauteurRechercheParNom, 450, 300, 50, 50);
+		
+		g.setColor(Color.white);
+		g.fillRoundRect(200,170+hauteurRechercheParNom,250,40,50,50);
+		g.setColor(Fenetre.BLEU_CIEL);
+		g.drawRoundRect(200,170+hauteurRechercheParNom,250,40,50,50);
 		
 		//carré gestion demande ami
 		int hauteurDemande ;
@@ -269,9 +297,11 @@ public class EcranAmi extends JPanel implements ActionListener{
 			g.fillRoundRect(530, hauteurDemande+120+(i*60), 400, 50 , 25, 25);
 		}
 		
-		if (this.MaxHeight<hauteurDemande+120+(accueil.getU().getAmis().size()*60)){
-			this.MaxHeight=hauteurDemande+120+(accueil.getU().getAmis().size()*60);
+		if (this.maxHeight<hauteurDemande+120+(accueil.getU().getAmis().size()*60)){
+			this.maxHeight=hauteurDemande+120+(accueil.getU().getAmis().size()*60);
 		}
+		
+		this.setPreferredSize(new Dimension(maxWidth,maxHeight));
 	}
 
 	public void actionPerformed(ActionEvent e) {
@@ -279,7 +309,7 @@ public class EcranAmi extends JPanel implements ActionListener{
 			try {
 				ArrayList<Utilisateur> users = Service.rechercherUtilisateurParNom(nom.getText(),prenom.getText());
 				users.remove(accueil.getU());
-				users.removeAll(accueil.getU().getAmis());
+				users.removeAll(accueil.getU().getAmis().keySet());
 				users.removeAll(accueil.getU().getDemandeAmisRecues());
 				users.removeAll(accueil.getU().getDemandesAmisSoumises());
 				resultRechercheParNom = new HashMap<JButton,Utilisateur>();
@@ -340,7 +370,7 @@ public class EcranAmi extends JPanel implements ActionListener{
 			}
 		}
 		if (e.getSource() == retour){
-			fen.changerEcran(new EcranUtilisateur(accueil.getU(), fen));
+			accueil.refresh();
 			fen.changerTitre("Réseau social - Accueil");
 		}
 		if (suppressionAmi.containsKey(e.getSource())){

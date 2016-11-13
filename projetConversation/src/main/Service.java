@@ -4,7 +4,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import IHM.EcranAdministrateur;
@@ -14,9 +13,12 @@ import IHM.Fenetre;
 import persistence.AmiMapper;
 import persistence.CategorieCIMapper;
 import persistence.DemandeAmiMapper;
+import persistence.DiscussionMapper;
+import persistence.GroupeDiscussionMapper;
 import persistence.NotificationMapper;
 import persistence.UtilisateurMapper;
 import domaine.CategorieCI;
+import domaine.GroupeDiscussion;
 import domaine.SousCategorieCI;
 import domaine.Utilisateur;
 
@@ -88,6 +90,30 @@ public class Service {
 
 	public static void supprimerAmitie(Utilisateur u, Utilisateur suppr) throws ClassNotFoundException, SQLException {
 		AmiMapper.getInstance().suppressionAmi(u, suppr);
+	}
+
+	public static void supprimerDuGroupe(Utilisateur u, GroupeDiscussion grp) throws ClassNotFoundException, SQLException {
+		GroupeDiscussionMapper.getInstance().supprimerUtilisateur(u,grp);
+	}
+
+	public static void ajouterAuGroupe(Utilisateur u, GroupeDiscussion grp) throws ClassNotFoundException, SQLException {
+		GroupeDiscussionMapper.getInstance().ajouterAuGroupe(u,grp);
+	}
+
+	public static void changerModerateur(Utilisateur u, GroupeDiscussion grp) throws ClassNotFoundException, SQLException {
+		GroupeDiscussionMapper.getInstance().changerModerateur(u,grp);
+	}
+
+	public static void supprimerGroupe(GroupeDiscussion grp) throws ClassNotFoundException, SQLException {
+		DiscussionMapper.supprimer(grp.getId());
+	}
+
+	public static void creerGroupe(String nomDuGroupe, Utilisateur moderateur) throws ClassNotFoundException, SQLException {
+		GroupeDiscussionMapper.getInstance().creerGroupe(nomDuGroupe,moderateur);
+	}
+
+	public static boolean existenceNomDeGroupe(String nom) throws ClassNotFoundException, SQLException {
+		return GroupeDiscussionMapper.getInstance().existenceNomDeGroupe(nom);
 	}
 	
 	

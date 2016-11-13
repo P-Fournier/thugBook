@@ -26,9 +26,9 @@ public class EcranUtilisateur extends JPanel implements ActionListener{
 	 */
 	private static final long serialVersionUID = -8523863168389588727L;
 	
-	private Utilisateur u;
+	protected Utilisateur u;
 	
-	private int maxHeight;
+	protected int maxHeight;
 	
 	private int maxWidth;
 	
@@ -44,13 +44,15 @@ public class EcranUtilisateur extends JPanel implements ActionListener{
 	
 	private JButton deconnexionBoutton;
 	
-	private Fenetre fen;
+	protected Fenetre fen;
 
 	public EcranUtilisateur (Utilisateur u,Fenetre fen){
 		
 		// paramètre généraux
 		this.u = u ;
 		this.fen = fen;
+		
+		fen.changerTitre("Réseau social - Accueil");
 		
 		this.maxWidth = this.getWidth();
 		this.maxHeight = this.getHeight();
@@ -130,7 +132,7 @@ public class EcranUtilisateur extends JPanel implements ActionListener{
 		
 		this.add(univers);
 		
-		messageBoutton = new JButton ("Mes messages (99)");
+		messageBoutton = new JButton ("Mes discussions ("+u.getDiscussions().size()+")");
 		messageBoutton.setBounds(60, 270, 170, 30);
 		messageBoutton.setBackground(Fenetre.BLEU_CIEL);
 		messageBoutton.setForeground(Color.white);
@@ -247,7 +249,6 @@ public class EcranUtilisateur extends JPanel implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource()==deconnexionBoutton){
 			fen.changerEcran(new EcranConnexion(fen));
-			fen.changerTitre("Réseau social - Connexion");
 		}
 		if(e.getSource()==profilBoutton){
 			HashMap<CategorieCI,ArrayList<SousCategorieCI>> ci = new HashMap<CategorieCI,ArrayList<SousCategorieCI>>();
@@ -261,15 +262,12 @@ public class EcranUtilisateur extends JPanel implements ActionListener{
 			Utilisateur temp = new Utilisateur (u.getIdU(),u.getNom(),u.getPrenom(),u.getNdc());
 			temp.setListeInteret(ci);
 			fen.changerEcran(new EcranGestionProfil(fen,this,temp));
-			fen.changerTitre("Réseau social - Mon profil");
 		}
 		if(e.getSource()==amiBoutton){
 			fen.changerEcran(new EcranAmi(fen,this,new HashMap<JButton,Utilisateur>()));
-			fen.changerTitre("Réseau social - Mes amis");
 		}
 		if(e.getSource()==notificationBoutton){
 			fen.changerEcran(new EcranNotification(fen,this));
-			fen.changerTitre("Réseau social - Mes notifications");
 		}
 		if(e.getSource()==groupeBoutton){
 			fen.changerEcran(new EcranGroupe(fen,this));
@@ -290,7 +288,9 @@ public class EcranUtilisateur extends JPanel implements ActionListener{
 		this.u = u;
 	}
 	
-	
+	public void refresh (){
+		fen.changerEcran(new EcranUtilisateur(u,fen));
+	}
 	
 
 }

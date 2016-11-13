@@ -20,7 +20,9 @@ import javax.swing.border.LineBorder;
 
 import main.Service;
 
-import domaine.Notification;
+import domaine.notification.Notification;
+import domaine.notification.NotificationDemandeAmi;
+import domaine.notification.NotificationDiscussion;
 
 public class EcranNotification extends JPanel implements ActionListener{
 	/**
@@ -34,6 +36,9 @@ public class EcranNotification extends JPanel implements ActionListener{
 	private JButton retour;
 	private int maxHeight;
 	private int maxWidth;
+	private HashMap<JButton,NotificationDemandeAmi> accepterDemande;
+	private HashMap<JButton,NotificationDemandeAmi> refuserDemande;
+	private HashMap<JButton,NotificationDiscussion> redirectionDiscussion;
 	
 	public EcranNotification (Fenetre fen , EcranUtilisateur accueil){
 		
@@ -44,9 +49,27 @@ public class EcranNotification extends JPanel implements ActionListener{
 		this.suppr= new HashMap<JButton,Notification>();
 		this.maxHeight = this.getHeight();
 		this.maxWidth = this.getWidth();
+		this.accepterDemande = new HashMap<JButton,NotificationDemandeAmi>();
+		this.refuserDemande = new HashMap<JButton,NotificationDemandeAmi>();
+		this.redirectionDiscussion = new HashMap<JButton,NotificationDiscussion>();
+		
+		fen.changerTitre("Réseau social - Mes notifications");
 		
 		int y = 100;
+		
+		DecorateurNotification decorator = new DecorateurNotification(accepterDemande , refuserDemande, redirectionDiscussion,y,this);
+		
 		for (final Notification notif : accueil.getU().getNotifications()){
+			System.out.println(notif.getDateEnvoie());
+			try {
+				decorator.visiter(notif);
+			} catch (ClassNotFoundException e) {
+				JOptionPane.showMessageDialog(this, e.getMessage());
+				e.printStackTrace();
+			} catch (SQLException e) {
+				JOptionPane.showMessageDialog(this, e.getMessage());
+				e.printStackTrace();
+			}
 			JLabel labelNotif = new JLabel (notif.getMessage());
 			if (notif.isVue()){
 				labelNotif.setForeground(Fenetre.BLEU_CIEL);
@@ -122,8 +145,35 @@ public class EcranNotification extends JPanel implements ActionListener{
 				JOptionPane.showMessageDialog(this, e1.getMessage());
 				e1.printStackTrace();
 			}
-			fen.changerEcran(new EcranUtilisateur(accueil.getU(), fen));
-			fen.changerTitre("Réseau social - Accueil");
+			accueil.refresh();
+		}
+		if (accepterDemande.containsKey(e.getSource())){
+			NotificationDemandeAmi n = accepterDemande.get(e.getSource());
+			try {
+				Service.accepterInvitation(accueil.getU(), n.getDemandeur());
+				n.setVue(true);
+				refresh();
+			} catch (ClassNotFoundException e1) {
+				JOptionPane.showMessageDialog(this, e1.getMessage());
+				e1.printStackTrace();
+			} catch (SQLException e1) {
+				JOptionPane.showMessageDialog(this, e1.getMessage());
+				e1.printStackTrace();
+			}
+		}
+		if(refuserDemande.containsKey(e.getSource())){
+			NotificationDemandeAmi n = accepterDemande.get(e.getSource());
+			try {
+				Service.refuserInvitation(accueil.getU(), n.getDemandeur());
+				n.setVue(true);
+				refresh();
+			} catch (ClassNotFoundException e1) {
+				JOptionPane.showMessageDialog(this, e1.getMessage());
+				e1.printStackTrace();
+			} catch (SQLException e1) {
+				JOptionPane.showMessageDialog(this, e1.getMessage());
+				e1.printStackTrace();
+			}
 		}
 	}
 	
