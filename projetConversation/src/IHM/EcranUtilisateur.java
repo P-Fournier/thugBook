@@ -271,11 +271,9 @@ public class EcranUtilisateur extends JPanel implements ActionListener{
 		}
 		if(e.getSource()==groupeBoutton){
 			fen.changerEcran(new EcranGroupe(fen,this));
-			fen.changerTitre("Réseau social - Mes groupes");
 		}
 		if(e.getSource()==messageBoutton){
-			fen.changerEcran(new EcranMessage(fen,this));
-			fen.changerTitre("Réseau social - Mes messages");
+			fen.changerEcran(new EcranListeDiscussions(fen,this));
 		}
 		
 	}

@@ -60,7 +60,6 @@ public class EcranNotification extends JPanel implements ActionListener{
 		DecorateurNotification decorator = new DecorateurNotification(accepterDemande , refuserDemande, redirectionDiscussion,y,this);
 		
 		for (final Notification notif : accueil.getU().getNotifications()){
-			System.out.println(notif.getDateEnvoie());
 			try {
 				decorator.visiter(notif);
 			} catch (ClassNotFoundException e) {

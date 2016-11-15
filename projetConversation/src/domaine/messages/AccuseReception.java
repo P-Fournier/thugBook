@@ -7,7 +7,9 @@ import javax.swing.JLabel;
 import domaine.Utilisateur;
 
 public class AccuseReception extends Option {
+	
 	private HashMap<Utilisateur,Boolean> destinataire;
+	
 	@Override
 	public JLabel decorate(JLabel message) {
 		String result = message.getText()+"     Vu par : ";

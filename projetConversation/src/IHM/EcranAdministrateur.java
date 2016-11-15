@@ -3,11 +3,8 @@ package IHM;
 import java.awt.Color;
 import java.awt.Graphics;
 
-import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.border.CompoundBorder;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
+
 
 import domaine.Utilisateur;
 

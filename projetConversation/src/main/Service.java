@@ -24,12 +24,12 @@ import domaine.Utilisateur;
 
 public class Service {
 
-	public static JPanel connexion(String text, String password,Fenetre fen) throws ClassNotFoundException, SQLException , ConnexionException {
-		if (text.equals("") || password.equals("")){
+	public static JPanel connexion(String ndc, String password,Fenetre fen) throws ClassNotFoundException, SQLException , ConnexionException {
+		if (ndc.equals("") || password.equals("")){
 			throw new ConnexionException("Il faut renseigner tout les champs");
 		}
 		
-		Utilisateur u = UtilisateurMapper.getInstance().connection(text, password);
+		Utilisateur u = UtilisateurMapper.getInstance().connection(ndc, password);
 		
 		if (u == null){
 			throw new ConnexionException("Mot de passe ou nom de compte incorrect");

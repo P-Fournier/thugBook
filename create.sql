@@ -51,6 +51,11 @@ CREATE Table Chiffrement (
 
 CREATE Table AccuseDeReception (
 	idM int(6),
+    CONSTRAINT c35 FOREIGN KEY (idM) REFERENCES Message(id) ON DELETE CASCADE
+);
+
+CREATE Table MessageVu (
+	idM int(6),
 	idU int(6),
 	vu boolean,
 	primary key (idM,idU),

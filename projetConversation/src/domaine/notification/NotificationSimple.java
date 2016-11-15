@@ -1,8 +1,5 @@
 package domaine.notification;
 
-import java.sql.Date;
-import java.sql.Time;
-
 import domaine.Utilisateur;
 
 

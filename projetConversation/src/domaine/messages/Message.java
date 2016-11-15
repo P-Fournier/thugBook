@@ -11,5 +11,6 @@ public abstract class Message {
 	private int id;
 	private String contenu;
 	private Time dateEnvoie;
+	private boolean vue;
 	private ArrayList<Option> options;
 }

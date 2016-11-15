@@ -3,9 +3,6 @@ package persistence;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import domaine.GroupeDiscussion;
-import domaine.Utilisateur;
 import domaine.messages.Discussion;
 
 public class DiscussionMapper {

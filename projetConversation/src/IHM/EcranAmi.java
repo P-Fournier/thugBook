@@ -56,7 +56,7 @@ public class EcranAmi extends JPanel implements ActionListener{
 		fen.changerTitre("Réseau social - Mes amis");
 		this.accueil = ecran;
 		this.maxWidth = this.getWidth();
-		this.maxHeight = this.getHeight();
+		this.maxHeight = 800;
 		this.resultRechercheParNom = resultRechercheParNom;
 		this.accepteInvitation = new HashMap<JButton,Utilisateur>();
 		this.refusInvitation = new HashMap<JButton,Utilisateur>();
@@ -302,6 +302,7 @@ public class EcranAmi extends JPanel implements ActionListener{
 		}
 		
 		this.setPreferredSize(new Dimension(maxWidth,maxHeight));
+	
 	}
 
 	public void actionPerformed(ActionEvent e) {
