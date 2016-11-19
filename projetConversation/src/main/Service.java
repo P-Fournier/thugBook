@@ -122,5 +122,7 @@ public class Service {
 		return SousCategorieCIMapper.getInstance().findByCategorie(selected);
 	}
 	
-	
+	public static ArrayList<Utilisateur> obtenirTousLesUtilisateurs() throws ClassNotFoundException, SQLException{
+		return UtilisateurMapper.getInstance().getAllUtilisateur() ; 
+	}
 }

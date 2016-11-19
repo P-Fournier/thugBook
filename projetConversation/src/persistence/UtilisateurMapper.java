@@ -18,7 +18,6 @@ public class UtilisateurMapper {
 	private static UtilisateurMapper inst;
 	private static int id;
 	private static HashMap<Integer,Utilisateur> loaded;
-	
 	public static UtilisateurMapper getInstance() throws ClassNotFoundException, SQLException{
 		if (inst == null){
 			inst = new UtilisateurMapper();
@@ -40,6 +39,19 @@ public class UtilisateurMapper {
 		}else{
 			return 1;
 		}
+	}
+	
+	public ArrayList<Utilisateur> getAllUtilisateur() throws ClassNotFoundException, SQLException{
+		String req ="SELECT id FROM Utilisateur" ; 
+		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
+		ResultSet rs = ps.executeQuery();
+		ArrayList<Utilisateur> listeUtilisateur = new ArrayList<Utilisateur>();
+		while(rs.next()){
+			int id = rs.getInt("id");
+			listeUtilisateur.add(findById(id));
+		}
+		return listeUtilisateur ;
+		
 	}
 	
 	/**
