@@ -8,7 +8,7 @@ public class Prioritaire extends Option{
 
 	@Override
 	public JLabel decorate(JLabel message) {
-		message.setBackground(Color.RED);
+		message.setForeground(Color.RED);
 		return message;
 	}
 

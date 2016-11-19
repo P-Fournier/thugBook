@@ -229,7 +229,7 @@ public class EcranUtilisateur extends Ecran implements ActionListener{
 			fen.changerEcran(new EcranGroupe(fen,this,null));
 		}
 		if(e.getSource()==messageBoutton){
-			fen.changerEcran(new EcranListeDiscussions(fen,this));
+			fen.changerEcran(new EcranDiscussions(fen,this,null));
 		}
 		
 	}

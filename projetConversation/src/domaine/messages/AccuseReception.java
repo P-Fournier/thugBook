@@ -25,4 +25,5 @@ public class AccuseReception extends Option {
 		message.setText(result);
 		return message;
 	}
+
 }

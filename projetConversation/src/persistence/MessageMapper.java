@@ -43,22 +43,20 @@ public class MessageMapper {
 		}
 	}
 
-	public Discussion findByIdDiscussionUtilisateur(int idD, Utilisateur u) throws ClassNotFoundException, SQLException {
+	public Discussion findByIdDiscussionUtilisateur(int idD) throws ClassNotFoundException, SQLException {
 		ArrayList<Message> lesMessages = new ArrayList<Message>();
 		String req = "SELECT m.id, m.idExp, m.contenu, m.dateEnvoie , v.vu FROM Message m JOIN MessageVu v " +
-				"ON v.idM = m.id WHERE m.idDiscussion = ? AND v.idU = ?";
+				"ON v.idM = m.id WHERE m.idDiscussion = ?";
 		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
 		ps.setInt(1, idD);
-		ps.setInt(2, u.getIdU());
 		ResultSet rs = ps.executeQuery();
 		while (rs.next()){
 			int idM = rs.getInt("m.id");
 			Utilisateur exp = UtilisateurMapper.getInstance().findById(rs.getInt("m.idExp"));
 			String contenu = rs.getString("m.contenu");
-			String dateEnvoie = rs.getString("m.dateEnvoie");
-			Boolean vu = rs.getBoolean("v.vu");
+			String dateEnvoie = rs.getString("m.dateEnvoie").substring(0,19);
 			ArrayList<Option> options = MessageMapper.getInstance().findOptionById(idM);
-			lesMessages.add(new Message(idM,exp,contenu,dateEnvoie,vu,options));
+			lesMessages.add(new Message(idM,exp,contenu,dateEnvoie,options));
 		}
 		Discussion result = new Discussion (idD);
 		result.setMessages(lesMessages);
@@ -67,10 +65,17 @@ public class MessageMapper {
 	
 	public ArrayList<Option> findOptionById(int idM) throws ClassNotFoundException, SQLException{
 		ArrayList<Option> result = new ArrayList<Option> ();
-		String req = "SELECT v.idU , v.vu FROM AccuseDeReception a JOIN MessageVu v on v.idM = a.idM  WHERE v.idM = ?";
+		String req = "SELECT idM FROM Chiffrement WHERE idM = ?";
 		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
-		ps.setInt(1, idM);
+		ps.setInt(1,idM);
 		ResultSet rs = ps.executeQuery();
+		if (rs.next()){
+			result.add(new Chiffrement());
+		}
+		req = "SELECT v.idU , v.vu FROM AccuseDeReception a JOIN MessageVu v on v.idM = a.idM  WHERE v.idM = ?";
+		ps = DBConfig.getInstance().getConnection().prepareStatement(req);
+		ps.setInt(1, idM);
+		rs = ps.executeQuery();
 		HashMap<Utilisateur, Boolean> destinataires = new HashMap<Utilisateur,Boolean>();
 		while (rs.next()){
 			Utilisateur u = UtilisateurMapper.getInstance().findById(rs.getInt("v.idU"));
@@ -79,6 +84,13 @@ public class MessageMapper {
 		if (!destinataires.isEmpty()){
 			result.add(new AccuseReception(destinataires));
 		}
+		req = "SELECT idM FROM Prioritaire WHERE idM = ?";
+		ps = DBConfig.getInstance().getConnection().prepareStatement(req);
+		ps.setInt(1,idM);
+		rs = ps.executeQuery();
+		if (rs.next()){
+			result.add(new Prioritaire());
+		}
 		req = "SELECT dateExpiration FROM DelaiExpiration WHERE idM = ?";
 		ps = DBConfig.getInstance().getConnection().prepareStatement(req);
 		ps.setInt(1,idM);
@@ -86,20 +98,6 @@ public class MessageMapper {
 		if (rs.next()){
 			String dateExpiration = rs.getString("dateExpiration").substring(0, 19);
 			result.add(new DelaiExpiration(dateExpiration));
-		}
-		req = "SELECT idM FROM Chiffrement WHERE idM = ?";
-		ps = DBConfig.getInstance().getConnection().prepareStatement(req);
-		ps.setInt(1,idM);
-		rs = ps.executeQuery();
-		if (rs.next()){
-			result.add(new Chiffrement());
-		}
-		req = "SELECT idM FROM Prioritaire WHERE idM = ?";
-		ps = DBConfig.getInstance().getConnection().prepareStatement(req);
-		ps.setInt(1,idM);
-		rs = ps.executeQuery();
-		if (rs.next()){
-			result.add(new Prioritaire());
 		}
 		return result;
 	}

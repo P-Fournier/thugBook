@@ -9,12 +9,6 @@ import java.util.function.ToLongFunction;
 public class ComparateurMessage implements Comparator<Message>{
 
 	public int compare(Message m1, Message m2) {
-		if (m1.isVu()&&!m2.isVu()){
-			return -1;
-		}else{
-			if (!m1.isVu()&&m2.isVu()){
-				return 1;
-			}else{
 				if (m1.isPrioritaire()&&!m2.isPrioritaire()){
 					return 1;
 				}else{
@@ -24,8 +18,6 @@ public class ComparateurMessage implements Comparator<Message>{
 						return m1.getDateEnvoie().compareTo(m2.getDateEnvoie());
 					}
 				}
-			}
-		}
 	}
 
 	public static <T, U extends Comparable<? super U>> Comparator<T> comparing(

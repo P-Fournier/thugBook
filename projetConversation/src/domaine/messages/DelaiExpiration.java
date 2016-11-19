@@ -18,9 +18,9 @@ public class DelaiExpiration extends Option{
 	public JLabel decorate(JLabel message) {
 		String dateCourante=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.FRANCE).format(new Date());
 		if (dateCourante.compareTo(dateExpiration)>0){
-			return null;
-		}else{
-			return message;
+			message.setText("Délai d'expiration dépassé");
 		}
+		return message;
 	}
+
 }

@@ -3,7 +3,6 @@ package main;
 import java.sql.SQLException;
 
 import persistence.DBConfig;
-import IHM.EcranDiscussion;
 import IHM.Fenetre;
 import java.util.*;
 

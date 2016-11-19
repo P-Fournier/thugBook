@@ -10,22 +10,19 @@ public class Message {
 	private int id;
 	private String contenu;
 	private String dateEnvoie;
-	private boolean vu;
 	private ArrayList<Option> options;
 	
 	public Message (Utilisateur expediteur, String contenu, String dateEnvoie, ArrayList<Option> options){
 		this.expediteur=expediteur;
 		this.contenu=contenu;
-		this.vu = false;
 		this.options = options;
 		this.dateEnvoie = dateEnvoie;
 	}
 	
-	public Message (int id, Utilisateur expediteur, String contenu , String dateEnvoie, boolean vu, ArrayList<Option> options){
+	public Message (int id, Utilisateur expediteur, String contenu , String dateEnvoie,ArrayList<Option> options){
 		this.id = id;
 		this.expediteur=expediteur;
 		this.contenu=contenu;
-		this.vu = vu;
 		this.options = options;
 		this.dateEnvoie = dateEnvoie;
 	}
@@ -62,14 +59,6 @@ public class Message {
 		this.dateEnvoie = dateEnvoie;
 	}
 
-	public boolean isVu() {
-		return vu;
-	}
-
-	public void setVu(boolean vu) {
-		this.vu = vu;
-	}
-
 	public ArrayList<Option> getOptions() {
 		return options;
 	}
@@ -86,6 +75,5 @@ public class Message {
 		}
 		return false;
 	}
-	
 	
 }

@@ -449,7 +449,7 @@ public class EcranGroupe extends Ecran implements ActionListener, ListSelectionL
 			}
 		}
 		if (e.getSource()==discussion){
-			fen.changerEcran(new EcranDiscussion(fen,this,selected.getDiscussion(),accueil.getU()));
+			//fen.changerEcran(new EcranDiscussions(fen,this,selected.getDiscussion(),accueil.getU()));
 		}
 	}
 
