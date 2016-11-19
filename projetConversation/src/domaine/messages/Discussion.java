@@ -25,5 +25,4 @@ public class Discussion {
 		this.messages = messages;
 	}
 	
-	
 }

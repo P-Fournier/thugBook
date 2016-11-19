@@ -13,7 +13,7 @@ public class Utilisateur {
 	private String prenom;
 	private String ndc;
 	private String password;
-	private HashMap<CategorieCI,ArrayList<SousCategorieCI>> listeInteret;
+	private ArrayList<SousCategorieCI> listeInteret;
 	private HashMap<Utilisateur,Discussion> amis;
 	private ArrayList<Utilisateur> demandeAmisRecues;
 	private ArrayList<Utilisateur> demandesAmisSoumises;
@@ -29,7 +29,7 @@ public class Utilisateur {
 		this.prenom = prenom;
 		this.ndc = ndc;
 		this.password = password;
-		this.listeInteret = new HashMap<CategorieCI,ArrayList<SousCategorieCI>> ();
+		this.listeInteret = new ArrayList<SousCategorieCI>();
 		this.amis = new HashMap<Utilisateur,Discussion>();
 		this.demandeAmisRecues = new ArrayList<Utilisateur>();
 		this.demandesAmisSoumises = new ArrayList<Utilisateur>();
@@ -43,7 +43,7 @@ public class Utilisateur {
 		this.nom = nom;
 		this.prenom = prenom;
 		this.ndc = ndc;
-		this.listeInteret = new HashMap<CategorieCI,ArrayList<SousCategorieCI>> ();
+		this.listeInteret = new ArrayList<SousCategorieCI> ();
 		this.amis = new HashMap<Utilisateur,Discussion>();
 		this.demandeAmisRecues = new ArrayList<Utilisateur>();
 		this.demandesAmisSoumises = new ArrayList<Utilisateur>();
@@ -52,11 +52,11 @@ public class Utilisateur {
 		this.discussions = new ArrayList<Discussion>(); 
 	}
 
-	public HashMap<CategorieCI,ArrayList<SousCategorieCI>> getListeInteret() {
+	public ArrayList<SousCategorieCI> getListeInteret() {
 		return listeInteret;
 	}
 
-	public void setListeInteret(HashMap<CategorieCI,ArrayList<SousCategorieCI>> listeInteret) {
+	public void setListeInteret(ArrayList<SousCategorieCI> listeInteret) {
 		this.listeInteret = listeInteret;
 	}
 

@@ -90,7 +90,7 @@ public class UtilisateurMapper {
 			Utilisateur u = new Utilisateur (idC,nom,prenom,ndc,password);
 			loaded.put(idC, u);
 			
-			HashMap<CategorieCI,ArrayList<SousCategorieCI>> ci = SousCategorieCIMapper.getInstance().findByUser(idC);
+			ArrayList<SousCategorieCI> ci = SousCategorieCIMapper.getInstance().findByUser(idC);
 			u.setListeInteret(ci);
 			ArrayList<Utilisateur> demandeRecues = DemandeAmiMapper.getInstance().restituerDemandesRecues(u);
 			u.setDemandeAmisRecues(demandeRecues);
@@ -167,13 +167,11 @@ public class UtilisateurMapper {
 		ps.executeUpdate();
 		
 		req = "INSERT INTO AssociationCI VALUES (?,?)";
-		for (CategorieCI cate : u.getListeInteret().keySet()){
-			for (SousCategorieCI sscate : u.getListeInteret().get(cate)){
-				ps = DBConfig.getInstance().getConnection().prepareStatement(req);
-				ps.setInt(1, u.getIdU());
-				ps.setInt(2, sscate.getIdSousCategorie());
-				ps.executeUpdate();
-			}
+		for (SousCategorieCI sscate : u.getListeInteret()){
+			ps = DBConfig.getInstance().getConnection().prepareStatement(req);
+			ps.setInt(1, u.getIdU());
+			ps.setInt(2, sscate.getIdSousCategorie());
+			ps.executeUpdate();
 		}
 	}
 

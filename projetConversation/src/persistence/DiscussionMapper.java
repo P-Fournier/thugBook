@@ -3,7 +3,6 @@ package persistence;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import domaine.messages.Discussion;
 
 public class DiscussionMapper {
 
@@ -32,11 +31,13 @@ public class DiscussionMapper {
 		}
 	}
 	
-	public Discussion findById (int idC){
-		return null;
-	}
+	/*public Discussion findById (int idC){
+		//String req = "";
+		//PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(arg0);
+		
+	}*/
 
-	public static void supprimer(int idC) throws ClassNotFoundException, SQLException {
+	public void supprimer(int idC) throws ClassNotFoundException, SQLException {
 		String req = "DELETE FROM Discussion WHERE id = ?";
 		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req); 
 		ps.setInt(1, idC);

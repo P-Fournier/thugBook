@@ -16,8 +16,8 @@ public class EcranAdministrateur extends EcranUtilisateur{
 	
 	public EcranAdministrateur(Utilisateur u, Fenetre fen) {
 		super (u,fen);
-		this.maxHeight=700;
-		// carré mon univers
+		
+		// carré administration
 		
 		JLabel administration = new JLabel("Espace administrateur");
 				

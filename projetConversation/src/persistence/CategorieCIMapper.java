@@ -46,9 +46,6 @@ public class CategorieCIMapper {
 		ps.setInt(1,id);
 		ps.setString(2, cate.getNom());
 		ps.executeUpdate();
-		for (SousCategorieCI scci : cate.getListeSousCategorie()){
-			SousCategorieCIMapper.getInstance().insert(cate,scci);
-		}
 		loaded.put(id, cate);
 		id ++;
 	}
@@ -63,7 +60,6 @@ public class CategorieCIMapper {
 		ResultSet rs = ps.executeQuery();
 		if (rs.next()){
 			CategorieCI result = new CategorieCI (idC,rs.getString("nom"));
-			result.setListeSousCategorie(SousCategorieCIMapper.getInstance().findByIdCategorie(idC));
 			loaded.put(idC,result);
 			return result;
 		}
@@ -80,7 +76,6 @@ public class CategorieCIMapper {
 				result.add(loaded.get(rs.getInt("id")));
 			}else{
 				CategorieCI cate = new CategorieCI (rs.getInt("id"),rs.getString("nom"));
-				cate.setListeSousCategorie(SousCategorieCIMapper.getInstance().findByIdCategorie(rs.getInt("id")));
 				loaded.put(rs.getInt("id"), cate);
 				result.add(cate);
 			}

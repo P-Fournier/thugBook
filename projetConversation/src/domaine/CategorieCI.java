@@ -1,13 +1,8 @@
 package domaine;
 
-import java.util.ArrayList;
-
-
-
 public class CategorieCI {
 	private String nom;
 	private int idCat;
-	private ArrayList<SousCategorieCI> listeSousCategorie;
 
 	public CategorieCI (int idCat , String nom){
 		this.idCat = idCat;
@@ -28,15 +23,6 @@ public class CategorieCI {
 
 	public void setIdCat(int idCat) {
 		this.idCat = idCat;
-	}
-
-	public ArrayList<SousCategorieCI> getListeSousCategorie() {
-		return listeSousCategorie;
-	}
-
-	public void setListeSousCategorie(
-			ArrayList<SousCategorieCI> listeSousCategorie) {
-		this.listeSousCategorie = listeSousCategorie;
 	}
 	
 	public String toString (){

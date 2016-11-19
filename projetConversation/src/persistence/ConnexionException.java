@@ -1,4 +1,4 @@
-package main;
+package persistence;
 
 public class ConnexionException extends Exception {
 	

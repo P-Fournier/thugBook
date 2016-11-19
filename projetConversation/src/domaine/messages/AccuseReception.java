@@ -8,13 +8,17 @@ import domaine.Utilisateur;
 
 public class AccuseReception extends Option {
 	
-	private HashMap<Utilisateur,Boolean> destinataire;
+	private HashMap<Utilisateur,Boolean> destinataires;
+	
+	public AccuseReception (HashMap<Utilisateur,Boolean> destinataires){
+		this.destinataires = destinataires;
+	}
 	
 	@Override
 	public JLabel decorate(JLabel message) {
 		String result = message.getText()+"     Vu par : ";
-		for (Utilisateur u : destinataire.keySet()){
-			if (destinataire.get(u)){
+		for (Utilisateur u : destinataires.keySet()){
+			if (destinataires.get(u)){
 				result += u.getNdc()+" ";
 			}
 		}

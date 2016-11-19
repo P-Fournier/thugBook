@@ -82,9 +82,8 @@ public class AmiMapper {
 			rs = ps.executeQuery();
 			rs.next();
 			Utilisateur ami = UtilisateurMapper.getInstance().findById(rs.getInt("idU"));
-			//Discussion discute = new Discussion();
-			//ArrayList<Message> messages = MessageMapper.findByDiscussion (i);
-			result.put(ami,null);
+			Discussion discussion = MessageMapper.getInstance().findByIdDiscussionUtilisateur(i, u);
+			result.put(ami,discussion);
 		}
 		return result;
 	}

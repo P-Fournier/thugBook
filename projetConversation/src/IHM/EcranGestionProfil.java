@@ -1,8 +1,8 @@
 package IHM;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.ScrollPane;
 import java.awt.Scrollbar;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,8 +10,8 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.CompoundBorder;
@@ -29,7 +29,7 @@ import domaine.SousCategorieCI;
 import domaine.Utilisateur;
 
 
-public class EcranGestionProfil extends JPanel implements ActionListener{
+public class EcranGestionProfil extends Ecran implements ActionListener{
 	
 	/**
 	 * 
@@ -41,10 +41,7 @@ public class EcranGestionProfil extends JPanel implements ActionListener{
 	private JTextField prenom;
 	private JPasswordField password;
 	private JPasswordField confirmPassword;
-	private HashMap<CategorieCI,ArrayList<SousCategorieCI>> ciASupprimer ;
 	private Utilisateur modif;
-	private int maxHeight;
-	private int maxWidth;
 	private JComboBox<CategorieCI> comboCate;
 	private JComboBox<SousCategorieCI> comboCi; 
 	private JLabel messageSauvegarde;
@@ -52,14 +49,12 @@ public class EcranGestionProfil extends JPanel implements ActionListener{
 	private JButton bouttonAjout;
 	private JButton bouttonRetour ; 
 	private JButton bouttonSauvegarde ; 
+	private JList<SousCategorieCI> listCI;
 	
 	public EcranGestionProfil(Fenetre fen, EcranUtilisateur accueil,Utilisateur modif){
 		this.fen = fen;
 		fen.changerTitre("Réseau social - Mon profil");
 		this.accueil=accueil;
-		this.maxWidth = this.getWidth();
-		this.maxHeight = 700;
-		this.ciASupprimer = new HashMap<CategorieCI,ArrayList<SousCategorieCI>>();
 		this.modif = modif;
 		
 		this.add(new Scrollbar());
@@ -143,7 +138,7 @@ public class EcranGestionProfil extends JPanel implements ActionListener{
 		comboCate.setSelectedItem(null);
 		comboCate.addActionListener(this);
 		comboCi.setBounds(240, 430, 150, 30);
-		bouttonAjout.setBounds(280, 470, 150, 30);
+		bouttonAjout.setBounds(260, 470, 150, 30);
 		bouttonAjout.setForeground(Color.white);
 		bouttonAjout.setBackground(Fenetre.BLEU_CIEL);
 		bouttonAjout.addActionListener(this);
@@ -164,70 +159,55 @@ public class EcranGestionProfil extends JPanel implements ActionListener{
 		
 		this.add(centreInte);
 		
-		int y = 60;
-		int x = 520;
-		
-		if (modif.getListeInteret().size()==0){
-			JLabel vide = new JLabel ("Pas de centre d'intérêt");
-			vide.setBounds(520, 60, 190, 30);
-			vide.setForeground(Color.white);
-			this.add(vide);
-		}else{
-			for (CategorieCI cate : modif.getListeInteret().keySet()){
-				
-				JLabel labelCate = new JLabel (cate.getNom());
-				labelCate.setBounds(520, y, 150, 30);
-				labelCate.setForeground(Fenetre.BLEU_CIEL);
-				this.add(labelCate);
-				for (SousCategorieCI sscate : modif.getListeInteret().get(cate)){
-					if (modif.getListeInteret().get(cate).indexOf(sscate)%2 == 0){
-						y+= 50;
-						x = 520;
-					}else{
-						x = 710;
-					}
-					CheckBoxSuppression checkBoxSousCate = new CheckBoxSuppression (sscate,cate);
-					checkBoxSousCate.setBounds(x, y, 190, 30);
-					checkBoxSousCate.setForeground(Color.white);
-					checkBoxSousCate.setBackground(Fenetre.BLEU_CIEL);
-					checkBoxSousCate.addActionListener(this);
-					this.add(checkBoxSousCate);
-					
-				}
-				y+= 60;
-				
-			}
-			this.bouttonSuppression = new JButton("Supprimer");
-			bouttonSuppression.setBounds(800,y-10,150,30);
-			bouttonSuppression.setForeground(Color.white);
-			bouttonSuppression.setBackground(Fenetre.BLEU_CIEL);
-			bouttonSuppression.addActionListener(this);
-			bouttonSuppression.setBorder(new CompoundBorder(new LineBorder(Color.white),new EmptyBorder(5,15,5,15)));
-			this.add(bouttonSuppression);
-			
-			// carre sauvegarde
-			
-			this.bouttonRetour = new JButton("Retour");
-			bouttonRetour.setBounds(60, 550, 170, 30);;
-			bouttonRetour.setForeground(Color.white);
-			bouttonRetour.setBackground(Fenetre.BLEU_CIEL);
-			bouttonRetour.addActionListener(this);
-			bouttonRetour.setBorder(new CompoundBorder(new LineBorder(Color.white),new EmptyBorder(5,15,5,15)));
-			this.add(bouttonRetour);
-			
-			this.bouttonSauvegarde = new JButton("Sauvegarder");
-			bouttonSauvegarde.setBounds(250, 550, 170, 30);
-			bouttonSauvegarde.setForeground(Color.white);
-			bouttonSauvegarde.setBackground(Fenetre.BLEU_CIEL);
-			bouttonSauvegarde.addActionListener(this);
-			bouttonSauvegarde.setBorder(new CompoundBorder(new LineBorder(Color.white),new EmptyBorder(5,15,5,15)));
-			this.add(bouttonSauvegarde);
-			
-			this.messageSauvegarde = new JLabel ();
-			messageSauvegarde.setBounds(90, 600, 300, 30);
-			messageSauvegarde.setForeground(Color.WHITE);
-			this.add(messageSauvegarde);
+		Vector<SousCategorieCI> mesCI = new Vector<SousCategorieCI>();
+		for (SousCategorieCI sscate : modif.getListeInteret()){
+			mesCI.addElement(sscate);
 		}
+		
+		listCI = new JList<SousCategorieCI> (mesCI);
+		listCI.setBackground(Color.white);
+		listCI.setForeground(Fenetre.BLEU_CIEL);
+		listCI.setBorder(new CompoundBorder(new LineBorder(Color.white),new EmptyBorder(5,15,5,15)));
+		
+		ScrollPane panelCI = new ScrollPane();
+		
+		panelCI.add(listCI);
+		
+		panelCI.setBounds(500,80,420,160);
+		
+		this.add(panelCI);
+		
+		this.bouttonSuppression = new JButton("Supprimer");
+		bouttonSuppression.setBounds(780,260,150,30);
+		bouttonSuppression.setForeground(Color.white);
+		bouttonSuppression.setBackground(Fenetre.BLEU_CIEL);
+		bouttonSuppression.addActionListener(this);
+		bouttonSuppression.setBorder(new CompoundBorder(new LineBorder(Color.white),new EmptyBorder(5,15,5,15)));
+		this.add(bouttonSuppression);
+		
+		// carre sauvegarde
+		
+		this.bouttonRetour = new JButton("Retour");
+		bouttonRetour.setBounds(500, 400, 170, 30);;
+		bouttonRetour.setForeground(Color.white);
+		bouttonRetour.setBackground(Fenetre.BLEU_CIEL);
+		bouttonRetour.addActionListener(this);
+		bouttonRetour.setBorder(new CompoundBorder(new LineBorder(Color.white),new EmptyBorder(5,15,5,15)));
+		this.add(bouttonRetour);
+		
+		this.bouttonSauvegarde = new JButton("Sauvegarder");
+		bouttonSauvegarde.setBounds(750, 400, 170, 30);
+		bouttonSauvegarde.setForeground(Color.white);
+		bouttonSauvegarde.setBackground(Fenetre.BLEU_CIEL);
+		bouttonSauvegarde.addActionListener(this);
+		bouttonSauvegarde.setBorder(new CompoundBorder(new LineBorder(Color.white),new EmptyBorder(5,15,5,15)));
+		this.add(bouttonSauvegarde);
+			
+		this.messageSauvegarde = new JLabel ();
+		messageSauvegarde.setBounds(90, 600, 300, 30);
+		messageSauvegarde.setForeground(Color.WHITE);
+		this.add(messageSauvegarde);
+		
 		
 		
 	}
@@ -259,25 +239,12 @@ public class EcranGestionProfil extends JPanel implements ActionListener{
 		// carré changement d'ecran
 		
 		g.setColor(Fenetre.BLEU_CIEL);
-		g.fillRoundRect(40, 530, 400,120,50,50);
+		g.fillRoundRect(460, 350, 500,120,50,50);
 		
 		// carré suppression centre d'interet
 		
-		int hauteurBoite = 10; 
-		
-		if (modif.getListeInteret().size()==0){
-			hauteurBoite += 60;
-		}else{
-			for (CategorieCI cate : modif.getListeInteret().keySet()){
-				hauteurBoite += 60+((modif.getListeInteret().get(cate).size()/2)*50)+((modif.getListeInteret().get(cate).size()%2)*50);
-			}
-		}
 			
-		g.fillRoundRect(460,40,500,hauteurBoite+50,50,50);
-		
-		if (hauteurBoite>maxHeight){
-			maxHeight = hauteurBoite+10;
-		}
+		g.fillRoundRect(460,40,500,280,50,50);
 		
 		g.setColor(Color.white);
 		g.fillRoundRect(720,20,200,40,50,50);
@@ -285,75 +252,43 @@ public class EcranGestionProfil extends JPanel implements ActionListener{
 		g.drawRoundRect(720,20,200,40,50,50);
 			
 		g.setColor(Color.white);
-				
-		int y = 50;
-				
-		for (CategorieCI cate : modif.getListeInteret().keySet()){
-			int longueurCate = 50*((modif.getListeInteret().get(cate).size()/2)+(modif.getListeInteret().get(cate).size()%2)+1);
-			g.drawRoundRect(470,y,480,longueurCate,50,50);
-			g.fillRoundRect(500,y+10,100,30,25,25);
-			y = longueurCate+y+10; // 10 pour le décalage
-		}
-			
-		if (y>maxHeight+10){
-			maxHeight = y+10;
-		}
-		
-		this.setPreferredSize(new Dimension(maxWidth,maxHeight));
-		
 		
 		
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		if (e.getSource() instanceof CheckBoxSuppression){
-			CheckBoxSuppression source = (CheckBoxSuppression) e.getSource();
-			ArrayList<SousCategorieCI> sscate;
-			if (source.isSelected()){
-				if(ciASupprimer.containsKey(source.getCate())){
-					sscate = ciASupprimer.get(source.getCate());
-				}else{
-					sscate = new ArrayList<SousCategorieCI>();
-				}
-				sscate.add(source.getCible());
-				ciASupprimer.put(source.getCate(), sscate);
-			}else{
-				sscate = ciASupprimer.get(source.getCate());
-				sscate.remove(source.getCible());
-				if (sscate.isEmpty()){
-					ciASupprimer.remove(source.getCate());
-				}else{
-					ciASupprimer.put(source.getCate(), sscate);
-				}
-			}
-		}
 		if (e.getSource()==bouttonSuppression){
-			Service.deleteCI(modif.getListeInteret(),ciASupprimer);
-			modif.setNom(nom.getText());
-			modif.setPrenom(prenom.getText());
-			refresh();
+			SousCategorieCI scci = listCI.getSelectedValue();
+			if (scci != null){
+				modif.getListeInteret().remove(scci);
+				modif.setNom(nom.getText());
+				modif.setPrenom(prenom.getText());
+				refresh();
+			}
 		}
 		if (e.getSource()==comboCate){
 			comboCi.removeAllItems();
 			CategorieCI selected = (CategorieCI)comboCate.getSelectedItem();
-			for (SousCategorieCI sscate : selected.getListeSousCategorie()){
-				if (!modif.getListeInteret().get(selected).contains(sscate)){
-					comboCi.addItem(sscate);
+			ArrayList<SousCategorieCI> sscate;
+			try {
+				sscate = Service.obtenirLesSousCategories(selected);
+				for (SousCategorieCI s : sscate){
+					if (!modif.getListeInteret().contains(s)){
+						comboCi.addItem(s);
+					}
 				}
+				comboCi.setSelectedItem(null);
+			} catch (ClassNotFoundException e1) {
+				JOptionPane.showMessageDialog(this, e1.getMessage());
+				e1.printStackTrace();
+			} catch (SQLException e1) {
+				JOptionPane.showMessageDialog(this, e1.getMessage());
+				e1.printStackTrace();
 			}
-			comboCi.setSelectedItem(null);
 		}
 		if (e.getSource()==bouttonAjout && comboCate.getSelectedItem()!= null && comboCi.getSelectedItem() != null){
-			CategorieCI categorie = (CategorieCI)comboCate.getSelectedItem();
 			SousCategorieCI sousCategorie = (SousCategorieCI)comboCi.getSelectedItem();
-			ArrayList<SousCategorieCI> lstCi;
-			if(modif.getListeInteret().containsKey(categorie)){
-				lstCi = modif.getListeInteret().get(categorie);
-			}else{
-				lstCi = new ArrayList<SousCategorieCI>();
-			}
-			lstCi.add(sousCategorie);
-			modif.getListeInteret().put(categorie, lstCi);
+			modif.getListeInteret().add(sousCategorie);
 			modif.setNom(nom.getText());
 			modif.setPrenom(prenom.getText());
 			refresh();

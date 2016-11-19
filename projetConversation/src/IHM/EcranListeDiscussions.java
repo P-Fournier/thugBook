@@ -10,7 +10,6 @@ import java.util.HashMap;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
@@ -19,8 +18,12 @@ import domaine.GroupeDiscussion;
 import domaine.Utilisateur;
 import domaine.messages.Discussion;
 
-public class EcranListeDiscussions extends JPanel implements ActionListener{
+public class EcranListeDiscussions extends Ecran implements ActionListener{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6466304023765997464L;
 	private Fenetre fen;
 	private EcranUtilisateur accueil;
 	private int maxHeight;
@@ -58,8 +61,6 @@ public class EcranListeDiscussions extends JPanel implements ActionListener{
 		/////// Tri hashMap
 		
 		// Boutton retour
-		
-		// Retour
 		
 		this.retour = new JButton ("Retour");
 		retour.setBounds (100,40,150,30);

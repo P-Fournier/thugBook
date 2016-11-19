@@ -66,6 +66,8 @@ public class GroupeDiscussion {
 		this.discussion = discussion;
 	}
 	
-	
+	public String toString (){
+		return this.nom;
+	}
 
 }

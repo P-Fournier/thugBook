@@ -10,10 +10,13 @@ public class DelaiExpiration extends Option{
 	
 	private String dateExpiration;
 
+	public DelaiExpiration (String dateExpiration){
+		this.dateExpiration = dateExpiration;
+	}
+	
 	@Override
 	public JLabel decorate(JLabel message) {
 		String dateCourante=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.FRANCE).format(new Date());
-		this.dateExpiration = dateExpiration.substring(0, 19);
 		if (dateCourante.compareTo(dateExpiration)>0){
 			return null;
 		}else{

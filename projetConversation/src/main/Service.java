@@ -4,18 +4,19 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import javax.swing.JPanel;
-
+import IHM.Ecran;
 import IHM.EcranAdministrateur;
 import IHM.EcranUtilisateur;
 import IHM.Fenetre;
 
 import persistence.AmiMapper;
 import persistence.CategorieCIMapper;
+import persistence.ConnexionException;
 import persistence.DemandeAmiMapper;
 import persistence.DiscussionMapper;
 import persistence.GroupeDiscussionMapper;
 import persistence.NotificationMapper;
+import persistence.SousCategorieCIMapper;
 import persistence.UtilisateurMapper;
 import domaine.CategorieCI;
 import domaine.GroupeDiscussion;
@@ -24,7 +25,7 @@ import domaine.Utilisateur;
 
 public class Service {
 
-	public static JPanel connexion(String ndc, String password,Fenetre fen) throws ClassNotFoundException, SQLException , ConnexionException {
+	public static Ecran connexion(String ndc, String password,Fenetre fen) throws ClassNotFoundException, SQLException , ConnexionException {
 		if (ndc.equals("") || password.equals("")){
 			throw new ConnexionException("Il faut renseigner tout les champs");
 		}
@@ -42,19 +43,19 @@ public class Service {
 		
 	}
 
-	public static void deleteCI(HashMap<CategorieCI, ArrayList<SousCategorieCI>> ci,
+	/*public static void deleteCI(ArrayList<SousCategorieCI> arrayList,
 			HashMap<CategorieCI, ArrayList<SousCategorieCI>> suppr) {
 	
 		for (CategorieCI cate : suppr.keySet()){
-			ArrayList<SousCategorieCI> result = ci.get(cate);
+			ArrayList<SousCategorieCI> result = arrayList.get(cate);
 			result.removeAll(suppr.get(cate));
 			if (result.isEmpty()){
-				ci.remove(cate);
+				arrayList.remove(cate);
 			}else{
-				ci.put(cate, result);
+				arrayList.put(cate, result);
 			}
 		}
-	}
+	}*/
 
 	public static ArrayList<CategorieCI> recupererLesCategories() throws ClassNotFoundException, SQLException {
 		return CategorieCIMapper.getInstance().all();
@@ -105,7 +106,7 @@ public class Service {
 	}
 
 	public static void supprimerGroupe(GroupeDiscussion grp) throws ClassNotFoundException, SQLException {
-		DiscussionMapper.supprimer(grp.getId());
+		DiscussionMapper.getInstance().supprimer(grp.getId());
 	}
 
 	public static void creerGroupe(String nomDuGroupe, Utilisateur moderateur) throws ClassNotFoundException, SQLException {
@@ -114,6 +115,11 @@ public class Service {
 
 	public static boolean existenceNomDeGroupe(String nom) throws ClassNotFoundException, SQLException {
 		return GroupeDiscussionMapper.getInstance().existenceNomDeGroupe(nom);
+	}
+
+	public static ArrayList<SousCategorieCI> obtenirLesSousCategories(
+			CategorieCI selected) throws ClassNotFoundException, SQLException {
+		return SousCategorieCIMapper.getInstance().findByCategorie(selected);
 	}
 	
 	

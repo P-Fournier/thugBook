@@ -1,36 +1,33 @@
 package IHM;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.ScrollPane;
 import java.awt.Scrollbar;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Vector;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
+import javax.swing.JList;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
-import domaine.CategorieCI;
 import domaine.SousCategorieCI;
 import domaine.Utilisateur;
 
-public class EcranUtilisateur extends JPanel implements ActionListener{
+public class EcranUtilisateur extends Ecran implements ActionListener{
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -8523863168389588727L;
 	
 	protected Utilisateur u;
-	
-	protected int maxHeight;
-	
-	private int maxWidth;
 	
 	private JButton amiBoutton;
 	
@@ -53,9 +50,6 @@ public class EcranUtilisateur extends JPanel implements ActionListener{
 		this.fen = fen;
 		
 		fen.changerTitre("Réseau social - Accueil");
-		
-		this.maxWidth = this.getWidth();
-		this.maxHeight = this.getHeight();
 		
 		this.add(new Scrollbar());
 		this.setLayout(null);
@@ -92,35 +86,26 @@ public class EcranUtilisateur extends JPanel implements ActionListener{
 		
 		this.add(centreInte);
 		
-		int y = 60;
-		int x = 520;
-		if (u.getListeInteret().size()==0){
-			JLabel vide = new JLabel ("Pas de centre d'intérêt");
-			vide.setBounds(520, 60, 190, 30);
-			vide.setForeground(Color.white);
-			this.add(vide);
-		}else{
-			for (CategorieCI cate : u.getListeInteret().keySet()){
-				JLabel labelCate = new JLabel (cate.getNom());
-				labelCate.setBounds(520, y, 150, 30);
-				labelCate.setForeground(Fenetre.BLEU_CIEL);
-				this.add(labelCate);
-				for (SousCategorieCI sscate : u.getListeInteret().get(cate)){
-					if (u.getListeInteret().get(cate).indexOf(sscate)%2 == 0){
-						y+= 50;
-						x = 520;
-					}else{
-						x = 710;
-					}
-					JLabel labelSousCate = new JLabel (sscate.getNom());
-					labelSousCate.setBounds(x, y, 190, 30);
-					labelSousCate.setForeground(Color.white);
-					this.add(labelSousCate);
-				}
-				y+= 60;
-				
-			}
+		Vector<SousCategorieCI> mesCI = new Vector<SousCategorieCI> ();
+		for (SousCategorieCI sousCate : u.getListeInteret()){
+			mesCI.add(sousCate);
 		}
+		
+		JList<SousCategorieCI> listeCI = new JList<SousCategorieCI> (mesCI);
+		
+		listeCI.setBackground(Color.white);
+		listeCI.setForeground(Fenetre.BLEU_CIEL);
+		listeCI.setBorder(new CompoundBorder(new LineBorder(Color.white),new EmptyBorder(5,15,5,15)));
+		
+		ScrollPane panelCI = new ScrollPane();
+		
+		panelCI.add(listeCI);
+		
+		panelCI.setBounds(500,80,420,220);
+		
+		this.add(panelCI);
+		
+		
 		
 		
 		// carré mon univers
@@ -200,17 +185,7 @@ public class EcranUtilisateur extends JPanel implements ActionListener{
 		
 		// carré centre d'interet
 		
-		int hauteurBoite = 10; 
-		
-		if (u.getListeInteret().size()==0){
-			hauteurBoite += 60;
-		}else{
-			for (CategorieCI cate : u.getListeInteret().keySet()){
-				hauteurBoite += 60+((u.getListeInteret().get(cate).size()/2)*50)+((u.getListeInteret().get(cate).size()%2)*50);
-			}
-		}
-		
-		g.fillRoundRect(460,40,500,hauteurBoite,50,50);
+		g.fillRoundRect(460,40,500,300,50,50);
 		
 		g.setColor(Color.white);
 		g.fillRoundRect(720,20,200,40,50,50);
@@ -218,21 +193,6 @@ public class EcranUtilisateur extends JPanel implements ActionListener{
 		g.drawRoundRect(720,20,200,40,50,50);
 		
 		g.setColor(Color.white);
-		
-		int y = 50;
-	
-		for (CategorieCI cate : u.getListeInteret().keySet()){
-			int longueurCate = 50*((u.getListeInteret().get(cate).size()/2)+(u.getListeInteret().get(cate).size()%2)+1);
-			g.drawRoundRect(470,y,480,longueurCate,50,50);
-			g.fillRoundRect(500,y+10,100,30,25,25);
-			y = longueurCate+y+10; // 10 pour le décalage
-		}
-		
-		if (y>maxHeight+10){
-			maxHeight = y+10;
-		}
-		
-		this.setPreferredSize(new Dimension(maxWidth,maxHeight));
 		
 		// carré mon univers
 		
@@ -251,26 +211,22 @@ public class EcranUtilisateur extends JPanel implements ActionListener{
 			fen.changerEcran(new EcranConnexion(fen));
 		}
 		if(e.getSource()==profilBoutton){
-			HashMap<CategorieCI,ArrayList<SousCategorieCI>> ci = new HashMap<CategorieCI,ArrayList<SousCategorieCI>>();
-			for (CategorieCI cate : u.getListeInteret().keySet()){
-				ArrayList<SousCategorieCI> sscate = new ArrayList<SousCategorieCI>();
-				for (SousCategorieCI ssc : u.getListeInteret().get(cate)){
-					sscate.add(ssc);
-				}
-				ci.put(cate, sscate);
+			ArrayList<SousCategorieCI> ci = new ArrayList<SousCategorieCI>();
+			for (SousCategorieCI ssc : u.getListeInteret()){
+				ci.add(ssc);
 			}
 			Utilisateur temp = new Utilisateur (u.getIdU(),u.getNom(),u.getPrenom(),u.getNdc());
 			temp.setListeInteret(ci);
 			fen.changerEcran(new EcranGestionProfil(fen,this,temp));
 		}
 		if(e.getSource()==amiBoutton){
-			fen.changerEcran(new EcranAmi(fen,this,new HashMap<JButton,Utilisateur>()));
+			fen.changerEcran(new EcranAmi(fen,this,new JComboBox<Utilisateur>()));
 		}
 		if(e.getSource()==notificationBoutton){
 			fen.changerEcran(new EcranNotification(fen,this));
 		}
 		if(e.getSource()==groupeBoutton){
-			fen.changerEcran(new EcranGroupe(fen,this));
+			fen.changerEcran(new EcranGroupe(fen,this,null));
 		}
 		if(e.getSource()==messageBoutton){
 			fen.changerEcran(new EcranListeDiscussions(fen,this));

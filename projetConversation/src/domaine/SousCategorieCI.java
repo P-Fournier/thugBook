@@ -4,10 +4,21 @@ public class SousCategorieCI {
 	
 	private int idSousCategorie;
 	private String nom;
+	private CategorieCI categorie;
 
-	public SousCategorieCI(Integer idCI, String nom) {
+	
+	public CategorieCI getCategorie() {
+		return categorie;
+	}
+
+	public void setCategorie(CategorieCI categorie) {
+		this.categorie = categorie;
+	}
+
+	public SousCategorieCI(Integer idCI, String nom, CategorieCI categorie) {
 		this.idSousCategorie = idCI;
 		this.nom = nom;
+		this.categorie = categorie;
 	}
 
 	public int getSsCat() {
@@ -35,8 +46,9 @@ public class SousCategorieCI {
 	}
 	
 	public String toString (){
-		return this.nom;
+		return this.categorie.getNom()+" - "+this.nom;
 	}
 	
 
+	
 }
