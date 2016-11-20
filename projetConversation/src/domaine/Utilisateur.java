@@ -19,7 +19,6 @@ public class Utilisateur {
 	private ArrayList<Utilisateur> demandesAmisSoumises;
 	private ArrayList<GroupeDiscussion> groupeDiscussion;
 	private ArrayList<Notification> notifications;
-	private ArrayList<Discussion> discussions;
 
 
 	public Utilisateur(int id, String nom, String prenom, String ndc,
@@ -35,7 +34,6 @@ public class Utilisateur {
 		this.demandesAmisSoumises = new ArrayList<Utilisateur>();
 		this.groupeDiscussion = new ArrayList<GroupeDiscussion>();
 		this.notifications = new ArrayList<Notification>();
-		this.discussions = new ArrayList<Discussion>(); 
 	}
 
 	public Utilisateur(int id, String nom, String prenom, String ndc) {
@@ -49,7 +47,6 @@ public class Utilisateur {
 		this.demandesAmisSoumises = new ArrayList<Utilisateur>();
 		this.groupeDiscussion = new ArrayList<GroupeDiscussion>();
 		this.notifications = new ArrayList<Notification>();
-		this.discussions = new ArrayList<Discussion>(); 
 	}
 
 	public ArrayList<SousCategorieCI> getListeInteret() {
@@ -138,14 +135,6 @@ public class Utilisateur {
 
 	public void setNotifications(ArrayList<Notification> notifications) {
 		this.notifications = notifications;
-	}
-	
-	public ArrayList<Discussion> getDiscussions() {
-		return discussions;
-	}
-
-	public void setDiscussions(ArrayList<Discussion> discussions) {
-		this.discussions = discussions;
 	}
 
 	public int nbNotifNonVues (){

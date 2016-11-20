@@ -7,7 +7,6 @@ import java.awt.Scrollbar;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Vector;
 
 import javax.swing.JButton;
@@ -117,8 +116,8 @@ public class EcranUtilisateur extends Ecran implements ActionListener{
 		
 		this.add(univers);
 		
-		messageBoutton = new JButton ("Mes discussions ("+u.getDiscussions().size()+")");
-		messageBoutton.setBounds(60, 270, 170, 30);
+		messageBoutton = new JButton ("Mes discussions ("+u.getAmis().size()+u.getGroupeDiscussion().size()+")");
+		messageBoutton.setBounds(50, 270, 180, 30);
 		messageBoutton.setBackground(Fenetre.BLEU_CIEL);
 		messageBoutton.setForeground(Color.white);
 		messageBoutton.setBorder(new CompoundBorder(new LineBorder(Color.white),new EmptyBorder(5,15,5,15)));
@@ -126,7 +125,7 @@ public class EcranUtilisateur extends Ecran implements ActionListener{
 		this.add(messageBoutton);
 		
 		groupeBoutton = new JButton ("Mes groupes ("+u.getGroupeDiscussion().size()+")");
-		groupeBoutton.setBounds(250, 270, 170, 30);
+		groupeBoutton.setBounds(250, 270, 180, 30);
 		groupeBoutton.setBackground(Fenetre.BLEU_CIEL);
 		groupeBoutton.setForeground(Color.white);
 		groupeBoutton.setBorder(new CompoundBorder(new LineBorder(Color.white),new EmptyBorder(5,15,5,15)));
@@ -134,7 +133,7 @@ public class EcranUtilisateur extends Ecran implements ActionListener{
 		this.add(groupeBoutton);
 		
 		amiBoutton = new JButton ("Mes amis ("+u.getAmis().size()+")");
-		amiBoutton.setBounds(60,310,170,30);
+		amiBoutton.setBounds(50,310,180,30);
 		amiBoutton.setBackground(Fenetre.BLEU_CIEL);
 		amiBoutton.setForeground(Color.white);
 		amiBoutton.setBorder(new CompoundBorder(new LineBorder(Color.white),new EmptyBorder(5,15,5,15)));
@@ -142,7 +141,7 @@ public class EcranUtilisateur extends Ecran implements ActionListener{
 		this.add(amiBoutton);
 		
 		notificationBoutton = new JButton ("Notifications ("+u.nbNotifNonVues()+")");
-		notificationBoutton.setBounds(250, 310, 170, 30);
+		notificationBoutton.setBounds(250, 310, 180, 30);
 		notificationBoutton.setBackground(Fenetre.BLEU_CIEL);
 		notificationBoutton.setForeground(Color.white);
 		notificationBoutton.setBorder(new CompoundBorder(new LineBorder(Color.white),new EmptyBorder(5,15,5,15)));
@@ -150,7 +149,7 @@ public class EcranUtilisateur extends Ecran implements ActionListener{
 		this.add(notificationBoutton);
 		
 		profilBoutton = new JButton ("Gérer mon profil");
-		profilBoutton.setBounds(60, 350, 170, 30);
+		profilBoutton.setBounds(50, 350, 180, 30);
 		profilBoutton.setBackground(Fenetre.BLEU_CIEL);
 		profilBoutton.setForeground(Color.white);
 		profilBoutton.setBorder(new CompoundBorder(new LineBorder(Color.white),new EmptyBorder(5,15,5,15)));
@@ -158,7 +157,7 @@ public class EcranUtilisateur extends Ecran implements ActionListener{
 		this.add(profilBoutton);
 		
 		deconnexionBoutton = new JButton ("Déconnexion");
-		deconnexionBoutton.setBounds(250, 350, 170, 30);
+		deconnexionBoutton.setBounds(250, 350, 180, 30);
 		deconnexionBoutton.setBackground(Fenetre.BLEU_CIEL);
 		deconnexionBoutton.setForeground(Color.white);
 		deconnexionBoutton.setBorder(new CompoundBorder(new LineBorder(Color.white),new EmptyBorder(5,15,5,15)));

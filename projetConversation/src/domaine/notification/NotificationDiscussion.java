@@ -14,6 +14,11 @@ public class NotificationDiscussion extends Notification{
 		super(message, vue, id, dateEnvoie, destinataire);
 		this.discussion = discussion;
 	}
+	
+	public NotificationDiscussion(String message, boolean vue,Utilisateur destinataire, Discussion discussion) {
+		super(message, vue, destinataire);
+		this.discussion = discussion;
+	}
 
 	public Discussion getDiscussion() {
 		return discussion;

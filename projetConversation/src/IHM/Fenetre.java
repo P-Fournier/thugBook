@@ -7,6 +7,10 @@ import javax.swing.JScrollPane;
 
 public class Fenetre extends JFrame{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2476884677276375150L;
 	static private JScrollPane current;
 	static Color BLEU_CIEL = new Color (44,117,255);
 	

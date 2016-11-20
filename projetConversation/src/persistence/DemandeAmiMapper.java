@@ -6,7 +6,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import domaine.Utilisateur;
-import domaine.notification.NotificationDemandeAmi;
 import domaine.notification.NotificationSimple;
 
 public class DemandeAmiMapper {
@@ -33,8 +32,6 @@ public class DemandeAmiMapper {
 		ps.setInt(1, exp.getIdU());
 		ps.setInt(2, dest.getIdU());
 		ps.executeUpdate();
-		NotificationDemandeAmi n = new NotificationDemandeAmi(exp.getNdc()+" vous a envoyé une demande d'ami",false,dest,exp);
-		NotificationMapper.getInstance().insert(n);
 	}
 	
 	/**
@@ -86,8 +83,6 @@ public class DemandeAmiMapper {
 		DemandeAmiMapper.getInstance().delete(exp, dest);
 		AmiMapper.getInstance().insert(dest,exp);
 		dest.getDemandeAmisRecues().remove(exp);
-		NotificationSimple n = new NotificationSimple (dest.getNdc()+" a accepté votre demande d'ami",false,exp);
-		NotificationMapper.getInstance().insert(n);
 	}
 
 	/**

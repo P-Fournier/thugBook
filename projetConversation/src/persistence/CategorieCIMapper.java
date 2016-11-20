@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import domaine.CategorieCI;
-import domaine.SousCategorieCI;
 
 public class CategorieCIMapper {
 	

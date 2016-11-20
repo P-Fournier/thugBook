@@ -107,8 +107,14 @@ public class NotificationMapper extends VisiteurNotification{
 		}
 	}
 
-	private Discussion findDiscussionNotifiée(int idN) {
-		// TODO Auto-generated method stub
+	private Discussion findDiscussionNotifiée(int idN) throws ClassNotFoundException, SQLException {
+		String req = "SELECT idD FROM NotificationDiscussion WHERE id = ?";
+		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
+		ps.setInt(1, idN);
+		ResultSet rs = ps.executeQuery();
+		if (rs.next()){
+			return MessageMapper.getInstance().findByIdDiscussion(rs.getInt("idD"));
+		}
 		return null;
 	}
 

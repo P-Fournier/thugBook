@@ -8,7 +8,6 @@ import java.util.HashMap;
 
 import domaine.Utilisateur;
 import domaine.messages.Discussion;
-import domaine.notification.NotificationSimple;
 
 public class AmiMapper {
 	
@@ -82,7 +81,7 @@ public class AmiMapper {
 			rs = ps.executeQuery();
 			rs.next();
 			Utilisateur ami = UtilisateurMapper.getInstance().findById(rs.getInt("idU"));
-			Discussion discussion = MessageMapper.getInstance().findByIdDiscussionUtilisateur(i);
+			Discussion discussion = MessageMapper.getInstance().findByIdDiscussion(i);
 			result.put(ami,discussion);
 		}
 		return result;
@@ -114,7 +113,6 @@ public class AmiMapper {
 		
 		u.getAmis().remove(suppr);
 		suppr.getAmis().remove(u);
-		NotificationSimple n = new NotificationSimple (u.getNdc()+" vous a supprimer de sa liste d'ami",false,suppr);
-		NotificationMapper.getInstance().insert(n);
+		
 	}
 }

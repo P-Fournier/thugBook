@@ -23,6 +23,9 @@ import domaine.SousCategorieCI;
 import domaine.Utilisateur;
 import domaine.messages.Discussion;
 import domaine.messages.Message;
+import domaine.notification.NotificationDemandeAmi;
+import domaine.notification.NotificationDiscussion;
+import domaine.notification.NotificationSimple;
 
 public class Service {
 
@@ -75,34 +78,44 @@ public class Service {
 	}
 
 	public static void demandeAmi(Utilisateur exp, Utilisateur dest) throws ClassNotFoundException, SQLException {
+		NotificationMapper.getInstance().insert(new NotificationDemandeAmi(exp.getNdc()+" vous a envoyé une demande d'ami",false,dest,exp));
 		DemandeAmiMapper.getInstance().demandeAmi(exp, dest);
-
 	}
 
 	public static void refuserInvitation(Utilisateur u, Utilisateur dest) throws ClassNotFoundException, SQLException {
+		NotificationMapper.getInstance().insert(new NotificationSimple (u.getNdc()+" a refusé votre demande d'ami",false,dest));
 		DemandeAmiMapper.getInstance().refuserDemande(u, dest);
 	}
 
 	public static void accepterInvitation(Utilisateur u, Utilisateur dest) throws ClassNotFoundException, SQLException {
+		NotificationMapper.getInstance().insert(new NotificationSimple (u.getNdc()+" a accepté votre demande d'ami",false,u));
 		DemandeAmiMapper.getInstance().accepterDemande(u, dest);
 	}
 
 	public static void supprimerAmitie(Utilisateur u, Utilisateur suppr) throws ClassNotFoundException, SQLException {
+		NotificationMapper.getInstance().insert(new NotificationSimple (u.getNdc()+" vous a supprimer de sa liste d'ami",false,suppr));
 		AmiMapper.getInstance().suppressionAmi(u, suppr);
 	}
 
 	public static void supprimerDuGroupe(Utilisateur u, GroupeDiscussion grp)
 			throws ClassNotFoundException, SQLException {
+		NotificationMapper.getInstance().insert(new NotificationSimple(grp.getModerateur()+" vous a supprimé du groupe" +
+				" : "+grp.getNom(),false,u));
+		
 		GroupeDiscussionMapper.getInstance().supprimerUtilisateur(u, grp);
 	}
 
 	public static void ajouterAuGroupe(Utilisateur u, GroupeDiscussion grp)
 			throws ClassNotFoundException, SQLException {
+		NotificationMapper.getInstance().insert(new NotificationSimple (grp.getModerateur()+" vous a ajouté au groupe : " +
+				grp.getNom(),false,u));
 		GroupeDiscussionMapper.getInstance().ajouterAuGroupe(u, grp);
 	}
 
 	public static void changerModerateur(Utilisateur u, GroupeDiscussion grp)
 			throws ClassNotFoundException, SQLException {
+		NotificationMapper.getInstance().insert(new NotificationSimple(grp.getModerateur()+" vous a nommé modérateur " +
+				"du groupe : "+grp.getNom(),false,u));
 		GroupeDiscussionMapper.getInstance().changerModerateur(u, grp);
 	}
 
@@ -128,7 +141,10 @@ public class Service {
 		return UtilisateurMapper.getInstance().getAllUtilisateur();
 	}
 
-	public static void envoieMessage(Discussion selected, Message msg) throws ClassNotFoundException, SQLException {
+	public static void envoieMessage(Discussion selected, Message msg,ArrayList<Utilisateur> dest) throws ClassNotFoundException, SQLException {
+		for (Utilisateur u : dest){
+			NotificationMapper.getInstance().insert(new NotificationDiscussion("Vous avez reçu un message envoyé par "+msg.getExpediteur(),false,u,selected));
+		}
 		selected.addMessage(msg);
 		MessageMapper.getInstance().insert(selected, msg);
 	}

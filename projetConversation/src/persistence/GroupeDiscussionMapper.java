@@ -80,7 +80,7 @@ public class GroupeDiscussionMapper {
 		ps.setInt(1, id);
 		ResultSet rs = ps.executeQuery();
 		if (rs.next()){
-			Discussion discute = MessageMapper.getInstance().findByIdDiscussionUtilisateur(id);
+			Discussion discute = MessageMapper.getInstance().findByIdDiscussion(id);
 			int idM = rs.getInt("idM");
 			Utilisateur moderateur = UtilisateurMapper.getInstance().findById(idM);
 			String nom = rs.getString("nom");

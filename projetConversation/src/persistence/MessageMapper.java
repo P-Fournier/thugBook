@@ -43,7 +43,7 @@ public class MessageMapper extends VisiteurOption{
 		}
 	}
 
-	public Discussion findByIdDiscussionUtilisateur(int idD) throws ClassNotFoundException, SQLException {
+	public Discussion findByIdDiscussion(int idD) throws ClassNotFoundException, SQLException {
 		ArrayList<Message> lesMessages = new ArrayList<Message>();
 		String req = "SELECT m.id, m.idExp, m.contenu, m.dateEnvoie FROM Message m WHERE m.idDiscussion = ?";
 		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
@@ -113,7 +113,7 @@ public class MessageMapper extends VisiteurOption{
 		ps.executeUpdate();
 		
 		for (Option o : msg.getOptions()){
-			MessageMapper.getInstance().accepter(o);
+			accepter(o);
 		}
 		
 		id ++;

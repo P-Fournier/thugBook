@@ -34,12 +34,6 @@ public class DiscussionMapper {
 			return 1;
 		}
 	}
-	
-	/*public Discussion findById (int idC){
-		//String req = "";
-		//PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(arg0);
-		
-	}*/
 
 	public void supprimer(int idC) throws ClassNotFoundException, SQLException {
 		String req = "DELETE FROM Discussion WHERE id = ?";

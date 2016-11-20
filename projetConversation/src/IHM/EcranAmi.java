@@ -1,14 +1,12 @@
 package IHM;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Scrollbar;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Vector;
 
 import javax.swing.JButton;
@@ -24,8 +22,6 @@ import javax.swing.border.LineBorder;
 import main.Service;
 
 import domaine.Utilisateur;
-import domaine.critere.Critere;
-import domaine.critere.CritereSimple;
 
 public class EcranAmi extends Ecran implements ActionListener{
 	

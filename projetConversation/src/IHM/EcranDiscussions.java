@@ -163,43 +163,52 @@ public class EcranDiscussions extends Ecran implements ActionListener, ListSelec
 			
 			// champ saisie
 			
+			JPanel panelEnvoie = new JPanel();
+			panelEnvoie.setBackground(Fenetre.BLEU_CIEL);
+			panelEnvoie.setBounds(400,400,600,200);
+			panelEnvoie.setLayout(null);
+			
 			saisie = new JTextArea();
-			saisie.setBounds(400, 400, 400, 200);
+			saisie.setBounds(10,10,380, 180);
 			saisie.setLineWrap(true);
 			saisie.setWrapStyleWord(true);
-			this.add(saisie);
-			
-			JPanel optionsEnvoie = new JPanel();
-			optionsEnvoie.setBackground(Fenetre.BLEU_CIEL);
-			optionsEnvoie.setBounds(800,400,200,200);
 			
 			envoie = new JButton ("Envoyer");
 			envoie.setBackground(Fenetre.BLEU_CIEL);
 			envoie.setForeground(Color.white);
 			envoie.setBorder(new CompoundBorder(new LineBorder(Color.white),new EmptyBorder(5,15,5,15)));
 			envoie.addActionListener(this);
+			envoie.setBounds(410, 150, 180, 30);
 			
 			
 			prioritaire = new JCheckBox ("Prioritaire");
 			prioritaire.setForeground(Color.WHITE);
 			prioritaire.setBackground(Fenetre.BLEU_CIEL);
+			prioritaire.setBounds(410, 0, 180, 30);
+			
 			delaiExpiration = new JCheckBox ("Délai d'expiration");
 			delaiExpiration.setForeground(Color.WHITE);
 			delaiExpiration.setBackground(Fenetre.BLEU_CIEL);
+			delaiExpiration.setBounds(410, 30, 180, 30);
+			
 			accuse = new JCheckBox ("Accusé de réception");
 			accuse.setForeground(Color.WHITE);
 			accuse.setBackground(Fenetre.BLEU_CIEL);
+			accuse.setBounds(410, 60, 180, 30);
+			
 			chiffrement = new JCheckBox ("Chiffrement");
 			chiffrement.setForeground(Color.WHITE);
 			chiffrement.setBackground(Fenetre.BLEU_CIEL);
+			chiffrement.setBounds(410, 90, 180, 30);
 			
-			optionsEnvoie.add(prioritaire);
-			optionsEnvoie.add(delaiExpiration);
-			optionsEnvoie.add(accuse);
-			optionsEnvoie.add(chiffrement);
-			optionsEnvoie.add(envoie);
+			panelEnvoie.add(prioritaire);
+			panelEnvoie.add(delaiExpiration);
+			panelEnvoie.add(accuse);
+			panelEnvoie.add(chiffrement);
+			panelEnvoie.add(envoie);
+			panelEnvoie.add(saisie);
 			
-			this.add(optionsEnvoie);
+			this.add(panelEnvoie);
 			
 		}
 		
@@ -256,7 +265,9 @@ public class EcranDiscussions extends Ecran implements ActionListener, ListSelec
 			String dateCourante=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.FRANCE).format(new Date());
 			Message msg = new Message(accueil.getU(), saisie.getText(),dateCourante, options);
 			try {
-				Service.envoieMessage(selected,msg);
+				ArrayList<Utilisateur> dest = destinataires.get(selected);
+				dest.remove(accueil.getU());
+				Service.envoieMessage(selected,msg,dest);
 			} catch (ClassNotFoundException e1) {
 				JOptionPane.showMessageDialog(this,e1.getMessage());
 				e1.printStackTrace();
