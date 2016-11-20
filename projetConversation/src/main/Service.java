@@ -2,8 +2,6 @@ package main;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
-
 import IHM.Ecran;
 import IHM.EcranAdministrateur;
 import IHM.EcranUtilisateur;
@@ -15,6 +13,7 @@ import persistence.ConnexionException;
 import persistence.DemandeAmiMapper;
 import persistence.DiscussionMapper;
 import persistence.GroupeDiscussionMapper;
+import persistence.MessageMapper;
 import persistence.NotificationMapper;
 import persistence.SousCategorieCIMapper;
 import persistence.UtilisateurMapper;
@@ -22,6 +21,8 @@ import domaine.CategorieCI;
 import domaine.GroupeDiscussion;
 import domaine.SousCategorieCI;
 import domaine.Utilisateur;
+import domaine.messages.Discussion;
+import domaine.messages.Message;
 
 public class Service {
 
@@ -124,5 +125,15 @@ public class Service {
 	
 	public static ArrayList<Utilisateur> obtenirTousLesUtilisateurs() throws ClassNotFoundException, SQLException{
 		return UtilisateurMapper.getInstance().getAllUtilisateur() ; 
+	}
+
+	public static void envoieMessage(Discussion selected, Message msg) throws ClassNotFoundException, SQLException {
+		selected.addMessage(msg);
+		MessageMapper.getInstance().insert(selected,msg);
+	}
+
+	public static void vuPar(Discussion selected, Utilisateur u) throws ClassNotFoundException, SQLException {
+		selected.vuPar(u);
+		DiscussionMapper.getInstance().vuPar(selected,u);
 	}
 }

@@ -2,6 +2,8 @@ package domaine.messages;
 
 import javax.swing.JLabel;
 
+import domaine.VisiteurOption;
+
 public class Chiffrement extends Option{
 
 	@Override
@@ -18,6 +20,12 @@ public class Chiffrement extends Option{
         }
 		message.setText(result);
 		return message;
+	}
+
+	@Override
+	public void accepter(VisiteurOption v) {
+		v.visiter(this);
+		
 	}
 
 

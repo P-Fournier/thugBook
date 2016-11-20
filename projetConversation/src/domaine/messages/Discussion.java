@@ -2,6 +2,8 @@ package domaine.messages;
 
 import java.util.ArrayList;
 
+import domaine.Utilisateur;
+
 
 public class Discussion {
 	private int id;
@@ -23,6 +25,21 @@ public class Discussion {
 	}
 	public void setMessages(ArrayList<Message> messages) {
 		this.messages = messages;
+	}
+
+	public void addMessage(Message msg) {
+		messages.add(msg);
+	}
+	
+	public void vuPar (Utilisateur u){
+		for (Message msg : messages){
+			for (Option o : msg.getOptions()){
+				if (o instanceof AccuseReception && msg.getExpediteur() != u){
+					AccuseReception acr = (AccuseReception) o;
+					acr.getDestinataires().put(u,true);
+				}
+			}
+		}
 	}
 	
 }

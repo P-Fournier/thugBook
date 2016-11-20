@@ -6,6 +6,8 @@ import java.util.Locale;
 
 import javax.swing.JLabel;
 
+import domaine.VisiteurOption;
+
 public class DelaiExpiration extends Option{
 	
 	private String dateExpiration;
@@ -23,4 +25,18 @@ public class DelaiExpiration extends Option{
 		return message;
 	}
 
+	@Override
+	public void accepter(VisiteurOption v) {
+		v.visiter(this);
+	}
+
+	public String getDateExpiration() {
+		return dateExpiration;
+	}
+
+	public void setDateExpiration(String dateExpiration) {
+		this.dateExpiration = dateExpiration;
+	}
+
+	
 }

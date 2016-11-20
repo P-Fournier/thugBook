@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import domaine.Utilisateur;
+import domaine.VisiteurOption;
 import domaine.messages.AccuseReception;
 import domaine.messages.Chiffrement;
 import domaine.messages.DelaiExpiration;
@@ -15,9 +16,8 @@ import domaine.messages.Message;
 import domaine.messages.Option;
 import domaine.messages.Prioritaire;
 
-public class MessageMapper {
+public class MessageMapper extends VisiteurOption{
 	
-	@SuppressWarnings("unused")
 	private static int id;
 	private static MessageMapper inst;
 	
@@ -45,8 +45,7 @@ public class MessageMapper {
 
 	public Discussion findByIdDiscussionUtilisateur(int idD) throws ClassNotFoundException, SQLException {
 		ArrayList<Message> lesMessages = new ArrayList<Message>();
-		String req = "SELECT m.id, m.idExp, m.contenu, m.dateEnvoie , v.vu FROM Message m JOIN MessageVu v " +
-				"ON v.idM = m.id WHERE m.idDiscussion = ?";
+		String req = "SELECT m.id, m.idExp, m.contenu, m.dateEnvoie FROM Message m WHERE m.idDiscussion = ?";
 		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
 		ps.setInt(1, idD);
 		ResultSet rs = ps.executeQuery();
@@ -72,14 +71,14 @@ public class MessageMapper {
 		if (rs.next()){
 			result.add(new Chiffrement());
 		}
-		req = "SELECT v.idU , v.vu FROM AccuseDeReception a JOIN MessageVu v on v.idM = a.idM  WHERE v.idM = ?";
+		req = "SELECT a.idU , a.vu FROM AccuseDeReception a WHERE a.idM = ?";
 		ps = DBConfig.getInstance().getConnection().prepareStatement(req);
 		ps.setInt(1, idM);
 		rs = ps.executeQuery();
 		HashMap<Utilisateur, Boolean> destinataires = new HashMap<Utilisateur,Boolean>();
 		while (rs.next()){
-			Utilisateur u = UtilisateurMapper.getInstance().findById(rs.getInt("v.idU"));
-			destinataires.put(u, rs.getBoolean("v.vu"));
+			Utilisateur u = UtilisateurMapper.getInstance().findById(rs.getInt("a.idU"));
+			destinataires.put(u, rs.getBoolean("a.vu"));
 		}
 		if (!destinataires.isEmpty()){
 			result.add(new AccuseReception(destinataires));
@@ -100,5 +99,86 @@ public class MessageMapper {
 			result.add(new DelaiExpiration(dateExpiration));
 		}
 		return result;
+	}
+
+	public void insert(Discussion selected, Message msg) throws ClassNotFoundException, SQLException {
+		String req = "INSERT INTO Message VALUES (?,?,?,?,?)";
+		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
+		msg.setId(id);
+		ps.setInt(1, id);
+		ps.setInt(2,msg.getExpediteur().getIdU());
+		ps.setString(3, msg.getContenu());
+		ps.setString(4, msg.getDateEnvoie());
+		ps.setInt(5, selected.getId());
+		ps.executeUpdate();
+		
+		for (Option o : msg.getOptions()){
+			MessageMapper.getInstance().accepter(o);
+		}
+		
+		id ++;
+	}
+
+	@Override
+	public void visiter(AccuseReception a)  {
+		String req = "INSERT INTO AccuseDeReception VALUES (?,?,false)";
+		for (Utilisateur u : a.getDestinataires().keySet()){
+			System.out.println(u);
+			PreparedStatement ps;
+			try {
+				ps = DBConfig.getInstance().getConnection().prepareStatement(req);
+				ps.setInt(1, id);
+				ps.setInt(2, u.getIdU());
+				ps.executeUpdate();
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	@Override
+	public void visiter(Chiffrement c) {
+		String req = "INSERT INTO Chiffrement VALUES (?)";
+		try {
+			PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
+			ps.setInt(1, id);
+			ps.executeUpdate();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+	}
+
+	@Override
+	public void visiter(Prioritaire p) {
+		String req = "INSERT INTO Prioritaire VALUES (?)";
+		try {
+			PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
+			ps.setInt(1, id);
+			ps.executeUpdate();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void visiter(DelaiExpiration d) {
+		String req = "INSERT INTO DelaiExpiration VALUES (?,?)";
+		try {
+			PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
+			ps.setInt(1, id);
+			ps.setString(2, d.getDateExpiration());
+			ps.executeUpdate();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 }

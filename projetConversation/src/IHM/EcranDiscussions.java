@@ -6,12 +6,20 @@ import java.awt.ScrollPane;
 import java.awt.Scrollbar;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Vector;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.border.CompoundBorder;
@@ -20,10 +28,17 @@ import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import main.Service;
+
 import domaine.GroupeDiscussion;
 import domaine.Utilisateur;
+import domaine.messages.AccuseReception;
+import domaine.messages.Chiffrement;
+import domaine.messages.DelaiExpiration;
 import domaine.messages.Discussion;
 import domaine.messages.Message;
+import domaine.messages.Option;
+import domaine.messages.Prioritaire;
 
 public class EcranDiscussions extends Ecran implements ActionListener, ListSelectionListener{
 	
@@ -34,6 +49,7 @@ public class EcranDiscussions extends Ecran implements ActionListener, ListSelec
 	private Fenetre fen;
 	private EcranUtilisateur accueil;
 	private HashMap<String,Discussion> discussions;
+	private HashMap<Discussion,ArrayList<Utilisateur>> destinataires;
 	private JButton retour; 
 	private JList<String> choix;
 	private ScrollPane affichageDiscussion;
@@ -55,6 +71,8 @@ public class EcranDiscussions extends Ecran implements ActionListener, ListSelec
 		this.fen = fen;
 		this.accueil = accueil;
 		this.selected = selected;
+		this.destinataires = new HashMap<Discussion,ArrayList<Utilisateur>>();
+		
 		fen.changerTitre("Réseau social - Mes discussions");
 		this.setLayout(null);
 		
@@ -67,11 +85,21 @@ public class EcranDiscussions extends Ecran implements ActionListener, ListSelec
 			nomDiscussion.addElement(u.getNdc());
 			Discussion discussionPrive = accueil.getU().getAmis().get(u);
 			discussions.put(u.getNdc(), discussionPrive);
+			ArrayList<Utilisateur> dest = new ArrayList<Utilisateur>();
+			dest.add(u);
+			destinataires.put(discussionPrive,dest);
 		}
 		
 		for (GroupeDiscussion grp: accueil.getU().getGroupeDiscussion()){
 			nomDiscussion.addElement(grp.getNom());
 			discussions.put(grp.getNom(), grp.getDiscussion());
+			ArrayList<Utilisateur> dest = new ArrayList<Utilisateur>();
+			for (Utilisateur u : grp.getListeUser()){
+				dest.add(u);
+			}
+			dest.add(grp.getModerateur());
+			dest.remove(accueil.getU());
+			destinataires.put(grp.getDiscussion(),dest);
 		}
 		
 		// Boutton retour
@@ -194,7 +222,49 @@ public class EcranDiscussions extends Ecran implements ActionListener, ListSelec
 			accueil.refresh();
 		}
 		if (e.getSource()==envoie){
-			
+			ArrayList<Option> options = new ArrayList<Option>();
+			if (chiffrement.isSelected()){
+				options.add(new Chiffrement());
+			}
+			if (accuse.isSelected()){
+				HashMap<Utilisateur,Boolean> envoieAccuse = new HashMap<Utilisateur,Boolean> ();
+				for (Utilisateur u : destinataires.get(selected)){
+					envoieAccuse.put(u, false);
+				}
+				envoieAccuse.remove(accueil.getU());
+				for (Utilisateur u :envoieAccuse.keySet()){
+					System.out.println(u.getNdc());
+				}
+				options.add(new AccuseReception(envoieAccuse));
+			}
+			if (prioritaire.isSelected()){
+				options.add(new Prioritaire());
+			}
+			if (delaiExpiration.isSelected()){
+				String nbJour = JOptionPane.showInputDialog(this, "Saisissez le délai d'expiration (en jour)");
+				try{
+					int nbJourClean = Integer.parseInt(nbJour);
+					GregorianCalendar cal = new GregorianCalendar();
+					cal.add(Calendar.DAY_OF_MONTH,nbJourClean); 
+					String dateButoir=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.FRANCE).format(cal.getTime());
+					options.add(new DelaiExpiration(dateButoir));
+				}catch (IllegalArgumentException exc){
+					JOptionPane.showMessageDialog(this, "ErreurSaisie");
+				}
+				
+			}
+			String dateCourante=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.FRANCE).format(new Date());
+			Message msg = new Message(accueil.getU(), saisie.getText(),dateCourante, options);
+			try {
+				Service.envoieMessage(selected,msg);
+			} catch (ClassNotFoundException e1) {
+				JOptionPane.showMessageDialog(this,e1.getMessage());
+				e1.printStackTrace();
+			} catch (SQLException e1) {
+				JOptionPane.showMessageDialog(this,e1.getMessage());
+				e1.printStackTrace();
+			}
+			refresh();
 		}
 	}
 	
@@ -207,7 +277,15 @@ public class EcranDiscussions extends Ecran implements ActionListener, ListSelec
 
 	public void valueChanged(ListSelectionEvent event) {
 		this.selected = discussions.get(choix.getSelectedValue());
-		refresh();
-		
+		try {
+			Service.vuPar(selected,accueil.getU());
+			refresh();
+		} catch (ClassNotFoundException e) {
+			JOptionPane.showMessageDialog(this, e.getMessage());
+			e.printStackTrace();
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(this, e.getMessage());
+			e.printStackTrace();
+		}
 	}
 }

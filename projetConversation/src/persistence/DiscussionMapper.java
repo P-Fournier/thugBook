@@ -4,6 +4,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import domaine.Utilisateur;
+import domaine.messages.Discussion;
+import domaine.messages.Message;
+
 public class DiscussionMapper {
 
 	public static int id;
@@ -42,6 +46,16 @@ public class DiscussionMapper {
 		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req); 
 		ps.setInt(1, idC);
 		ps.executeUpdate();
+	}
+
+	public void vuPar(Discussion selected, Utilisateur u) throws ClassNotFoundException, SQLException {
+		String req = "UPDATE AccuseDeReception SET vu = true WHERE idM = ? and idU = ? ";
+		for (Message msg : selected.getMessages()){
+			PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
+			ps.setInt(1, msg.getId());
+			ps.setInt(2,u.getIdU());
+			ps.executeUpdate();
+		}
 	}
 
 }

@@ -12,11 +12,11 @@ public class Message {
 	private String dateEnvoie;
 	private ArrayList<Option> options;
 	
-	public Message (Utilisateur expediteur, String contenu, String dateEnvoie, ArrayList<Option> options){
+	public Message (Utilisateur expediteur, String contenu, String dateEnvoie ,ArrayList<Option> options){
 		this.expediteur=expediteur;
 		this.contenu=contenu;
+		this.dateEnvoie= dateEnvoie;
 		this.options = options;
-		this.dateEnvoie = dateEnvoie;
 	}
 	
 	public Message (int id, Utilisateur expediteur, String contenu , String dateEnvoie,ArrayList<Option> options){
