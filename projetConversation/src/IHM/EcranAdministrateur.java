@@ -71,8 +71,9 @@ public class EcranAdministrateur extends EcranUtilisateur implements ActionListe
 		g.drawRoundRect(720,360,200,40,50,50);
 	}
 	public void actionPerformed(ActionEvent e) {
+		super.actionPerformed(e);
 		if(e.getSource()==gestionBoutton){
-			fen.changerEcran(new EcranAdministrateurProfil(fen,this));
+			fen.changerEcran(new EcranAdministrateurProfil(fen,this,null));
 		}
 		if (e.getSource()==groupeBoutton){
 			fen.changerEcran(new EcranAdministrateurGroupe(fen,this));

@@ -78,7 +78,7 @@ public class NotificationMapper extends VisiteurNotification{
 			int idN = rs.getInt("id");
 			String message = rs.getString("message");
 			boolean vue = rs.getBoolean("vue");
-			String dateEnvoie = rs.getString("dateEnvoie").substring(0, 19);
+			String dateEnvoie = rs.getString("dateEnvoie");
 			Discussion discussion = NotificationMapper.getInstance().findDiscussionNotifiée(idN);
 			if (discussion != null){
 				result.add(new NotificationDiscussion(message,vue,idN,dateEnvoie,u,discussion));

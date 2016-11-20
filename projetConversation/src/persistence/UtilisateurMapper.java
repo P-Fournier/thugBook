@@ -6,7 +6,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import domaine.CategorieCI;
 import domaine.GroupeDiscussion;
 import domaine.SousCategorieCI;
 import domaine.Utilisateur;
@@ -207,4 +206,10 @@ public class UtilisateurMapper {
 		return result;
 	}
 	
+	public void delete(String ndc) throws ClassNotFoundException, SQLException{
+		String req = "delete from Utilisateur where ndc = ? ";
+		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
+		ps.setString(1,ndc);
+		ps.executeUpdate() ; 
+	}
 }

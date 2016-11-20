@@ -17,8 +17,7 @@ public class EcranAdministrateurGroupe extends Ecran implements ActionListener {
 	}
 	@Override
 	public void refresh() {
-		// TODO Auto-generated method stub
-
+		
 	}
 
 	public void actionPerformed(ActionEvent e) {
