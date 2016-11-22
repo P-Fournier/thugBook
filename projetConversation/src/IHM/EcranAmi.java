@@ -14,6 +14,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
@@ -23,13 +24,12 @@ import main.Service;
 
 import domaine.Utilisateur;
 
-public class EcranAmi extends Ecran implements ActionListener{
+public class EcranAmi extends JPanel implements ActionListener{
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -4630560523226763002L;
-	private Fenetre fen;
 	private EcranUtilisateur accueil;
 	private JButton retour;
 	private JTextField nom;
@@ -42,10 +42,11 @@ public class EcranAmi extends Ecran implements ActionListener{
 	private JButton refuser;
 	private JList<Utilisateur> amis;
 	private JButton supprimer;
+	private Vector<Utilisateur> lesChoix;
+	private Vector<Utilisateur> lesDemandes;
 	
-	public EcranAmi (Fenetre fen,EcranUtilisateur ecran,JComboBox<Utilisateur> choixAjout) {
+	public EcranAmi (Fenetre fen,EcranUtilisateur ecran) {
 		
-		this.fen = fen;
 		fen.changerTitre("Réseau social - Mes amis");
 		this.accueil = ecran;
 		this.add(new Scrollbar());
@@ -89,7 +90,9 @@ public class EcranAmi extends Ecran implements ActionListener{
 		ajout.addActionListener(this);
 		ajout.setBorder(new CompoundBorder(new LineBorder(Color.white),new EmptyBorder(5,15,5,15)));
 		
-		this.choixAjout = choixAjout;
+		lesChoix = new Vector<Utilisateur>();
+		
+		this.choixAjout = new JComboBox<Utilisateur>(lesChoix);
 		
 		labelNom.setBounds(90, 160, 150, 30);
 		labelPrenom.setBounds(90, 210, 150, 30);
@@ -120,11 +123,12 @@ public class EcranAmi extends Ecran implements ActionListener{
 				
 		this.add(gestionDemandes);
 		
-		Vector<Utilisateur> mesDemandes = new Vector<Utilisateur>();
+		lesDemandes = new Vector<Utilisateur>();
 		for (Utilisateur u : accueil.getU().getDemandeAmisRecues()){
-			mesDemandes.addElement(u);
+			lesDemandes.addElement(u);
 		}
-		demandes = new JList<Utilisateur>(mesDemandes);
+		
+		demandes = new JList<Utilisateur>(lesDemandes);
 		
 		demandes.setForeground(Fenetre.BLEU_CIEL);
 		demandes.setBounds(530, 80, 410, 80);
@@ -236,11 +240,11 @@ public class EcranAmi extends Ecran implements ActionListener{
 				users.removeAll(accueil.getU().getAmis().keySet());
 				users.removeAll(accueil.getU().getDemandeAmisRecues());
 				users.removeAll(accueil.getU().getDemandesAmisSoumises());
+				lesChoix.clear();
 				for (Utilisateur u : users){
-					choixAjout.addItem(u);
+					System.out.println(u);
+					lesChoix.addElement(u);
 				}
-				choixAjout.setSelectedItem(null);
-				refresh();
 			} catch (ClassNotFoundException e1) {
 				JOptionPane.showMessageDialog(this, e1.getMessage());
 				e1.printStackTrace();
@@ -255,8 +259,8 @@ public class EcranAmi extends Ecran implements ActionListener{
 				try {
 					Service.demandeAmi(accueil.getU(),dest);
 					JOptionPane.showMessageDialog(this, "Demande d'ami envoyée");
-					choixAjout = new JComboBox<Utilisateur>();
-					refresh();
+					lesChoix.clear();
+					choixAjout.setSelectedItem(null);
 				} catch (ClassNotFoundException e1) {
 					JOptionPane.showMessageDialog(this, e1.getMessage());
 					e1.printStackTrace();
@@ -271,7 +275,8 @@ public class EcranAmi extends Ecran implements ActionListener{
 			if (dest != null){
 				try {
 					Service.refuserInvitation(accueil.getU(),dest);
-					refresh();
+					lesDemandes.remove(dest);
+					demandes.setListData(lesDemandes);
 				} catch (ClassNotFoundException e1) {
 					JOptionPane.showMessageDialog(this, e1.getMessage());
 					e1.printStackTrace();
@@ -286,7 +291,8 @@ public class EcranAmi extends Ecran implements ActionListener{
 			if (dest != null){
 				try {
 					Service.accepterInvitation(accueil.getU(),dest);
-					refresh();
+					lesDemandes.add(dest);
+					demandes.setListData(lesDemandes);
 				} catch (ClassNotFoundException e1) {
 					JOptionPane.showMessageDialog(this, e1.getMessage());
 					e1.printStackTrace();
@@ -317,12 +323,13 @@ public class EcranAmi extends Ecran implements ActionListener{
 						break;
 					default:
 				}
-				refresh();
+				Vector<Utilisateur> mesAmis = new Vector<Utilisateur>();
+				for (Utilisateur u : accueil.getU().getAmis().keySet()){
+					mesAmis.addElement(u);
+				}
+				amis.setListData(mesAmis);
 			}
 		}
 	}
 	
-	public void refresh (){
-		fen.changerEcran(new EcranAmi(fen, accueil, choixAjout));
-	}
 }

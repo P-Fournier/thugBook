@@ -2,7 +2,9 @@ package main;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import IHM.Ecran;
+
+import javax.swing.JPanel;
+
 import IHM.EcranAdministrateur;
 import IHM.EcranUtilisateur;
 import IHM.Fenetre;
@@ -29,7 +31,7 @@ import domaine.notification.NotificationSimple;
 
 public class Service {
 
-	public static Ecran connexion(String ndc, String password, Fenetre fen)
+	public static JPanel connexion(String ndc, String password, Fenetre fen)
 			throws ClassNotFoundException, SQLException, ConnexionException {
 		if (ndc.equals("") || password.equals("")) {
 			throw new ConnexionException("Il faut renseigner tout les champs");
@@ -47,19 +49,13 @@ public class Service {
 		}
 
 	}
-
-	/*
-	 * public static void deleteCI(ArrayList<SousCategorieCI> arrayList,
-	 * HashMap<CategorieCI, ArrayList<SousCategorieCI>> suppr) {
-	 * 
-	 * for (CategorieCI cate : suppr.keySet()){ ArrayList<SousCategorieCI>
-	 * result = arrayList.get(cate); result.removeAll(suppr.get(cate)); if
-	 * (result.isEmpty()){ arrayList.remove(cate); }else{ arrayList.put(cate,
-	 * result); } } }
-	 */
-
+	
 	public static ArrayList<CategorieCI> recupererLesCategories() throws ClassNotFoundException, SQLException {
 		return CategorieCIMapper.getInstance().all();
+	}
+	
+	public static ArrayList<SousCategorieCI> recupererLesSousCategories() throws ClassNotFoundException, SQLException {
+		return SousCategorieCIMapper.getInstance().all();
 	}
 
 	public static void updateProfil(Utilisateur u) throws ClassNotFoundException, SQLException {
@@ -123,9 +119,9 @@ public class Service {
 		DiscussionMapper.getInstance().supprimer(grp.getId());
 	}
 
-	public static void creerGroupe(String nomDuGroupe, Utilisateur moderateur)
+	public static GroupeDiscussion creerGroupe(String nomDuGroupe, Utilisateur moderateur)
 			throws ClassNotFoundException, SQLException {
-		GroupeDiscussionMapper.getInstance().creerGroupe(nomDuGroupe, moderateur);
+		return GroupeDiscussionMapper.getInstance().creerGroupe(nomDuGroupe, moderateur);
 	}
 
 	public static boolean existenceNomDeGroupe(String nom) throws ClassNotFoundException, SQLException {
@@ -156,5 +152,57 @@ public class Service {
 
 	public static void supprimerUtilisateur(String ndc) throws ClassNotFoundException, SQLException {
 		UtilisateurMapper.getInstance().delete(ndc);
+	}
+
+	public static void ajouterCI(CategorieCI nouvelleCategorie) throws ClassNotFoundException, SQLException {
+		CategorieCIMapper.getInstance().insert(nouvelleCategorie);
+	}
+
+	public static void ajouterCI(SousCategorieCI nouvelleSousCategorie) throws ClassNotFoundException, SQLException {
+		SousCategorieCIMapper.getInstance().insert(nouvelleSousCategorie);
+		
+	}
+
+	public static void supprimerCI(CategorieCI cate) throws ClassNotFoundException, SQLException {
+		CategorieCIMapper.getInstance().delete(cate);
+		
+	}
+
+	public static void supprimerCI(SousCategorieCI sousCate) throws ClassNotFoundException, SQLException {
+		SousCategorieCIMapper.getInstance().delete(sousCate);
+	}
+
+	public static void updateCategorieCI(CategorieCI cate) throws ClassNotFoundException, SQLException {
+		CategorieCIMapper.getInstance().update(cate);
+	}
+
+	public static void updateCategorieCI(SousCategorieCI sscate) throws ClassNotFoundException, SQLException {
+		SousCategorieCIMapper.getInstance().update(sscate);
+	}
+	
+	public static Utilisateur creerUtilisateur(String ndc, char[] password, char[] confirmationPassword, String nom,
+			String prenom) throws ConnexionException, ClassNotFoundException, SQLException {
+		//	Si les champs sont vides 
+		if (ndc.equals("") || password.equals("") || confirmationPassword.equals("") || nom.equals("")
+				|| prenom.equals("")) {
+			throw new ConnexionException("Il faut renseigner tout les champs");
+		}
+		String passwordClean = new String(password);
+		String passwordClean2 = new String(confirmationPassword);
+		if (passwordClean.equals(passwordClean2)) {
+			//	Si le nom de compte est déjà utilisée 
+			if(UtilisateurMapper.getInstance().verifNomDeCompte(ndc)){
+				throw new ConnexionException("Le nom de compte est déjà utilisé");
+			}
+			else {
+				Utilisateur u = new Utilisateur(0, nom, prenom, ndc, passwordClean);
+				UtilisateurMapper.getInstance().insert(u);
+				return u;
+			}
+		}
+		//	Si le mot de pas n'est pas le même que la confirmation 
+		else {
+			throw new ConnexionException("Le mot de passe n'est pas le même que celui dans la confirmation");
+		}
 	}
 }

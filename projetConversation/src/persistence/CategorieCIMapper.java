@@ -81,5 +81,19 @@ public class CategorieCIMapper {
 		}
 		return result;
 	}
+
+	public void delete(CategorieCI cate) throws ClassNotFoundException, SQLException {
+		String req = "DELETE FROM CategorieCI WHERE id = ?";
+		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
+		ps.setInt(1, cate.getIdCat());
+		ps.executeUpdate();
+	}
+
+	public void update(CategorieCI cate) throws ClassNotFoundException, SQLException {
+		String req = "UPDATE CategorieCI SET nom = ? WHERE id = ? ";
+		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
+		ps.setString(2, cate.getNom());
+		ps.setInt(1,cate.getIdCat());
+	}
 	
 }

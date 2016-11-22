@@ -26,7 +26,7 @@ public class DiscussionMapper {
 	
 	public int getCurrentId() throws SQLException, ClassNotFoundException{
 		String req = "SELECT max(id) FROM Discussion";
-		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
+		PreparedStatement ps  = DBConfig.getInstance().getConnection().prepareStatement(req);
 		ResultSet rs = ps.executeQuery();
 		if (rs.next()){
 			return rs.getInt(1)+1;

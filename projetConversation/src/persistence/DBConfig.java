@@ -9,6 +9,7 @@ public class DBConfig {
 static Scanner sc = new Scanner (System.in);
 	
 	static private DBConfig inst;
+	static private Connection connect;
 	
 	static public DBConfig getInstance(){
 		if (inst==null){
@@ -36,7 +37,10 @@ static Scanner sc = new Scanner (System.in);
 	}
 	
 	public Connection getConnection() throws ClassNotFoundException, SQLException {
-		Class.forName(JDBC_DRIVER);
-		return DriverManager.getConnection(url,user,password);
+		if (connect == null){
+			Class.forName(JDBC_DRIVER);
+			connect = DriverManager.getConnection(url,user,password);
+		}
+		return connect;
 	}
 }

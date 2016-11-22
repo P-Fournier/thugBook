@@ -10,9 +10,9 @@ import java.util.ArrayList;
 import java.util.Vector;
 
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JPanel;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
@@ -20,7 +20,7 @@ import javax.swing.border.LineBorder;
 import domaine.SousCategorieCI;
 import domaine.Utilisateur;
 
-public class EcranUtilisateur extends Ecran implements ActionListener{
+public class EcranUtilisateur extends JPanel implements ActionListener{
 	/**
 	 * 
 	 */
@@ -116,7 +116,7 @@ public class EcranUtilisateur extends Ecran implements ActionListener{
 		
 		this.add(univers);
 		
-		messageBoutton = new JButton ("Mes discussions ("+u.getAmis().size()+u.getGroupeDiscussion().size()+")");
+		messageBoutton = new JButton ("Mes discussions ("+(u.getAmis().size()+u.getGroupeDiscussion().size())+")");
 		messageBoutton.setBounds(50, 270, 180, 30);
 		messageBoutton.setBackground(Fenetre.BLEU_CIEL);
 		messageBoutton.setForeground(Color.white);
@@ -219,16 +219,16 @@ public class EcranUtilisateur extends Ecran implements ActionListener{
 			fen.changerEcran(new EcranGestionProfil(fen,this,temp));
 		}
 		if(e.getSource()==amiBoutton){
-			fen.changerEcran(new EcranAmi(fen,this,new JComboBox<Utilisateur>()));
+			fen.changerEcran(new EcranAmi(fen,this));
 		}
 		if(e.getSource()==notificationBoutton){
 			fen.changerEcran(new EcranNotification(fen,this));
 		}
 		if(e.getSource()==groupeBoutton){
-			fen.changerEcran(new EcranGroupe(fen,this,null));
+			fen.changerEcran(new EcranGroupe(fen,this));
 		}
 		if(e.getSource()==messageBoutton){
-			fen.changerEcran(new EcranDiscussions(fen,this,null));
+			fen.changerEcran(new EcranDiscussions(fen,this));
 		}
 		
 	}

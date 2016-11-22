@@ -12,6 +12,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.CompoundBorder;
@@ -29,13 +30,12 @@ import domaine.SousCategorieCI;
 import domaine.Utilisateur;
 
 
-public class EcranGestionProfil extends Ecran implements ActionListener{
+public class EcranGestionProfil extends JPanel implements ActionListener{
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -3897710674881354442L;
-	private Fenetre fen;
 	private EcranUtilisateur accueil;
 	private JTextField nom;
 	private JTextField prenom;
@@ -52,7 +52,6 @@ public class EcranGestionProfil extends Ecran implements ActionListener{
 	private JList<SousCategorieCI> listCI;
 	
 	public EcranGestionProfil(Fenetre fen, EcranUtilisateur accueil,Utilisateur modif){
-		this.fen = fen;
 		fen.changerTitre("Réseau social - Mon profil");
 		this.accueil=accueil;
 		this.modif = modif;
@@ -263,7 +262,6 @@ public class EcranGestionProfil extends Ecran implements ActionListener{
 				modif.getListeInteret().remove(scci);
 				modif.setNom(nom.getText());
 				modif.setPrenom(prenom.getText());
-				refresh();
 			}
 		}
 		if (e.getSource()==comboCate){
@@ -291,7 +289,6 @@ public class EcranGestionProfil extends Ecran implements ActionListener{
 			modif.getListeInteret().add(sousCategorie);
 			modif.setNom(nom.getText());
 			modif.setPrenom(prenom.getText());
-			refresh();
 		}
 		if (e.getSource()==bouttonSauvegarde){
 			accueil.getU().setNom(nom.getText());
@@ -352,11 +349,5 @@ public class EcranGestionProfil extends Ecran implements ActionListener{
 			}
 		}
 	}
-	
-	public void refresh(){
-		fen.changerEcran(new EcranGestionProfil(fen, accueil,modif));
-	}
-
-	
 	
 }

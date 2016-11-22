@@ -19,6 +19,7 @@ public class EcranAdministrateur extends EcranUtilisateur implements ActionListe
 	private static final long serialVersionUID = -8499510184767181684L;
 	private JButton gestionBoutton ;
 	private JButton groupeBoutton ;
+	private JButton gestionCI;
 	
 	public EcranAdministrateur(Utilisateur u, Fenetre fen) {
 		super (u,fen);
@@ -34,7 +35,7 @@ public class EcranAdministrateur extends EcranUtilisateur implements ActionListe
 		
 		//	Boutton Gestion Profil Utilisateur
 		gestionBoutton = new JButton ("Gestion Profil");
-		gestionBoutton.setBounds(480, 420, 170, 30);
+		gestionBoutton.setBounds(520, 420, 170, 30);
 		gestionBoutton.setBackground(Fenetre.BLEU_CIEL);
 		gestionBoutton.setForeground(Color.white);
 		gestionBoutton.setBorder(new CompoundBorder(new LineBorder(Color.white),new EmptyBorder(5,15,5,15)));
@@ -43,17 +44,21 @@ public class EcranAdministrateur extends EcranUtilisateur implements ActionListe
 			
 		//	Boutton Gestion Groupe Utilisateur
 		groupeBoutton = new JButton ("Gestion groupe");
-		groupeBoutton.setBounds(670, 420, 170, 30);
+		groupeBoutton.setBounds(730, 420, 170, 30);
 		groupeBoutton.setBackground(Fenetre.BLEU_CIEL);
 		groupeBoutton.setForeground(Color.white);
 		groupeBoutton.setBorder(new CompoundBorder(new LineBorder(Color.white),new EmptyBorder(5,15,5,15)));
 		groupeBoutton.addActionListener(this);
 		this.add(groupeBoutton);
-	}
-	
-	@Override
-	public void refresh(){
-		fen.changerEcran(new EcranAdministrateur(this.u,this.fen));
+		
+		// Boutton Gestion CI
+		gestionCI = new JButton("Gestion CI");
+		gestionCI.setBounds(520, 470, 170, 30);
+		gestionCI.setBackground(Fenetre.BLEU_CIEL);
+		gestionCI.setForeground(Color.white);
+		gestionCI.setBorder(new CompoundBorder(new LineBorder(Color.white),new EmptyBorder(5,15,5,15)));
+		gestionCI.addActionListener(this);
+		this.add(gestionCI);
 	}
 	
 	public void paintComponent (Graphics g){
@@ -73,10 +78,13 @@ public class EcranAdministrateur extends EcranUtilisateur implements ActionListe
 	public void actionPerformed(ActionEvent e) {
 		super.actionPerformed(e);
 		if(e.getSource()==gestionBoutton){
-			fen.changerEcran(new EcranAdministrateurProfil(fen,this,null));
+			fen.changerEcran(new EcranAdministrateurProfil(fen,this));
 		}
 		if (e.getSource()==groupeBoutton){
 			fen.changerEcran(new EcranAdministrateurGroupe(fen,this));
+		}
+		if (e.getSource()==gestionCI){
+			fen.changerEcran(new EcranGestionCI(fen,this));
 		}
 	}
 

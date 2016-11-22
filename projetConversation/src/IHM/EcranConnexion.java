@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.CompoundBorder;
@@ -20,7 +21,7 @@ import persistence.ConnexionException;
 
 import main.Service;
 
-public class EcranConnexion extends Ecran implements ActionListener{
+public class EcranConnexion extends JPanel implements ActionListener{
 	
 	/**
 	 * 
@@ -100,12 +101,5 @@ public class EcranConnexion extends Ecran implements ActionListener{
 			messageErreur.setText(e.getMessageErreur());
 		}
 	}
-
-	@Override
-	public void refresh() {
-		fen.changerEcran(new EcranConnexion(fen));
-	}
-	
-	
 	
 }

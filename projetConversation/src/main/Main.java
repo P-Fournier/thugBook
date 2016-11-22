@@ -4,14 +4,6 @@ import java.sql.SQLException;
 
 import persistence.DBConfig;
 import IHM.Fenetre;
-import java.util.*;
-
-import domaine.Utilisateur;
-import domaine.messages.ComparateurMessage;
-import domaine.messages.Discussion;
-import domaine.messages.Message;
-import domaine.messages.Option;
-import domaine.messages.Prioritaire;
 
 
 public class Main {

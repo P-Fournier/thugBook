@@ -17,6 +17,7 @@ DROP TABLE Prioritaire;
 DROP TABLE Message;
 DROP TABLE CategorieCI;
 DROP TABLE Utilisateur;
+DROP TABLE Discussion;
 
 -- CREATION DES TABLES 
 
@@ -33,11 +34,11 @@ CREATE TABLE Administrateur(
  );
 CREATE TABLE CategorieCI(
 	id int(6) primary key,
-    nom varchar(30)
+    nom varchar(30) unique
 );
 CREATE TABLE SousCategorieCI(
 	id int(6) primary key,
-    nom varchar(30),
+    nom varchar(30) unique,
     idC int(6),
     CONSTRAINT c2 FOREIGN KEY (idC) REFERENCES CategorieCI(id) ON DELETE CASCADE
 );

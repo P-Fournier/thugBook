@@ -20,6 +20,11 @@ public class SousCategorieCI {
 		this.nom = nom;
 		this.categorie = categorie;
 	}
+	
+	public SousCategorieCI (String nom, CategorieCI categorie){
+		this.nom = nom;
+		this.categorie = categorie;
+	}
 
 	public int getSsCat() {
 		return idSousCategorie;

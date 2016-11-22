@@ -13,6 +13,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
@@ -23,7 +24,7 @@ import domaine.notification.Notification;
 import domaine.notification.NotificationDemandeAmi;
 import domaine.notification.NotificationDiscussion;
 
-public class EcranNotification extends Ecran implements ActionListener{
+public class EcranNotification extends JPanel implements ActionListener{
 	/**
 	 * 
 	 */

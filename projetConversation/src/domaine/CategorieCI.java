@@ -9,6 +9,10 @@ public class CategorieCI {
 		this.nom = nom;
 	}
 	
+	public CategorieCI (String nom){
+		this.nom = nom;
+	}
+	
 	public String getNom() {
 		return nom;
 	}

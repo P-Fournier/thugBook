@@ -3,6 +3,7 @@ package IHM;
 import java.awt.Color;
 
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 public class Fenetre extends JFrame{
@@ -37,7 +38,7 @@ public class Fenetre extends JFrame{
 		
 	}
 	
-	public void changerEcran (Ecran pan){
+	public void changerEcran (JPanel pan){
 		if (pan != null){
 			this.remove(current);
 			current = new JScrollPane(pan);

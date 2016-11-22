@@ -40,37 +40,35 @@ import domaine.messages.Message;
 import domaine.messages.Option;
 import domaine.messages.Prioritaire;
 
-public class EcranDiscussions extends Ecran implements ActionListener, ListSelectionListener{
+public class EcranDiscussions extends JPanel implements ActionListener, ListSelectionListener{
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -6466304023765997464L;
-	private Fenetre fen;
 	private EcranUtilisateur accueil;
 	private HashMap<String,Discussion> discussions;
 	private HashMap<Discussion,ArrayList<Utilisateur>> destinataires;
 	private JButton retour; 
 	private JList<String> choix;
 	private ScrollPane affichageDiscussion;
-	private Discussion selected;
+	private Vector<Message> lesMessages;
 	private JTextArea saisie;
 	private JButton envoie;
 	private JCheckBox accuse;
 	private JCheckBox prioritaire;
 	private JCheckBox chiffrement;
 	private JCheckBox delaiExpiration;
+	private JList<Message> mesMessages;
 	
 	/**
 	 * pour donner les valeurs aux composants labels ...
 	 * @param fen
 	 * @param accueil
 	 */
-	public EcranDiscussions(Fenetre fen, EcranUtilisateur accueil, Discussion selected) {
+	public EcranDiscussions(Fenetre fen, EcranUtilisateur accueil) {
 		
-		this.fen = fen;
 		this.accueil = accueil;
-		this.selected = selected;
 		this.destinataires = new HashMap<Discussion,ArrayList<Utilisateur>>();
 		
 		fen.changerTitre("Réseau social - Mes discussions");
@@ -137,9 +135,6 @@ public class EcranDiscussions extends Ecran implements ActionListener, ListSelec
 		
 		this.add(panelGauche);
 		
-		 
-		
-		if (selected != null){
 			
 			// panel discussion
 			
@@ -147,13 +142,9 @@ public class EcranDiscussions extends Ecran implements ActionListener, ListSelec
 			
 			affichageDiscussion.setBounds(400,0,600,400);
 			
-			Vector<Message> messages = new Vector<Message>();
+			lesMessages = new Vector<Message>();
 			
-			for (Message msg : selected.getMessages()){
-				messages.add(msg);
-			}
-			
-			JList<Message> mesMessages = new JList<Message>(messages);
+			mesMessages = new JList<Message>(lesMessages);
 			
 			mesMessages.setCellRenderer(new RenduListeMessage());
 			
@@ -210,7 +201,6 @@ public class EcranDiscussions extends Ecran implements ActionListener, ListSelec
 			
 			this.add(panelEnvoie);
 			
-		}
 		
 	}
 	
@@ -237,6 +227,7 @@ public class EcranDiscussions extends Ecran implements ActionListener, ListSelec
 			}
 			if (accuse.isSelected()){
 				HashMap<Utilisateur,Boolean> envoieAccuse = new HashMap<Utilisateur,Boolean> ();
+				Discussion selected = discussions.get(choix.getSelectedValue());
 				for (Utilisateur u : destinataires.get(selected)){
 					envoieAccuse.put(u, false);
 				}
@@ -265,9 +256,12 @@ public class EcranDiscussions extends Ecran implements ActionListener, ListSelec
 			String dateCourante=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.FRANCE).format(new Date());
 			Message msg = new Message(accueil.getU(), saisie.getText(),dateCourante, options);
 			try {
+				Discussion selected = discussions.get(choix.getSelectedValue());
 				ArrayList<Utilisateur> dest = destinataires.get(selected);
 				dest.remove(accueil.getU());
 				Service.envoieMessage(selected,msg,dest);
+				lesMessages.add(msg);
+				mesMessages.setListData(lesMessages);
 			} catch (ClassNotFoundException e1) {
 				JOptionPane.showMessageDialog(this,e1.getMessage());
 				e1.printStackTrace();
@@ -275,22 +269,18 @@ public class EcranDiscussions extends Ecran implements ActionListener, ListSelec
 				JOptionPane.showMessageDialog(this,e1.getMessage());
 				e1.printStackTrace();
 			}
-			refresh();
 		}
-	}
-	
-	/**
-	 * rafraichir après modification
-	 */
-	public void refresh(){
-		fen.changerEcran(new EcranDiscussions(fen,accueil,selected));
 	}
 
 	public void valueChanged(ListSelectionEvent event) {
-		this.selected = discussions.get(choix.getSelectedValue());
+		Discussion selected = discussions.get(choix.getSelectedValue());
 		try {
 			Service.vuPar(selected,accueil.getU());
-			refresh();
+			lesMessages.clear();
+			for (Message msg : selected.getMessages()){
+				lesMessages.addElement(msg);
+			}
+			mesMessages.setListData(lesMessages);
 		} catch (ClassNotFoundException e) {
 			JOptionPane.showMessageDialog(this, e.getMessage());
 			e.printStackTrace();

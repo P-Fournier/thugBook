@@ -130,7 +130,7 @@ public class GroupeDiscussionMapper {
 		ps.executeUpdate();
 	}
 
-	public void creerGroupe(String nomDuGroupe, Utilisateur moderateur) throws ClassNotFoundException, SQLException {
+	public GroupeDiscussion creerGroupe(String nomDuGroupe, Utilisateur moderateur) throws ClassNotFoundException, SQLException {
 		String req= "INSERT INTO Discussion VALUES (?)";
 		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
 		ps.setInt(1, DiscussionMapper.id);
@@ -149,10 +149,11 @@ public class GroupeDiscussionMapper {
 		ps.setInt(2, moderateur.getIdU());
 		ps.executeUpdate();
 		
-		@SuppressWarnings("unused")
 		GroupeDiscussion grp = new GroupeDiscussion (DiscussionMapper.id,nomDuGroupe,moderateur,new Discussion(DiscussionMapper.id));
 		
 		DiscussionMapper.id ++;
+		
+		return grp;
 	}
 
 	public boolean existenceNomDeGroupe(String nom) throws ClassNotFoundException, SQLException {

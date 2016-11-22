@@ -119,6 +119,8 @@ public class UtilisateurMapper {
 		}
 	}
 
+	
+	
 	/**
 	 * insere un utilisateur en base (utilisé par l'admin)
 	 * @param u
@@ -126,7 +128,11 @@ public class UtilisateurMapper {
 	 * @throws SQLException
 	 */
 	public void insert (Utilisateur u) throws ClassNotFoundException, SQLException{
+		if (UtilisateurMapper.getInstance().verifNomDeCompte(u.getNdc())){
+			//throw new
+		}
 		String req = "INSERT INTO Utilisateur Values (?,?,?,?,?)";
+		
 		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
 		ps.setInt(1, id);
 		ps.setString(2,u.getNdc());
@@ -206,10 +212,26 @@ public class UtilisateurMapper {
 		return result;
 	}
 	
+	public boolean verifNomDeCompte(String ndc) throws ClassNotFoundException,SQLException{
+		String req = "SELECT ndc FROM Utilisateur"; 
+		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
+		ResultSet rs = ps.executeQuery();
+		while (rs.next()){
+			String x = rs.getString("ndc");
+			if (x.equals(ndc)){
+				return true ;
+			}
+		}
+		return false ;
+	}
 	public void delete(String ndc) throws ClassNotFoundException, SQLException{
+		/*for (Amis)
+			=> deleteAmitie(amiCourrant)
+		
 		String req = "delete from Utilisateur where ndc = ? ";
 		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
 		ps.setString(1,ndc);
 		ps.executeUpdate() ; 
+		*/
 	}
 }
