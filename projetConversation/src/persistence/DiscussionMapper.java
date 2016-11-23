@@ -35,10 +35,10 @@ public class DiscussionMapper {
 		}
 	}
 
-	public void supprimer(int idC) throws ClassNotFoundException, SQLException {
+	public void supprimer(Discussion d) throws ClassNotFoundException, SQLException {
 		String req = "DELETE FROM Discussion WHERE id = ?";
 		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req); 
-		ps.setInt(1, idC);
+		ps.setInt(1, d.getId());
 		ps.executeUpdate();
 	}
 

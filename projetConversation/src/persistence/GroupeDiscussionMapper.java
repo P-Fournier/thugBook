@@ -5,9 +5,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import persistence.virtualproxy.VirtualGroupeDiscussion;
+
 import domaine.GroupeDiscussion;
 import domaine.Utilisateur;
-import domaine.messages.Discussion;
 
 public class GroupeDiscussionMapper {
 	
@@ -62,7 +63,7 @@ public class GroupeDiscussionMapper {
 		ps.setInt(1, u.getIdU());
 		ResultSet rs = ps.executeQuery();
 		while (rs.next()){
-			result.add(GroupeDiscussionMapper.getInstance().findById(rs.getInt("idG"),u));
+			result.add(GroupeDiscussionMapper.getInstance().findById(rs.getInt("idG")));
 		}
 		return result;
 	}
@@ -74,29 +75,32 @@ public class GroupeDiscussionMapper {
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-	public GroupeDiscussion findById (int id,Utilisateur u) throws ClassNotFoundException, SQLException{
+	public GroupeDiscussion findById (int id) throws ClassNotFoundException, SQLException{
 		String req = "SELECT idM , nom FROM DiscussionGroupe WHERE idD = ?";
 		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
 		ps.setInt(1, id);
 		ResultSet rs = ps.executeQuery();
 		if (rs.next()){
-			Discussion discute = MessageMapper.getInstance().findByIdDiscussion(id);
 			int idM = rs.getInt("idM");
 			Utilisateur moderateur = UtilisateurMapper.getInstance().findById(idM);
 			String nom = rs.getString("nom");
-			GroupeDiscussion result = new GroupeDiscussion (id,nom,moderateur,discute);
-			req = "SELECT idU FROM AssociationGroupe WHERE idG = ? and idU != ?";
-			ps = DBConfig.getInstance().getConnection().prepareStatement(req);
-			ps.setInt(1, id);
-			ps.setInt(2, idM);
-			rs = ps.executeQuery();
-			while(rs.next()){
-				Utilisateur membres = UtilisateurMapper.getInstance().findById(rs.getInt("idU"));
-				result.addUser(membres);
-			}
+			VirtualGroupeDiscussion result = new VirtualGroupeDiscussion (id,nom,moderateur);
 			return result;
 		}
 		return null;
+	}
+	
+	public ArrayList<Utilisateur> trouverMembres(GroupeDiscussion grp) throws ClassNotFoundException, SQLException{
+		ArrayList<Utilisateur> result = new ArrayList<Utilisateur>();
+		String req = "SELECT idU FROM AssociationGroupe WHERE idG = ?";
+		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
+		ps.setInt(1, grp.getId());
+		ResultSet rs = ps.executeQuery();
+		while(rs.next()){
+			Utilisateur membres = UtilisateurMapper.getInstance().findById(rs.getInt("idU"));
+			result.add(membres);
+		}
+		return result;
 	}
 
 	public void supprimerUtilisateur(Utilisateur u, GroupeDiscussion grp) throws ClassNotFoundException, SQLException {
@@ -149,7 +153,7 @@ public class GroupeDiscussionMapper {
 		ps.setInt(2, moderateur.getIdU());
 		ps.executeUpdate();
 		
-		GroupeDiscussion grp = new GroupeDiscussion (DiscussionMapper.id,nomDuGroupe,moderateur,new Discussion(DiscussionMapper.id));
+		GroupeDiscussion grp = new GroupeDiscussion (DiscussionMapper.id,nomDuGroupe,moderateur);
 		
 		DiscussionMapper.id ++;
 		

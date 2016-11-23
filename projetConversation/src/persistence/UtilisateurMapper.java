@@ -6,11 +6,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import persistence.virtualproxy.VirtualUtilisateur;
+
 import domaine.GroupeDiscussion;
 import domaine.SousCategorieCI;
 import domaine.Utilisateur;
-import domaine.messages.Discussion;
-import domaine.notification.Notification;
 
 public class UtilisateurMapper {
 	
@@ -64,7 +64,7 @@ public class UtilisateurMapper {
 		if (loaded.containsKey(idC)){
 			return loaded.get(idC);
 		}
-		String req = "SELECT nom , prenom , ndc FROM Utilisateur WHERE id = ? ";
+		String req = "SELECT nom , prenom , ndc , password FROM Utilisateur WHERE id = ? ";
 		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
 		ps.setInt(1, idC);
 		ResultSet rs = ps.executeQuery();
@@ -72,7 +72,8 @@ public class UtilisateurMapper {
 			String nom = rs.getString("nom");
 			String prenom = rs.getString("prenom");
 			String ndc = rs.getString("ndc");
-			Utilisateur u = new Utilisateur (idC,nom,prenom,ndc);
+			String password = rs.getString("password");
+			Utilisateur u = new VirtualUtilisateur (idC,nom,prenom,ndc,password);
 			loaded.put(idC, u);
 			return u;
 		}
@@ -97,22 +98,8 @@ public class UtilisateurMapper {
 			int idC = rs.getInt("id");
 			String nom = rs.getString("nom");
 			String prenom = rs.getString("prenom");
-			
-			Utilisateur u = new Utilisateur (idC,nom,prenom,ndc,password);
+			VirtualUtilisateur u = new VirtualUtilisateur (idC,nom,prenom,ndc,password);
 			loaded.put(idC, u);
-			
-			ArrayList<SousCategorieCI> ci = SousCategorieCIMapper.getInstance().findByUser(idC);
-			u.setListeInteret(ci);
-			ArrayList<Utilisateur> demandeRecues = DemandeAmiMapper.getInstance().restituerDemandesRecues(u);
-			u.setDemandeAmisRecues(demandeRecues);
-			ArrayList<Utilisateur> demandeSoumises = DemandeAmiMapper.getInstance().restituerDemandesSoumises(u);
-			u.setDemandesAmisSoumises(demandeSoumises);
-			HashMap<Utilisateur,Discussion> amis = AmiMapper.getInstance().restituerAmis(u);
-			u.setAmis(amis);
-			ArrayList<GroupeDiscussion> groupes = GroupeDiscussionMapper.getInstance().restituerGroupe(u);
-			u.setGroupeDiscussion(groupes);
-			ArrayList<Notification> notif = NotificationMapper.getInstance().restituerNotification(u);
-			u.setNotifications(notif);
 			return u;
 		}else{
 			return null;
@@ -128,9 +115,6 @@ public class UtilisateurMapper {
 	 * @throws SQLException
 	 */
 	public void insert (Utilisateur u) throws ClassNotFoundException, SQLException{
-		if (UtilisateurMapper.getInstance().verifNomDeCompte(u.getNdc())){
-			//throw new
-		}
 		String req = "INSERT INTO Utilisateur Values (?,?,?,?,?)";
 		
 		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
@@ -193,7 +177,7 @@ public class UtilisateurMapper {
 	}
 
 	public ArrayList<Utilisateur> findByNom(String nom, String prenom) throws ClassNotFoundException, SQLException {
-		String req = "SELECT id , ndc FROM Utilisateur WHERE nom = ? AND prenom = ?";
+		String req = "SELECT id , ndc , password FROM Utilisateur WHERE nom = ? AND prenom = ?";
 		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
 		ps.setString(1,nom);
 		ps.setString(2,prenom);
@@ -204,7 +188,7 @@ public class UtilisateurMapper {
 			if (loaded.containsKey(idC)){
 				result.add(loaded.get(idC));
 			}else{
-				Utilisateur u = new Utilisateur(idC,nom,prenom,rs.getString("ndc"));
+				Utilisateur u = new VirtualUtilisateur(idC,nom,prenom,rs.getString("ndc"),rs.getString("password"));
 				result.add(u);
 				loaded.put(idC, u);
 			}
@@ -212,26 +196,21 @@ public class UtilisateurMapper {
 		return result;
 	}
 	
-	public boolean verifNomDeCompte(String ndc) throws ClassNotFoundException,SQLException{
-		String req = "SELECT ndc FROM Utilisateur"; 
-		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
-		ResultSet rs = ps.executeQuery();
-		while (rs.next()){
-			String x = rs.getString("ndc");
-			if (x.equals(ndc)){
-				return true ;
+	public void delete(Utilisateur u) throws ClassNotFoundException, SQLException{
+		for (Utilisateur ami : u.getAmis().keySet()){
+			DiscussionMapper.getInstance().supprimer(u.getAmis().get(ami));
+			ami.getAmis().remove(u);
+		}
+		
+		for (GroupeDiscussion grp : u.getGroupeDiscussion()){
+			if (grp.getModerateur()==u){
+				DiscussionMapper.getInstance().supprimer(grp.getDiscussion());
 			}
 		}
-		return false ;
-	}
-	public void delete(String ndc) throws ClassNotFoundException, SQLException{
-		/*for (Amis)
-			=> deleteAmitie(amiCourrant)
 		
-		String req = "delete from Utilisateur where ndc = ? ";
+		String req = "delete from Utilisateur where id = ? ";
 		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
-		ps.setString(1,ndc);
+		ps.setInt(1,u.getIdU());
 		ps.executeUpdate() ; 
-		*/
 	}
 }

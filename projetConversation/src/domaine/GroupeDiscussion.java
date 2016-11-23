@@ -4,19 +4,16 @@ import java.util.ArrayList;
 
 import domaine.messages.Discussion;
 public class GroupeDiscussion {
-	private String nom;
-	private Utilisateur moderateur;
-	private ArrayList<Utilisateur> listeUser;
-	private int id;
-	private Discussion discussion ;
+	protected String nom;
+	protected Utilisateur moderateur;
+	protected ArrayList<Utilisateur> listeUser;
+	protected int id;
+	protected Discussion discussion ;
 	
-	public GroupeDiscussion (int id , String nom , Utilisateur moderateur , Discussion discussion){
+	public GroupeDiscussion (int id , String nom , Utilisateur moderateur){
 		this.id = id;
 		this.nom = nom;
 		this.moderateur = moderateur;
-		moderateur.getGroupeDiscussion().add(this);
-		this.discussion = discussion;
-		this.listeUser = new ArrayList<Utilisateur>();
 	}
 	
 	public void addUser (Utilisateur u){

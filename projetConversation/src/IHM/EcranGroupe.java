@@ -405,6 +405,7 @@ public class EcranGroupe extends JPanel implements ActionListener, ListSelection
 					if (!Service.existenceNomDeGroupe(nomDuGroupe.getText())){
 						try {
 							GroupeDiscussion cree = Service.creerGroupe(nomDuGroupe.getText(),accueil.getU());
+							accueil.getU().getGroupeDiscussion().add(cree);
 							groupes.addElement(cree);
 							listeGroupes.setListData(groupes);
 						}catch (ClassNotFoundException e1) {

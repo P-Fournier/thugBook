@@ -6,6 +6,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
+
 import domaine.CategorieCI;
 
 public class CategorieCIMapper {
@@ -38,7 +40,7 @@ public class CategorieCIMapper {
 		}
 	}
 	
-	public void insert (CategorieCI cate) throws ClassNotFoundException, SQLException{
+	public void insert (CategorieCI cate) throws MySQLIntegrityConstraintViolationException,ClassNotFoundException, SQLException{
 		String req = "INSERT INTO CategorieCI VALUES (?,?)";
 		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
 		cate.setIdCat(id);

@@ -87,5 +87,10 @@ public class EcranAdministrateur extends EcranUtilisateur implements ActionListe
 			fen.changerEcran(new EcranGestionCI(fen,this));
 		}
 	}
+	
+	@Override
+	public void refresh() {
+		fen.changerEcran(new EcranAdministrateur(u,fen));
+	}
 
 }

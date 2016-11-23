@@ -13,12 +13,12 @@ public class Utilisateur {
 	private String prenom;
 	private String ndc;
 	private String password;
-	private ArrayList<SousCategorieCI> listeInteret;
-	private HashMap<Utilisateur,Discussion> amis;
-	private ArrayList<Utilisateur> demandeAmisRecues;
-	private ArrayList<Utilisateur> demandesAmisSoumises;
-	private ArrayList<GroupeDiscussion> groupeDiscussion;
-	private ArrayList<Notification> notifications;
+	protected ArrayList<SousCategorieCI> listeInteret;
+	protected HashMap<Utilisateur,Discussion> amis;
+	protected ArrayList<Utilisateur> demandeAmisRecues;
+	protected ArrayList<Utilisateur> demandesAmisSoumises;
+	protected ArrayList<GroupeDiscussion> groupeDiscussion;
+	protected ArrayList<Notification> notifications;
 
 
 	public Utilisateur(int id, String nom, String prenom, String ndc,
@@ -36,12 +36,26 @@ public class Utilisateur {
 		this.notifications = new ArrayList<Notification>();
 	}
 
-	public Utilisateur(int id, String nom, String prenom, String ndc) {
+	/*public Utilisateur(int id, String nom, String prenom, String ndc) {
 		this.idU = id;
 		this.nom = nom;
 		this.prenom = prenom;
 		this.ndc = ndc;
 		this.listeInteret = new ArrayList<SousCategorieCI> ();
+		this.amis = new HashMap<Utilisateur,Discussion>();
+		this.demandeAmisRecues = new ArrayList<Utilisateur>();
+		this.demandesAmisSoumises = new ArrayList<Utilisateur>();
+		this.groupeDiscussion = new ArrayList<GroupeDiscussion>();
+		this.notifications = new ArrayList<Notification>();
+	}*/
+	
+	public Utilisateur(String nom, String prenom, String ndc,
+			String password) {
+		this.nom = nom;
+		this.prenom = prenom;
+		this.ndc = ndc;
+		this.password = password;
+		this.listeInteret = new ArrayList<SousCategorieCI>();
 		this.amis = new HashMap<Utilisateur,Discussion>();
 		this.demandeAmisRecues = new ArrayList<Utilisateur>();
 		this.demandesAmisSoumises = new ArrayList<Utilisateur>();

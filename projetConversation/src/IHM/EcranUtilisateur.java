@@ -116,7 +116,7 @@ public class EcranUtilisateur extends JPanel implements ActionListener{
 		
 		this.add(univers);
 		
-		messageBoutton = new JButton ("Mes discussions ("+(u.getAmis().size()+u.getGroupeDiscussion().size())+")");
+		messageBoutton = new JButton ("Mes discussions");
 		messageBoutton.setBounds(50, 270, 180, 30);
 		messageBoutton.setBackground(Fenetre.BLEU_CIEL);
 		messageBoutton.setForeground(Color.white);
@@ -124,7 +124,7 @@ public class EcranUtilisateur extends JPanel implements ActionListener{
 		messageBoutton.addActionListener(this);
 		this.add(messageBoutton);
 		
-		groupeBoutton = new JButton ("Mes groupes ("+u.getGroupeDiscussion().size()+")");
+		groupeBoutton = new JButton ("Mes groupes");
 		groupeBoutton.setBounds(250, 270, 180, 30);
 		groupeBoutton.setBackground(Fenetre.BLEU_CIEL);
 		groupeBoutton.setForeground(Color.white);
@@ -132,7 +132,7 @@ public class EcranUtilisateur extends JPanel implements ActionListener{
 		groupeBoutton.addActionListener(this);
 		this.add(groupeBoutton);
 		
-		amiBoutton = new JButton ("Mes amis ("+u.getAmis().size()+")");
+		amiBoutton = new JButton ("Mes amis");
 		amiBoutton.setBounds(50,310,180,30);
 		amiBoutton.setBackground(Fenetre.BLEU_CIEL);
 		amiBoutton.setForeground(Color.white);
@@ -140,7 +140,7 @@ public class EcranUtilisateur extends JPanel implements ActionListener{
 		amiBoutton.addActionListener(this);
 		this.add(amiBoutton);
 		
-		notificationBoutton = new JButton ("Notifications ("+u.nbNotifNonVues()+")");
+		notificationBoutton = new JButton ("Notifications");
 		notificationBoutton.setBounds(250, 310, 180, 30);
 		notificationBoutton.setBackground(Fenetre.BLEU_CIEL);
 		notificationBoutton.setForeground(Color.white);
@@ -214,7 +214,7 @@ public class EcranUtilisateur extends JPanel implements ActionListener{
 			for (SousCategorieCI ssc : u.getListeInteret()){
 				ci.add(ssc);
 			}
-			Utilisateur temp = new Utilisateur (u.getIdU(),u.getNom(),u.getPrenom(),u.getNdc());
+			Utilisateur temp = new Utilisateur (u.getIdU(),u.getNom(),u.getPrenom(),u.getNdc(),u.getPassword());
 			temp.setListeInteret(ci);
 			fen.changerEcran(new EcranGestionProfil(fen,this,temp));
 		}

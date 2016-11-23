@@ -17,6 +17,8 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
+import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
+
 import main.Service;
 
 import domaine.CategorieCI;
@@ -29,7 +31,6 @@ public class EcranGestionCI extends JPanel implements ActionListener{
 	 */
 	private static final long serialVersionUID = -1039853044810865400L;
 	private EcranAdministrateur accueil;
-	private Fenetre fen;
 	private JButton retour;
 	private JTextField nomNouvelleCategorie;
 	private JButton ajoutNouvelleCategorie;
@@ -312,7 +313,7 @@ public class EcranGestionCI extends JPanel implements ActionListener{
 
 	public void actionPerformed(ActionEvent event) {
 		if (event.getSource()==retour){
-			fen.changerEcran(accueil);
+			accueil.refresh();
 		}
 		if (event.getSource()==ajoutNouvelleCategorie){
 			CategorieCI nouvelleCategorie = new CategorieCI (nomNouvelleCategorie.getText());
@@ -320,6 +321,8 @@ public class EcranGestionCI extends JPanel implements ActionListener{
 				Service.ajouterCI(nouvelleCategorie);
 				lesCate.addElement(nouvelleCategorie);
 				nomNouvelleCategorie.setText(null);
+			} catch (MySQLIntegrityConstraintViolationException e){
+				JOptionPane.showMessageDialog(this, "Ce nom de catégorie est déjà utilisé");
 			} catch (ClassNotFoundException e) {
 				JOptionPane.showMessageDialog(this, e.getMessage());
 				e.printStackTrace();
@@ -338,6 +341,8 @@ public class EcranGestionCI extends JPanel implements ActionListener{
 					lesSousCate.add(nouvelleSousCategorie);
 					nomNouvelleSsCategorie.setText(null);
 					choixCategorieCreation.setSelectedItem(null);
+				} catch (MySQLIntegrityConstraintViolationException e){
+					JOptionPane.showMessageDialog(this, "Ce nom de sous-catégorie est déjà utilisé");
 				} catch (ClassNotFoundException e) {
 					JOptionPane.showMessageDialog(this, e.getMessage());
 					e.printStackTrace();

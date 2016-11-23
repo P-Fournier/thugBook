@@ -25,6 +25,8 @@ import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
+
 import domaine.Utilisateur;
 import main.Service;
 import persistence.ConnexionException;
@@ -279,7 +281,7 @@ public class EcranAdministrateurProfil extends JPanel implements ActionListener,
 		Utilisateur selected = list.getSelectedValue(); 
 		if (e.getSource() == supprimerBoutton) {
 			try {
-				Service.supprimerUtilisateur(selected.getNdc());
+				Service.supprimerUtilisateur(selected);
 				ut.remove(selected);
 				list.setListData(ut);
 			} catch (ClassNotFoundException x) {
@@ -301,6 +303,8 @@ public class EcranAdministrateurProfil extends JPanel implements ActionListener,
 				fieldCreatePrenom.setText(null);
 				fieldCreatePassword.setText(null);
 				fieldConfirmationPassword.setText(null);
+			} catch (MySQLIntegrityConstraintViolationException e1){
+				JOptionPane.showMessageDialog(this, "Ce nom de compte est déjà utilisé");
 			} catch (ClassNotFoundException e1) {
 				JOptionPane.showMessageDialog(this, e1.getMessage());
 				e1.printStackTrace();

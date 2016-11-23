@@ -5,6 +5,8 @@ import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
+import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
+
 import IHM.EcranAdministrateur;
 import IHM.EcranUtilisateur;
 import IHM.Fenetre;
@@ -116,7 +118,7 @@ public class Service {
 	}
 
 	public static void supprimerGroupe(GroupeDiscussion grp) throws ClassNotFoundException, SQLException {
-		DiscussionMapper.getInstance().supprimer(grp.getId());
+		DiscussionMapper.getInstance().supprimer(grp.getDiscussion());
 	}
 
 	public static GroupeDiscussion creerGroupe(String nomDuGroupe, Utilisateur moderateur)
@@ -150,15 +152,15 @@ public class Service {
 		DiscussionMapper.getInstance().vuPar(selected, u);
 	}
 
-	public static void supprimerUtilisateur(String ndc) throws ClassNotFoundException, SQLException {
-		UtilisateurMapper.getInstance().delete(ndc);
+	public static void supprimerUtilisateur(Utilisateur u) throws ClassNotFoundException, SQLException {
+		UtilisateurMapper.getInstance().delete(u);
 	}
 
-	public static void ajouterCI(CategorieCI nouvelleCategorie) throws ClassNotFoundException, SQLException {
+	public static void ajouterCI(CategorieCI nouvelleCategorie) throws MySQLIntegrityConstraintViolationException,ClassNotFoundException, SQLException {
 		CategorieCIMapper.getInstance().insert(nouvelleCategorie);
 	}
 
-	public static void ajouterCI(SousCategorieCI nouvelleSousCategorie) throws ClassNotFoundException, SQLException {
+	public static void ajouterCI(SousCategorieCI nouvelleSousCategorie) throws MySQLIntegrityConstraintViolationException,ClassNotFoundException, SQLException {
 		SousCategorieCIMapper.getInstance().insert(nouvelleSousCategorie);
 		
 	}
@@ -190,15 +192,9 @@ public class Service {
 		String passwordClean = new String(password);
 		String passwordClean2 = new String(confirmationPassword);
 		if (passwordClean.equals(passwordClean2)) {
-			//	Si le nom de compte est déjà utilisée 
-			if(UtilisateurMapper.getInstance().verifNomDeCompte(ndc)){
-				throw new ConnexionException("Le nom de compte est déjà utilisé");
-			}
-			else {
-				Utilisateur u = new Utilisateur(0, nom, prenom, ndc, passwordClean);
-				UtilisateurMapper.getInstance().insert(u);
-				return u;
-			}
+			Utilisateur u = new Utilisateur(nom, prenom, ndc, passwordClean);
+			UtilisateurMapper.getInstance().insert(u);
+			return u;
 		}
 		//	Si le mot de pas n'est pas le même que la confirmation 
 		else {

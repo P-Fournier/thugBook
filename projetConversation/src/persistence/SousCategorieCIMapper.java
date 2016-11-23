@@ -6,8 +6,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
+
 import domaine.CategorieCI;
 import domaine.SousCategorieCI;
+import domaine.Utilisateur;
 
 public class SousCategorieCIMapper {
 	private static SousCategorieCIMapper inst;
@@ -37,10 +40,10 @@ public class SousCategorieCIMapper {
 		}
 	}
 	
-	public ArrayList<SousCategorieCI> findByUser (int idUser) throws ClassNotFoundException, SQLException{
+	public ArrayList<SousCategorieCI> findByUser (Utilisateur u) throws ClassNotFoundException, SQLException{
 		String req = "SELECT idSC FROM AssociationCI WHERE idU = ?";
 		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
-		ps.setInt(1,idUser);
+		ps.setInt(1,u.getIdU());
 		ResultSet rs = ps.executeQuery();
 		
 		ArrayList<Integer> idSCs = new ArrayList<Integer>();
@@ -76,7 +79,7 @@ public class SousCategorieCIMapper {
 		return result;
 	}
 
-	public void insert(SousCategorieCI scci) throws ClassNotFoundException, SQLException {
+	public void insert(SousCategorieCI scci) throws MySQLIntegrityConstraintViolationException,ClassNotFoundException, SQLException {
 		String req = "INSERT INTO SousCategorieCI VALUES (?,?,?)";
 		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
 		scci.setSsCat(id);
