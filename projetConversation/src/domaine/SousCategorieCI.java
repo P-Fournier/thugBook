@@ -2,19 +2,12 @@ package domaine;
 
 public class SousCategorieCI {
 	
-	private int idSousCategorie;
-	private String nom;
-	private CategorieCI categorie;
+	private int idSousCategorie;		// id en base
+	private String nom;					// nom de la sous catégorie en base
+	private CategorieCI categorie;		// catégorie rattaché à cette sous catégorie
 
+	// CONSTRUCTEUR(S)
 	
-	public CategorieCI getCategorie() {
-		return categorie;
-	}
-
-	public void setCategorie(CategorieCI categorie) {
-		this.categorie = categorie;
-	}
-
 	public SousCategorieCI(Integer idCI, String nom, CategorieCI categorie) {
 		this.idSousCategorie = idCI;
 		this.nom = nom;
@@ -25,13 +18,15 @@ public class SousCategorieCI {
 		this.nom = nom;
 		this.categorie = categorie;
 	}
-
-	public int getSsCat() {
-		return idSousCategorie;
+	
+	// ACCESSEUR(S)
+	
+	public CategorieCI getCategorie() {
+		return categorie;
 	}
 
-	public void setSsCat(int ssCat) {
-		this.idSousCategorie = ssCat;
+	public void setCategorie(CategorieCI categorie) {
+		this.categorie = categorie;
 	}
 
 	public String getNom() {
@@ -49,6 +44,8 @@ public class SousCategorieCI {
 	public void setIdSousCategorie(int idSousCategorie) {
 		this.idSousCategorie = idSousCategorie;
 	}
+	
+	// FONCTION(S)
 	
 	public String toString (){
 		return this.categorie.getNom()+" - "+this.nom;

@@ -7,20 +7,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import domaine.Utilisateur;
-import domaine.messages.Discussion;
+import domaine.messages.DiscussionPrive;
 
-public class AmiMapper {
+public class DiscussionPriveMapper {
 	
-	private static AmiMapper inst;
+	private static DiscussionPriveMapper inst;
 	
-	public static AmiMapper getInstance() throws ClassNotFoundException, SQLException{
+	public static DiscussionPriveMapper getInstance() throws ClassNotFoundException, SQLException{
 		if (inst == null){
-			inst = new AmiMapper();
+			inst = new DiscussionPriveMapper();
 		}
 		return inst;
 	}
 	
-	public AmiMapper () throws ClassNotFoundException, SQLException{
+	public DiscussionPriveMapper () throws ClassNotFoundException, SQLException{
 		DiscussionMapper.getInstance();
 	}
 	
@@ -37,7 +37,7 @@ public class AmiMapper {
 		ps.setInt(1, DiscussionMapper.id);
 		ps.executeUpdate();
 		
-		Discussion discute = new Discussion (DiscussionMapper.id);
+		DiscussionPrive discute = new DiscussionPrive (DiscussionMapper.id);
 		u1.getAmis().put(u2,discute);
 		u2.getAmis().put(u1,discute);
 		
@@ -52,6 +52,8 @@ public class AmiMapper {
 		ps.setInt(2,u2.getIdU());
 		ps.executeUpdate();
 		
+		DiscussionMapper.loaded.put(DiscussionMapper.id,discute);
+		
 		DiscussionMapper.id ++;
 	}
 	
@@ -62,9 +64,9 @@ public class AmiMapper {
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-	public HashMap<Utilisateur,Discussion> restituerAmis (Utilisateur u) throws ClassNotFoundException, SQLException{
+	public HashMap<Utilisateur,DiscussionPrive> restituerAmis (Utilisateur u) throws ClassNotFoundException, SQLException{
 		ArrayList<Integer> idDiscussions = new ArrayList<Integer> ();
-		HashMap<Utilisateur,Discussion> result = new HashMap<Utilisateur,Discussion>();
+		HashMap<Utilisateur,DiscussionPrive> result = new HashMap<Utilisateur,DiscussionPrive>();
 		String req = "SELECT idD FROM DiscussionUtilisateur WHERE idU = ?";
 		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
 		ps.setInt(1,u.getIdU());
@@ -81,7 +83,7 @@ public class AmiMapper {
 			rs = ps.executeQuery();
 			rs.next();
 			Utilisateur ami = UtilisateurMapper.getInstance().findById(rs.getInt("idU"));
-			Discussion discussion = MessageMapper.getInstance().findByIdDiscussion(i);
+			DiscussionPrive discussion = (DiscussionPrive) DiscussionMapper.getInstance().findBy(i);
 			result.put(ami,discussion);
 		}
 		return result;
@@ -113,6 +115,8 @@ public class AmiMapper {
 		
 		u.getAmis().remove(suppr);
 		suppr.getAmis().remove(u);
+		DiscussionMapper.loaded.remove(idDiscussionASupprimer);
 		
 	}
+	
 }

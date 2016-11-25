@@ -5,11 +5,14 @@ import java.sql.SQLException;
 import domaine.Utilisateur;
 
 public abstract class Notification implements VisitableNotification{
-	private String message;
-	private boolean vue;
-	private int id;
-	private Utilisateur destinataire;
-	private String dateEnvoie;
+	
+	private String message;				// message de la notification
+	private boolean vue;				// indique si l'utilisateur à déjà consulté la notification
+	private int id;						// id de la notification en base
+	private Utilisateur destinataire;	// utilisateur visé par la notification
+	private String dateEnvoie;			// date de création de la notification
+	
+	// CONSTRUCTEUR(S)
 	
 	public Notification (String message , boolean vue, Utilisateur destinataire){
 		this.message = message;
@@ -25,6 +28,8 @@ public abstract class Notification implements VisitableNotification{
 		this.destinataire = destinataire;
 	}
 
+	// ACCESSEUR(S)
+	
 	public String getMessage() {
 		return message;
 	}
@@ -65,6 +70,8 @@ public abstract class Notification implements VisitableNotification{
 		this.destinataire = destinataire;
 	}
 	
+	// FONCTION(S)
+
 	public abstract void accepter(VisiteurNotification v) throws ClassNotFoundException, SQLException;
 
 }

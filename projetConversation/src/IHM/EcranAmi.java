@@ -30,20 +30,25 @@ public class EcranAmi extends JPanel implements ActionListener{
 	 * 
 	 */
 	private static final long serialVersionUID = -4630560523226763002L;
-	private EcranUtilisateur accueil;
-	private JButton retour;
-	private JTextField nom;
-	private JTextField prenom;
-	private JButton rechercherParNom;
-	private JComboBox<Utilisateur> choixAjout ;
-	private JButton ajout;
-	private JList<Utilisateur> demandes;
-	private JButton accepter;
-	private JButton refuser;
-	private JList<Utilisateur> amis;
-	private JButton supprimer;
-	private Vector<Utilisateur> lesChoix;
-	private Vector<Utilisateur> lesDemandes;
+	
+	private EcranUtilisateur accueil;			// ecran d'accueil par lequel on est arrivé sur cet écran
+	private JButton retour;						// boutton permettant le retour à la page d'accueil
+	
+	private JTextField nom;						// champs permettant la recherche 
+	private JTextField prenom;					// par nom et prénom
+	private JButton rechercherParNom;			// boutton permettant de rechercher les résultats correspondant à la recherche
+	private JComboBox<Utilisateur> choixAjout ;	// résultat retourne dans la recherche pour selection de l'utilisateur pour envoie d'une demande d'ami
+	private JButton ajout;						// boutton permettant l'envoie d'une demande d'ami suite au choix
+	
+	private JList<Utilisateur> demandes;		// liste de l'ensemble des demandes d'amis recues
+	private JButton accepter;					// boutton permettant d'ajouté en ami l'utilisateur selection dans la liste des demandes  
+	private JButton refuser;					// boutton permettant de refuser la demande d'ami
+	
+	private JList<Utilisateur> amis;			// liste des amis de l'utilisateur
+	private JButton supprimer;					// boutton permettant de supprimer l'utilisateur choisit
+	
+	private Vector<Utilisateur> lesChoix;		// permet de renseigner la comboBox choixAjout
+	private Vector<Utilisateur> lesDemandes;	// permet de renseigner la JList demandes
 	
 	public EcranAmi (Fenetre fen,EcranUtilisateur ecran) {
 		
@@ -54,54 +59,57 @@ public class EcranAmi extends JPanel implements ActionListener{
 		
 		// retour menu
 		
-		this.retour = new JButton ("Retour");
+		retour = new JButton ("Retour");
+		
 		retour.setBounds (100,40,150,30);
 		retour.setForeground(Color.WHITE);
 		retour.setBackground(Fenetre.BLEU_CIEL);
 		retour.addActionListener(this);
 		retour.setBorder(new CompoundBorder(new LineBorder(Color.white),new EmptyBorder(5,15,5,15)));
+		
 		this.add(retour);
 		
 		// carré ajout ami par nom prenom
 		
 		
 		JLabel identi = new JLabel("Recherche ami par identité");
-				
-		identi.setBounds(220, 110,250, 20);
-		identi.setForeground(Fenetre.BLEU_CIEL);
-				
-		this.add(identi);
-		
 		JLabel labelNom = new JLabel ("Nom : ");
 		JLabel labelPrenom = new JLabel ("Prenom : ");
+		
 		nom = new JTextField();
 		prenom = new JTextField();
 		rechercherParNom = new JButton ("Rechercher");
 		ajout = new JButton ("Ajouter");
+		lesChoix = new Vector<Utilisateur>();
+		choixAjout = new JComboBox<Utilisateur>(lesChoix);
 		
+		identi.setForeground(Fenetre.BLEU_CIEL);
+		identi.setBounds(220, 110,250, 20);
 		labelNom.setForeground(Color.WHITE);
+		labelNom.setBounds(90, 160, 150, 30);
 		labelPrenom.setForeground(Color.WHITE);
+		labelPrenom.setBounds(90, 210, 150, 30);
+		
 		rechercherParNom.setForeground(Color.white);
 		rechercherParNom.setBackground(Fenetre.BLEU_CIEL);
 		rechercherParNom.addActionListener(this);
 		rechercherParNom.setBorder(new CompoundBorder(new LineBorder(Color.white),new EmptyBorder(5,15,5,15)));
+		
 		ajout.setForeground(Color.white);
 		ajout.setBackground(Fenetre.BLEU_CIEL);
 		ajout.addActionListener(this);
 		ajout.setBorder(new CompoundBorder(new LineBorder(Color.white),new EmptyBorder(5,15,5,15)));
-		
-		lesChoix = new Vector<Utilisateur>();
-		
-		this.choixAjout = new JComboBox<Utilisateur>(lesChoix);
-		
-		labelNom.setBounds(90, 160, 150, 30);
-		labelPrenom.setBounds(90, 210, 150, 30);
-		nom.setBounds(280, 160, 150, 30);
-		prenom.setBounds(280, 210, 150, 30);
-		rechercherParNom.setBounds(280, 260, 150, 30);
-		choixAjout.setBounds(90, 310, 150, 30);
 		ajout.setBounds(280, 310, 150, 30);
 		
+		nom.setBounds(280, 160, 150, 30);
+		
+		prenom.setBounds(280, 210, 150, 30);
+		
+		rechercherParNom.setBounds(280, 260, 150, 30);
+		
+		choixAjout.setBounds(90, 310, 150, 30);
+		
+		this.add(identi);
 		this.add(labelNom);
 		this.add(labelPrenom);
 		this.add(nom);
@@ -112,30 +120,25 @@ public class EcranAmi extends JPanel implements ActionListener{
 		
 		// carré recherche ci
 		
-		
+		//!\	A IMPLEMENTER
 		
 		// carré gestion demande d'amis
 		
 		JLabel gestionDemandes = new JLabel("Gestion des demandes");
 		
-		gestionDemandes.setBounds(690, 30,250, 20);
-		gestionDemandes.setForeground(Fenetre.BLEU_CIEL);
-				
-		this.add(gestionDemandes);
-		
 		lesDemandes = new Vector<Utilisateur>();
 		for (Utilisateur u : accueil.getU().getDemandeAmisRecues()){
 			lesDemandes.addElement(u);
 		}
-		
 		demandes = new JList<Utilisateur>(lesDemandes);
+		accepter = new JButton ("Accepter");
+		refuser = new JButton("Refuser");
+		
+		gestionDemandes.setBounds(690, 30,250, 20);
+		gestionDemandes.setForeground(Fenetre.BLEU_CIEL);
 		
 		demandes.setForeground(Fenetre.BLEU_CIEL);
 		demandes.setBounds(530, 80, 410, 80);
-		this.add(demandes);
-		
-		accepter = new JButton ("Accepter");
-		refuser = new JButton("Refuser");
 		
 		refuser.setForeground(Color.white);
 		refuser.setBackground(Fenetre.BLEU_CIEL);
@@ -149,29 +152,28 @@ public class EcranAmi extends JPanel implements ActionListener{
 		accepter.setBorder(new CompoundBorder(new LineBorder(Color.white),new EmptyBorder(5,15,5,15)));
 		accepter.setBounds(750, 180, 170, 30);
 		
+		this.add(gestionDemandes);
 		this.add(accepter);
 		this.add(refuser);
+		this.add(demandes);
 		
 		// carré amis
 		
 		JLabel labelMesAmis = new JLabel("Mes amis");
-		
-		labelMesAmis.setBounds(690, 260,250, 20);
-		labelMesAmis.setForeground(Fenetre.BLEU_CIEL);
 				
-		this.add(labelMesAmis);
-		
 		Vector<Utilisateur> mesAmis = new Vector<Utilisateur>();
 		for (Utilisateur u : accueil.getU().getAmis().keySet()){
 			mesAmis.addElement(u);
 		}
 		amis = new JList<Utilisateur>(mesAmis);
+		supprimer = new JButton("Supprimer");
+		
+		labelMesAmis.setBounds(690, 260,250, 20);
+		labelMesAmis.setForeground(Fenetre.BLEU_CIEL);
+		
 		
 		amis.setForeground(Fenetre.BLEU_CIEL);
 		amis.setBounds(530, 310, 410, 80);
-		this.add(amis);
-		
-		supprimer = new JButton("Supprimer");
 		
 		supprimer.setForeground(Color.white);
 		supprimer.setBackground(Fenetre.BLEU_CIEL);
@@ -179,6 +181,8 @@ public class EcranAmi extends JPanel implements ActionListener{
 		supprimer.setBorder(new CompoundBorder(new LineBorder(Color.white),new EmptyBorder(5,15,5,15)));
 		supprimer.setBounds(750, 410, 170, 30);
 		
+		this.add(labelMesAmis);
+		this.add(amis);
 		this.add(supprimer);
 	}
 	
@@ -232,7 +236,10 @@ public class EcranAmi extends JPanel implements ActionListener{
 	
 	}
 
+	// FONCTIONNALITES DES BOUTONS 
+	
 	public void actionPerformed(ActionEvent e) {
+		// recherche par nom
 		if (rechercherParNom==e.getSource()){
 			try {
 				ArrayList<Utilisateur> users = Service.rechercherUtilisateurParNom(nom.getText(),prenom.getText());
@@ -242,7 +249,6 @@ public class EcranAmi extends JPanel implements ActionListener{
 				users.removeAll(accueil.getU().getDemandesAmisSoumises());
 				lesChoix.clear();
 				for (Utilisateur u : users){
-					System.out.println(u);
 					lesChoix.addElement(u);
 				}
 			} catch (ClassNotFoundException e1) {
@@ -253,6 +259,7 @@ public class EcranAmi extends JPanel implements ActionListener{
 				e1.printStackTrace();
 			}
 		}
+		// ajout d'une demande d'ami
 		if (ajout==e.getSource()){
 			Utilisateur dest = (Utilisateur) choixAjout.getSelectedItem();
 			if (dest != null){
@@ -270,6 +277,7 @@ public class EcranAmi extends JPanel implements ActionListener{
 				}
 			}
 		}
+		// refus d'une demande d'ami
 		if (refuser == e.getSource()){
 			Utilisateur dest = demandes.getSelectedValue();
 			if (dest != null){
@@ -286,6 +294,7 @@ public class EcranAmi extends JPanel implements ActionListener{
 				}
 			}
 		}
+		// ajout d'un ami
 		if (accepter == e.getSource()){
 			Utilisateur dest = demandes.getSelectedValue();
 			if (dest != null){
@@ -302,9 +311,11 @@ public class EcranAmi extends JPanel implements ActionListener{
 				}
 			}
 		}
+		// retour à l'écran d'accueil
 		if (e.getSource() == retour){
 			accueil.refresh();
 		}
+		// suppression d'un utilisateur
 		if (supprimer==e.getSource()){
 			Utilisateur suppr = amis.getSelectedValue();
 			if (suppr != null){

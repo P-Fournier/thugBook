@@ -3,24 +3,28 @@ package domaine;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import domaine.messages.Discussion;
+import domaine.messages.DiscussionPrive;
+import domaine.messages.GroupeDiscussion;
 import domaine.notification.Notification;
 
 
 public class Utilisateur {
-	private int idU;
-	private String nom;
-	private String prenom;
-	private String ndc;
-	private String password;
-	protected ArrayList<SousCategorieCI> listeInteret;
-	protected HashMap<Utilisateur,Discussion> amis;
-	protected ArrayList<Utilisateur> demandeAmisRecues;
-	protected ArrayList<Utilisateur> demandesAmisSoumises;
-	protected ArrayList<GroupeDiscussion> groupeDiscussion;
-	protected ArrayList<Notification> notifications;
+	
+	private int idU;											// id en base
+	private String nom;											// nom de l'utilisateur
+	private String prenom;										// prenom de l'utilisateur
+	private String ndc;											// nom de compte de l'utilisateur
+	private String password;									// mot de passe de l'utilisateur
+	protected ArrayList<SousCategorieCI> listeInteret;			// centres d'intérêt de l'utilisateur
+	protected HashMap<Utilisateur,DiscussionPrive> amis;				// amis de l'utilisateur rattaché avec la discussion privé correspondante
+	protected ArrayList<Utilisateur> demandeAmisRecues;			// demandes d'ami recues par l'utilisateur
+	protected ArrayList<Utilisateur> demandesAmisSoumises;		// demandes d'ami soumises par l'utilisateur
+	protected ArrayList<GroupeDiscussion> groupeDiscussion;		// groupes de discussion de l'utilisateur
+	protected ArrayList<Notification> notifications;			// notifications de l'utilisateur
 
 
+	// CONSTRUCTEUR(S)
+	
 	public Utilisateur(int id, String nom, String prenom, String ndc,
 			String password) {
 		this.idU = id;
@@ -29,25 +33,12 @@ public class Utilisateur {
 		this.ndc = ndc;
 		this.password = password;
 		this.listeInteret = new ArrayList<SousCategorieCI>();
-		this.amis = new HashMap<Utilisateur,Discussion>();
+		this.amis = new HashMap<Utilisateur,DiscussionPrive>();
 		this.demandeAmisRecues = new ArrayList<Utilisateur>();
 		this.demandesAmisSoumises = new ArrayList<Utilisateur>();
 		this.groupeDiscussion = new ArrayList<GroupeDiscussion>();
 		this.notifications = new ArrayList<Notification>();
 	}
-
-	/*public Utilisateur(int id, String nom, String prenom, String ndc) {
-		this.idU = id;
-		this.nom = nom;
-		this.prenom = prenom;
-		this.ndc = ndc;
-		this.listeInteret = new ArrayList<SousCategorieCI> ();
-		this.amis = new HashMap<Utilisateur,Discussion>();
-		this.demandeAmisRecues = new ArrayList<Utilisateur>();
-		this.demandesAmisSoumises = new ArrayList<Utilisateur>();
-		this.groupeDiscussion = new ArrayList<GroupeDiscussion>();
-		this.notifications = new ArrayList<Notification>();
-	}*/
 	
 	public Utilisateur(String nom, String prenom, String ndc,
 			String password) {
@@ -56,13 +47,15 @@ public class Utilisateur {
 		this.ndc = ndc;
 		this.password = password;
 		this.listeInteret = new ArrayList<SousCategorieCI>();
-		this.amis = new HashMap<Utilisateur,Discussion>();
+		this.amis = new HashMap<Utilisateur,DiscussionPrive>();
 		this.demandeAmisRecues = new ArrayList<Utilisateur>();
 		this.demandesAmisSoumises = new ArrayList<Utilisateur>();
 		this.groupeDiscussion = new ArrayList<GroupeDiscussion>();
 		this.notifications = new ArrayList<Notification>();
 	}
 
+	// ACCESSEUR(S)
+	
 	public ArrayList<SousCategorieCI> getListeInteret() {
 		return listeInteret;
 	}
@@ -95,11 +88,11 @@ public class Utilisateur {
 		this.demandesAmisSoumises = demandesAmisSoumises;
 	}
 
-	public HashMap<Utilisateur,Discussion> getAmis() {
+	public HashMap<Utilisateur,DiscussionPrive> getAmis() {
 		return amis;
 	}
 
-	public void setAmis(HashMap<Utilisateur,Discussion> amis) {
+	public void setAmis(HashMap<Utilisateur,DiscussionPrive> amis) {
 		this.amis = amis;
 	}
 
@@ -150,16 +143,8 @@ public class Utilisateur {
 	public void setNotifications(ArrayList<Notification> notifications) {
 		this.notifications = notifications;
 	}
-
-	public int nbNotifNonVues (){
-		int result = 0;
-		for (Notification n : notifications){
-			if (!n.isVue()){
-				result ++;
-			}
-		}
-		return result;
-	}
+	
+	// FONCTION(S)
 	
 	public String toString (){
 		return this.ndc;

@@ -41,8 +41,8 @@ public class DecorateurNotification extends VisiteurNotification{
 	@Override
 	public void visiter(NotificationDiscussion n)
 			throws ClassNotFoundException, SQLException {
-		JButton redirection = new JButton ("Voir Discussion");
-		redirection.setBounds(775, hauteur, 100, 30);
+		JButton redirection = new JButton ("Voir discussion");
+		redirection.setBounds(725, hauteur, 150, 30);
 		redirection.addActionListener(ecran);
 		redirection.setForeground(Color.WHITE);
 		redirection.setBackground(Fenetre.BLEU_CIEL);

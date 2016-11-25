@@ -17,9 +17,12 @@ public class EcranAdministrateur extends EcranUtilisateur implements ActionListe
 	 * 
 	 */
 	private static final long serialVersionUID = -8499510184767181684L;
-	private JButton gestionBoutton ;
-	private JButton groupeBoutton ;
-	private JButton gestionCI;
+	
+	private JButton gestionBoutton ;		// redirection vers l'ecran Administration profil
+	private JButton groupeBoutton ;			// redirection vers l'ecran Administration groupe
+	private JButton gestionCI;				// redirection vers l'ecran de gestion des centre d'intérêt
+	
+	// CONSTRUCTEUR
 	
 	public EcranAdministrateur(Utilisateur u, Fenetre fen) {
 		super (u,fen);
@@ -33,7 +36,6 @@ public class EcranAdministrateur extends EcranUtilisateur implements ActionListe
 				
 		this.add(administration);
 		
-		//	Boutton Gestion Profil Utilisateur
 		gestionBoutton = new JButton ("Gestion Profil");
 		gestionBoutton.setBounds(520, 420, 170, 30);
 		gestionBoutton.setBackground(Fenetre.BLEU_CIEL);
@@ -42,7 +44,6 @@ public class EcranAdministrateur extends EcranUtilisateur implements ActionListe
 		gestionBoutton.addActionListener(this);
 		this.add(gestionBoutton);
 			
-		//	Boutton Gestion Groupe Utilisateur
 		groupeBoutton = new JButton ("Gestion groupe");
 		groupeBoutton.setBounds(730, 420, 170, 30);
 		groupeBoutton.setBackground(Fenetre.BLEU_CIEL);
@@ -51,7 +52,6 @@ public class EcranAdministrateur extends EcranUtilisateur implements ActionListe
 		groupeBoutton.addActionListener(this);
 		this.add(groupeBoutton);
 		
-		// Boutton Gestion CI
 		gestionCI = new JButton("Gestion CI");
 		gestionCI.setBounds(520, 470, 170, 30);
 		gestionCI.setBackground(Fenetre.BLEU_CIEL);
@@ -61,20 +61,23 @@ public class EcranAdministrateur extends EcranUtilisateur implements ActionListe
 		this.add(gestionCI);
 	}
 	
+	//	CREATION DES ELEMENTS GRAPHIQUES
+	
 	public void paintComponent (Graphics g){
 		super.paintComponent(g);
 		
-		// carré administrateur
-		// Fenetre bleue de remplissage 
 		g.setColor(Fenetre.BLEU_CIEL);
 		g.fillRoundRect(460, 380, 500, 200,50,50);
-		// Fenetre titre 
+		
 		g.setColor(Color.white);
 		g.fillRoundRect(720,360,200,40,50,50);
-		// Contour titre 
+		
 		g.setColor(Fenetre.BLEU_CIEL);
 		g.drawRoundRect(720,360,200,40,50,50);
 	}
+	
+	// FONCTIONNALITES DES BOUTTONS
+	
 	public void actionPerformed(ActionEvent e) {
 		super.actionPerformed(e);
 		if(e.getSource()==gestionBoutton){

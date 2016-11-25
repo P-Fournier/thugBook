@@ -8,6 +8,9 @@ import java.util.function.ToLongFunction;
 
 public class ComparateurMessage implements Comparator<Message>{
 
+	/* CE COMPARATEUR PERMET D'ORDONNER LES MESSAGES EN PRIORISANT LES MESSAGES PRIORITAIRES
+	ET LES MESSAGES LES PLUS RECENTS */
+	
 	public int compare(Message m1, Message m2) {
 				if (m1.isPrioritaire()&&!m2.isPrioritaire()){
 					return 1;

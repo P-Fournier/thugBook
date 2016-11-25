@@ -174,6 +174,11 @@ public class EcranNotification extends JPanel implements ActionListener{
 				e1.printStackTrace();
 			}
 		}
+		if (redirectionDiscussion.containsKey(e.getSource())){
+			NotificationDiscussion n = redirectionDiscussion.get(e.getSource());
+			n.setVue(true);
+			fen.changerEcran(new EcranDiscussions(fen,accueil,n.getDiscussion()));
+		}
 	}
 	
 	public void refresh (){

@@ -6,7 +6,9 @@ import domaine.Utilisateur;
 
 public class NotificationDemandeAmi extends Notification{
 	
-	private Utilisateur demandeur;
+	private Utilisateur demandeur;				// personne ayant fait la demande d'ami
+	
+	// CONSTRUCTEUR(S)
 	
 	public NotificationDemandeAmi(String message, boolean vue,Utilisateur destinataire,Utilisateur demandeur) {
 		super(message, vue,destinataire);
@@ -19,6 +21,8 @@ public class NotificationDemandeAmi extends Notification{
 		this.demandeur = demandeur;
 	}
 	
+	// ACCESSEUR(S)
+	
 	public Utilisateur getDemandeur() {
 		return demandeur;
 	}
@@ -27,6 +31,9 @@ public class NotificationDemandeAmi extends Notification{
 		this.demandeur = demandeur;
 	}
 	
+	// FONCTION(S)
+	
+	@Override
 	public void accepter(VisiteurNotification v) throws ClassNotFoundException, SQLException {
 		v.visiter(this);
 	}

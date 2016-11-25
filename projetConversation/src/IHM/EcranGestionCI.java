@@ -30,24 +30,30 @@ public class EcranGestionCI extends JPanel implements ActionListener{
 	 * 
 	 */
 	private static final long serialVersionUID = -1039853044810865400L;
-	private EcranAdministrateur accueil;
-	private JButton retour;
-	private JTextField nomNouvelleCategorie;
-	private JButton ajoutNouvelleCategorie;
-	private JComboBox<CategorieCI> choixCategorieCreation;
-	private JTextField nomNouvelleSsCategorie;
-	private JButton ajoutNouvelleSsCategorie;
-	private JComboBox<CategorieCI> categoriesExistantes;
-	private JButton supprimerCategorie;
-	private JButton modifierCategorie;
-	private JTextField nomCategorie;
-	private JComboBox<SousCategorieCI> sousCategoriesExistantes;
-	private JButton supprimerSousCategorie;
-	private JButton modifierSousCategorie;
-	private JTextField nomSousCategorie;
-	private JComboBox<CategorieCI> choixCategorieEdition;
-	private Vector<CategorieCI> lesCate;
-	private Vector<SousCategorieCI> lesSousCate;
+	
+	private EcranAdministrateur accueil;		// écran d'accueil
+	private JButton retour;						// bouton de retour à l'écran d'accueil
+	
+	private JTextField nomNouvelleCategorie;	// renseigne le nom de catégorie de ci à créer	
+	private JButton ajoutNouvelleCategorie;		// créé la nouvelle catégorie
+	
+	private JComboBox<CategorieCI> choixCategorieCreation;	//choix de la catégorie pour la nouvelle sous catégorie
+	private JTextField nomNouvelleSsCategorie;				//nom de la nouvelle sous catégorie
+	private JButton ajoutNouvelleSsCategorie;				// crée la nouvelle sous catégorie
+	
+	private JComboBox<CategorieCI> categoriesExistantes;	//liste des catégories existantes pour édition ou suppression
+	private JButton supprimerCategorie;						//supprime la catégorie selectionnée
+	private JButton modifierCategorie;						//modifie la catégorie selectionnée
+	private JTextField nomCategorie;						// donner un nouveau nom à la catégorie selectionnée
+	
+	private JComboBox<SousCategorieCI> sousCategoriesExistantes;  //liste des sous catégories existantes pour édition ou suppression
+	private JButton supprimerSousCategorie;		//supprimer la sous catégorie selectionnée
+	private JButton modifierSousCategorie;		// modifie la sous catégorie selectionnée
+	private JTextField nomSousCategorie;		// donner un nouveau nom à la sous catégorie semectionnée
+	private JComboBox<CategorieCI> choixCategorieEdition;//changer la catégorie à laquelle est rattaché la sous catégorie
+	
+	private Vector<CategorieCI> lesCate;	// liste des catégories existantes
+	private Vector<SousCategorieCI> lesSousCate;//liste des sous-catégories existantes
 	
 	
 	public EcranGestionCI (Fenetre fen, EcranAdministrateur accueil){
@@ -65,13 +71,10 @@ public class EcranGestionCI extends JPanel implements ActionListener{
 		//Carré création catégorie
 		
 		JLabel labelCreationCate = new JLabel("Ajout catégorie CI");
+		JLabel labelNomNvlCate = new JLabel ("Nom : ");
 		
 		labelCreationCate.setBounds(220, 90,250, 20);
 		labelCreationCate.setForeground(Fenetre.BLEU_CIEL);
-				
-		this.add(labelCreationCate);
-		
-		JLabel labelNomNvlCate = new JLabel ("Nom : ");
 		labelNomNvlCate.setForeground(Color.WHITE);
 		labelNomNvlCate.setBounds(90, 150, 150, 30);
 		
@@ -85,7 +88,7 @@ public class EcranGestionCI extends JPanel implements ActionListener{
 		ajoutNouvelleCategorie.addActionListener(this);
 		ajoutNouvelleCategorie.setBorder(new CompoundBorder(new LineBorder(Color.white),new EmptyBorder(5,15,5,15)));
 		
-		
+		this.add(labelCreationCate);
 		this.add(labelNomNvlCate);
 		this.add(nomNouvelleCategorie);
 		this.add(ajoutNouvelleCategorie);
@@ -93,25 +96,17 @@ public class EcranGestionCI extends JPanel implements ActionListener{
 		// Carré création sous catégorie CI
 		
 		JLabel labelCreationSsCate = new JLabel ("Ajout sous-catégorie CI");
+		JLabel labelChoixCategorie = new JLabel ("Catégorie : ");
+		JLabel labelNomSsCate = new JLabel ("Nom : ");
 		
 		labelCreationSsCate.setBounds(690, 40,250, 20);
 		labelCreationSsCate.setForeground(Fenetre.BLEU_CIEL);
-				
-		this.add(labelCreationSsCate);
-		
-		JLabel labelChoixCategorie = new JLabel ("Catégorie : ");
 		
 		labelChoixCategorie.setBounds(550, 100,150, 30);
 		labelChoixCategorie.setForeground(Color.WHITE);
-				
-		this.add(labelChoixCategorie);
-		
-		JLabel labelNomSsCate = new JLabel ("Nom : ");
 		
 		labelNomSsCate.setBounds(550, 150,150, 30);
 		labelNomSsCate.setForeground(Color.WHITE);
-				
-		this.add(labelNomSsCate);
 		
 		lesCate = new Vector<CategorieCI>();
 		
@@ -127,51 +122,51 @@ public class EcranGestionCI extends JPanel implements ActionListener{
 			e.printStackTrace();
 		}
 		
-		this.choixCategorieCreation = new JComboBox<CategorieCI>(lesCate);
-		choixCategorieCreation.setSelectedItem(null);
-		
-		
-		choixCategorieCreation.setBounds(700,100,150,30);
-		this.add(choixCategorieCreation);
-		
+		choixCategorieCreation = new JComboBox<CategorieCI>(lesCate);
 		nomNouvelleSsCategorie = new JTextField();
-		nomNouvelleSsCategorie.setBounds(700,150,150,30);
-		this.add(nomNouvelleSsCategorie);
-		
 		ajoutNouvelleSsCategorie = new JButton ("Ajouter");
+		
+		choixCategorieCreation.setSelectedItem(null);
+		choixCategorieCreation.setBounds(700,100,150,30);
+		
+		nomNouvelleSsCategorie.setBounds(700,150,150,30);
+		
 		ajoutNouvelleSsCategorie.setBounds (760,200,150,30);
 		ajoutNouvelleSsCategorie.setForeground(Color.WHITE);
 		ajoutNouvelleSsCategorie.setBackground(Fenetre.BLEU_CIEL);
 		ajoutNouvelleSsCategorie.addActionListener(this);
 		ajoutNouvelleSsCategorie.setBorder(new CompoundBorder(new LineBorder(Color.white),new EmptyBorder(5,15,5,15)));
 		
+		this.add(labelNomSsCate);
+		this.add(labelChoixCategorie);
+		this.add(labelCreationSsCate);
 		this.add(ajoutNouvelleSsCategorie);
-		
+		this.add(nomNouvelleSsCategorie);
+		this.add(choixCategorieCreation);
 		//Carré modification catégorie
 		
 		JLabel labelModifCate = new JLabel ("Edition catégorie CI");
+		JLabel labelNomCategorie = new JLabel ("Nom : ");
 		
 		labelModifCate.setBounds(220, 280,250, 20);
 		labelModifCate.setForeground(Fenetre.BLEU_CIEL);
 		
-		this.add(labelModifCate);
+		labelNomCategorie.setForeground(Color.WHITE);
+		labelNomCategorie.setBounds (80, 460, 150, 30);
 		
 		categoriesExistantes = new JComboBox<CategorieCI> (lesCate);
+		supprimerCategorie = new JButton ("Supprimer");
+		modifierCategorie = new JButton("Enregistrer");
+		
 		categoriesExistantes.setSelectedItem(null);
 		categoriesExistantes.setBounds(70,340,200,30);
+		nomCategorie = new JTextField();
 		
-		this.add(categoriesExistantes);
-		
-		supprimerCategorie = new JButton ("Supprimer");
 		supprimerCategorie.setBounds (300,350,150,30);
 		supprimerCategorie.setForeground(Color.WHITE);
 		supprimerCategorie.setBackground(Fenetre.BLEU_CIEL);
 		supprimerCategorie.addActionListener(this);
 		supprimerCategorie.setBorder(new CompoundBorder(new LineBorder(Color.white),new EmptyBorder(5,15,5,15)));
-		
-		this.add(supprimerCategorie);
-		
-		modifierCategorie = new JButton("Enregistrer");
 		
 		modifierCategorie.setBounds (300,400,150,30);
 		modifierCategorie.setForeground(Color.WHITE);
@@ -179,30 +174,30 @@ public class EcranGestionCI extends JPanel implements ActionListener{
 		modifierCategorie.addActionListener(this);
 		modifierCategorie.setBorder(new CompoundBorder(new LineBorder(Color.white),new EmptyBorder(5,15,5,15)));
 		
-		this.add(modifierCategorie);
-		
-		JLabel labelNomCategorie = new JLabel ("Nom : ");
-		
-		labelNomCategorie.setForeground(Color.WHITE);
-		labelNomCategorie.setBounds (80, 460, 150, 30);
-		
-		this.add(labelNomCategorie);
-		
-		
-		nomCategorie = new JTextField();
 		nomCategorie.setBounds(230, 460, 150, 30);
 		
+		this.add(labelModifCate);
+		this.add(categoriesExistantes);
+		this.add(supprimerCategorie);
+		this.add(modifierCategorie);
+		this.add(labelNomCategorie);
 		this.add(nomCategorie);
 		
 		//Carré modification sous catégorie
 		
 		JLabel labelModifSousCate = new JLabel ("Edition sous-catégorie CI");
+		JLabel labelCateSousCate = new JLabel ("Catégorie : ");
+		JLabel labelNomSousCategorie = new JLabel ("Nom : ");
 		
 		labelModifSousCate.setBounds(690, 280,250, 20);
 		labelModifSousCate.setForeground(Fenetre.BLEU_CIEL);
-				
-		this.add(labelModifSousCate);
-				
+		
+		labelNomSousCategorie.setForeground(Color.WHITE);
+		labelNomSousCategorie.setBounds (550, 460, 150, 30);
+		
+		labelCateSousCate.setForeground(Color.WHITE);
+		labelCateSousCate.setBounds (550, 510, 150, 30);
+		
 		lesSousCate = new Vector<SousCategorieCI>();
 		
 		try {
@@ -218,55 +213,39 @@ public class EcranGestionCI extends JPanel implements ActionListener{
 		}
 		
 		sousCategoriesExistantes = new JComboBox<SousCategorieCI> (lesSousCate);
+		supprimerSousCategorie = new JButton ("Supprimer");
+		modifierSousCategorie = new JButton("Enregistrer");
+		nomSousCategorie = new JTextField();
+		choixCategorieEdition = new JComboBox<CategorieCI> (lesCate);
+		
 		sousCategoriesExistantes.setSelectedItem(null);		
 		sousCategoriesExistantes.setBounds(540,340,200,30);
 				
-		this.add(sousCategoriesExistantes);
-				
-		supprimerSousCategorie = new JButton ("Supprimer");
 		supprimerSousCategorie.setBounds (770,350,150,30);
 		supprimerSousCategorie.setForeground(Color.WHITE);
 		supprimerSousCategorie.setBackground(Fenetre.BLEU_CIEL);
 		supprimerSousCategorie.addActionListener(this);
 		supprimerSousCategorie.setBorder(new CompoundBorder(new LineBorder(Color.white),new EmptyBorder(5,15,5,15)));
 				
-		this.add(supprimerSousCategorie);
-				
-		modifierSousCategorie = new JButton("Enregistrer");
-				
 		modifierSousCategorie.setBounds (300,770,150,30);
 		modifierSousCategorie.setForeground(Color.WHITE);
 		modifierSousCategorie.setBackground(Fenetre.BLEU_CIEL);
 		modifierSousCategorie.addActionListener(this);
 		modifierSousCategorie.setBorder(new CompoundBorder(new LineBorder(Color.white),new EmptyBorder(5,15,5,15)));
-				
-		this.add(modifierSousCategorie);
-				
-		JLabel labelNomSousCategorie = new JLabel ("Nom : ");
-				
-		labelNomSousCategorie.setForeground(Color.WHITE);
-		labelNomSousCategorie.setBounds (550, 460, 150, 30);
-				
-		this.add(labelNomSousCategorie);
-				
-				
-		nomSousCategorie = new JTextField();
-		nomSousCategorie.setBounds(700, 460, 150, 30);
-				
-		this.add(nomSousCategorie);
+
+		nomSousCategorie.setBounds(700, 460, 150, 30);		
 		
-		JLabel labelCateSousCate = new JLabel ("Catégorie : ");
-		
-		labelCateSousCate.setForeground(Color.WHITE);
-		labelCateSousCate.setBounds (550, 510, 150, 30);
-				
-		this.add(labelCateSousCate);
-		
-		choixCategorieEdition = new JComboBox<CategorieCI> (lesCate);
 		choixCategorieEdition.setSelectedItem(null);
 		choixCategorieEdition.setBounds(700, 510, 150, 30);
 		
+		this.add(labelModifSousCate);
+		this.add(labelCateSousCate);
+		this.add(labelNomSousCategorie);
+		this.add(modifierSousCategorie);
+		this.add(supprimerSousCategorie);
+		this.add(nomSousCategorie);
 		this.add(choixCategorieEdition);
+		this.add(sousCategoriesExistantes);
 	}
 	
 	public void paintComponent (Graphics g){
@@ -312,9 +291,11 @@ public class EcranGestionCI extends JPanel implements ActionListener{
 	}
 
 	public void actionPerformed(ActionEvent event) {
+		// retour à l'écran d'accueil
 		if (event.getSource()==retour){
 			accueil.refresh();
 		}
+		// ajout d'une nouvelle catégorie
 		if (event.getSource()==ajoutNouvelleCategorie){
 			CategorieCI nouvelleCategorie = new CategorieCI (nomNouvelleCategorie.getText());
 			try {
@@ -331,6 +312,7 @@ public class EcranGestionCI extends JPanel implements ActionListener{
 				e.printStackTrace();
 			}
 		}
+		// ajout d'une nouvelle sous catégorie
 		if (event.getSource()==ajoutNouvelleSsCategorie){
 			String nom = nomNouvelleSsCategorie.getText();
 			CategorieCI cate = (CategorieCI)choixCategorieCreation.getSelectedItem();
@@ -354,6 +336,7 @@ public class EcranGestionCI extends JPanel implements ActionListener{
 				JOptionPane.showMessageDialog(this,"Problème dans la saisie des valeurs");
 			}
 		}
+		// suppression d'une catégorie
 		if(event.getSource()==supprimerCategorie){
 			CategorieCI cate = (CategorieCI)categoriesExistantes.getSelectedItem();
 			if (cate != null){
@@ -372,6 +355,7 @@ public class EcranGestionCI extends JPanel implements ActionListener{
 				JOptionPane.showMessageDialog(this,"Aucune catégorie selectionnée");
 			}
 		}
+		// suppression d'une sous catégorie
 		if (event.getSource()==supprimerSousCategorie){
 			SousCategorieCI sousCate = (SousCategorieCI)sousCategoriesExistantes.getSelectedItem();
 			if (sousCate != null){
@@ -390,6 +374,7 @@ public class EcranGestionCI extends JPanel implements ActionListener{
 				JOptionPane.showMessageDialog(this,"Aucune sous-catégorie selectionnée");
 			}
 		}
+		// mise à jour d'une catégorie
 		if (event.getSource()==modifierCategorie){
 			String nom = nomCategorie.getText();
 			CategorieCI cate = (CategorieCI)categoriesExistantes.getSelectedItem();
@@ -410,6 +395,7 @@ public class EcranGestionCI extends JPanel implements ActionListener{
 				JOptionPane.showMessageDialog(this,"Aucune catégorie selectionnée");
 			}
 		}
+		// modification d'une sous catégorie
 		if(event.getSource()==modifierSousCategorie){
 			String nom = nomSousCategorie.getText();
 			CategorieCI cate = (CategorieCI)choixCategorieEdition.getSelectedItem();
@@ -432,12 +418,14 @@ public class EcranGestionCI extends JPanel implements ActionListener{
 				JOptionPane.showMessageDialog(this,"Aucune sous-catégorie selectionnée");
 			}
 		}
+		//	choix d'une catégorie pour édition
 		if (event.getSource()==this.categoriesExistantes){
 			CategorieCI selected = (CategorieCI) categoriesExistantes.getSelectedItem();
 			if (selected != null){
 				nomCategorie.setText(selected.getNom());
 			}
 		}
+		// choix d'une sous catégorie pour edition
 		if (event.getSource()==this.sousCategoriesExistantes){
 			SousCategorieCI selected = (SousCategorieCI) sousCategoriesExistantes.getSelectedItem();
 			if (selected != null){

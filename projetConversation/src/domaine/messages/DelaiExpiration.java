@@ -1,19 +1,18 @@
 package domaine.messages;
 
-import domaine.VisiteurOption;
 
 public class DelaiExpiration extends Option{
 	
-	private String dateExpiration;
+	private String dateExpiration;	// Date à laquelle le message relié à cette option ne sera plus visible
 
+	// CONSTRUCTEUR(S)
+	
 	public DelaiExpiration (String dateExpiration){
 		this.dateExpiration = dateExpiration;
 	}
 
-	@Override
-	public void accepter(VisiteurOption v) {
-		v.visiter(this);
-	}
+	// ACCESSEUR(S)
+	
 
 	public String getDateExpiration() {
 		return dateExpiration;
@@ -21,6 +20,13 @@ public class DelaiExpiration extends Option{
 
 	public void setDateExpiration(String dateExpiration) {
 		this.dateExpiration = dateExpiration;
+	}
+	
+	// FONCTION(S)
+	
+	@Override
+	public void accepter(VisiteurOption v) {
+		v.visiter(this);
 	}
 
 	

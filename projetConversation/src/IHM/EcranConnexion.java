@@ -28,38 +28,45 @@ public class EcranConnexion extends JPanel implements ActionListener{
 	 */
 	private static final long serialVersionUID = 7273285102299704821L;
 	
-	private JTextField user ;
+	private JTextField user ;			// nom de compte de l'utilisateur cherchant à se connecter
 	
-	private JPasswordField password ;
+	private JPasswordField password ;	// mot de passe de l'utilisant cherchant à se connecter
 	
-	private  Fenetre fen;
+	private  Fenetre fen;				// Frame du programme
 	
-	private JLabel messageErreur;
+	private JLabel messageErreur;		// message d'erreur en cas de problème lors de la connexion (ex: mauvais mot de passe)
 	
 	public EcranConnexion (Fenetre fen){
 		this.fen = fen;
 		this.setLayout(null);
 		fen.changerTitre("Réseau social - Connexion");
+		
 		user = new JTextField();
 		password = new JPasswordField();
 		messageErreur = new JLabel();
+		
 		JLabel labelPassword = new JLabel ("Mot de passe        : ");
 		JLabel labelUser = new JLabel("Nom de compte     : ");
 		JButton boutonConnection = new JButton ("Connexion");
-		boutonConnection.addActionListener(this);
+		
 		labelUser.setForeground(Color.white);
 		labelUser.setBounds(350,200,150,30);
-		user.setBounds(500, 200, 150 , 30);
+		
 		labelPassword.setForeground(Color.white);
 		labelPassword.setBounds(350,250,150,30);
-		password.setBounds(500,250,150,30);
+		
+		boutonConnection.addActionListener(this);
 		boutonConnection.setForeground(Color.white);
 		boutonConnection.setBackground(new Color (44,117,255));
 		boutonConnection.setBorder(new CompoundBorder(new LineBorder(Color.white),new EmptyBorder(5,15,5,15)));
 		boutonConnection.setBounds(425, 300, 150, 30);
+		
+		user.setBounds(500, 200, 150 , 30);
+		password.setBounds(500,250,150,30);
+		
 		messageErreur.setForeground(Color.white);
 		messageErreur.setBounds(350, 350, 300, 30);
-		this.setBackground(Color.RED);
+		
 		this.add(labelUser);
 		this.add(user);
 		this.add(labelPassword);
@@ -87,9 +94,12 @@ public class EcranConnexion extends JPanel implements ActionListener{
 		g.setFont(font);
 		g.drawString("MIAGEBook", 175, 500);
 	}
-
+	
+	// FONCTIONNALITE BOUTTON 
+	
 	public void actionPerformed(ActionEvent arg0) {
 		try {
+			// redirige vers le bon écran d'accueil utilisateur/administrateur
 			fen.changerEcran(Service.connexion(user.getText(),new String(password.getPassword()),fen));
 		} catch (ClassNotFoundException e) {
 			JOptionPane.showMessageDialog(this, e.getMessage());
@@ -98,7 +108,8 @@ public class EcranConnexion extends JPanel implements ActionListener{
 			JOptionPane.showMessageDialog(this, e.getMessage());
 			e.printStackTrace();
 		}catch (ConnexionException e){
-			messageErreur.setText(e.getMessageErreur());
+			// En cas de problème à la connexion on affiche un message dans le JLabel
+			messageErreur.setText(e.getMessage());
 		}
 	}
 	

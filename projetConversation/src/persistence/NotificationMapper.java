@@ -94,6 +94,13 @@ public class NotificationMapper extends VisiteurNotification{
 		return result;
 	}
 
+	/**
+	 * Trouve l'utilisateur qui a soumis la demande d'ami entrainant cette notification
+	 * @param idN
+	 * @return
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
 	private Utilisateur findDemandeur(int idN) throws ClassNotFoundException, SQLException {
 		String req = "SELECT idD FROM NotificationDemandeAmi WHERE id = ?";
 		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
@@ -107,17 +114,31 @@ public class NotificationMapper extends VisiteurNotification{
 		}
 	}
 
+	/**
+	 * trouve la discussion concerné par cette notification
+	 * @param idN
+	 * @return
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
 	private Discussion findDiscussionNotifiée(int idN) throws ClassNotFoundException, SQLException {
 		String req = "SELECT idD FROM NotificationDiscussion WHERE id = ?";
 		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
 		ps.setInt(1, idN);
 		ResultSet rs = ps.executeQuery();
 		if (rs.next()){
-			return MessageMapper.getInstance().findByIdDiscussion(rs.getInt("idD"));
+			int idD = rs.getInt("idD");
+			return DiscussionMapper.getInstance().findBy(idD);
 		}
 		return null;
 	}
 
+	/**
+	 * met à jour les notificaton de l'utilisateur passé en paramètre
+	 * @param u
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
 	public void update(Utilisateur u) throws ClassNotFoundException, SQLException {
 		String req = "DELETE FROM Notification WHERE idU = ?";
 		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);

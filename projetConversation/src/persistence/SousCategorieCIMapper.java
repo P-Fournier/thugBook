@@ -40,6 +40,13 @@ public class SousCategorieCIMapper {
 		}
 	}
 	
+	/**
+	 * trouver les centre d'intérêt d'un utilisateur
+	 * @param u
+	 * @return
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
 	public ArrayList<SousCategorieCI> findByUser (Utilisateur u) throws ClassNotFoundException, SQLException{
 		String req = "SELECT idSC FROM AssociationCI WHERE idU = ?";
 		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
@@ -78,11 +85,18 @@ public class SousCategorieCIMapper {
 		}
 		return result;
 	}
-
+	
+	/**
+	 * insère en base une nouvelle sous-catégorie de centre d'intérêt
+	 * @param scci
+	 * @throws MySQLIntegrityConstraintViolationException
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
 	public void insert(SousCategorieCI scci) throws MySQLIntegrityConstraintViolationException,ClassNotFoundException, SQLException {
 		String req = "INSERT INTO SousCategorieCI VALUES (?,?,?)";
 		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
-		scci.setSsCat(id);
+		scci.setIdSousCategorie(id);
 		ps.setInt(1, id);
 		ps.setString(2, scci.getNom());
 		ps.setInt(3, scci.getCategorie().getIdCat());
@@ -91,6 +105,13 @@ public class SousCategorieCIMapper {
 		id ++;
 	}
 
+	/**
+	 * trouve les sous catégories de la catégorie passé en paramètre
+	 * @param categorie
+	 * @return
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
 	public ArrayList<SousCategorieCI> findByCategorie(CategorieCI categorie) throws ClassNotFoundException, SQLException {
 		ArrayList<SousCategorieCI> result = new ArrayList<SousCategorieCI>();
 		String req = "SELECT id , nom FROM SousCategorieCI WHERE idC = ?";
@@ -108,7 +129,12 @@ public class SousCategorieCIMapper {
 		}
 		return result;
 	}
-
+	/**
+	 * retourne toutes les sous catégories de centre d'interet présentes en base
+	 * @return
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
 	public ArrayList<SousCategorieCI> all() throws ClassNotFoundException, SQLException {
 		ArrayList<SousCategorieCI> result = new ArrayList<SousCategorieCI>();
 		String req = "SELECT id , nom , idC FROM SousCategorieCI";
@@ -129,6 +155,12 @@ public class SousCategorieCIMapper {
 		return result;
 	}
 
+	/**
+	 * supprime de la base la sous catéforie passé en paramètre
+	 * @param sousCate
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
 	public void delete(SousCategorieCI sousCate) throws ClassNotFoundException, SQLException {
 		String req = "DELETE FROM SousCategorieCI WHERE id = ?";
 		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);

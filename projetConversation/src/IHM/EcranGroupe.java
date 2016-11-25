@@ -2,9 +2,7 @@ package IHM;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.HeadlessException;
 import java.awt.ScrollPane;
-import java.awt.Scrollbar;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
@@ -23,10 +21,12 @@ import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
+
 import main.Service;
 
-import domaine.GroupeDiscussion;
 import domaine.Utilisateur;
+import domaine.messages.GroupeDiscussion;
 
 public class EcranGroupe extends JPanel implements ActionListener, ListSelectionListener{
 	
@@ -34,96 +34,95 @@ public class EcranGroupe extends JPanel implements ActionListener, ListSelection
 	 * 
 	 */
 	private static final long serialVersionUID = 2877396567372360083L;
-	private EcranUtilisateur accueil;
-	private JList<GroupeDiscussion> listeGroupes;
-	private JButton retour;
-	private JTextField nomDuGroupe;
-	private JButton créationGroupe;
-	private JLabel afficheInformationDeCréation;
-	private JList<Utilisateur> membres;
-	private JButton supprimerUtilisateur;
-	private JComboBox<Utilisateur> choixAjout;
-	private JComboBox<Utilisateur> choixNomine;
-	private JButton ajouter;
-	private JButton nomination;
-	private JButton quitter;
-	private JButton discussion;
-	private Vector<GroupeDiscussion> groupes;
-	private JLabel nomGroupe;
-	private JLabel moderateur;
-	private Fenetre fen;
-	private Vector<Utilisateur> recupMembres;
+	
+	private EcranUtilisateur accueil;				// écran d'accueil
+	private JList<GroupeDiscussion> listeGroupes;	// liste des groupes de l'utilisateur
+	private JButton retour;							// permet le retour à l'écran d'accueil
+	private JTextField nomDuGroupe;					// permet de donner un nom à un groupe à créer
+	private JButton créationGroupe;					// permet de créer le groupe
+	private JLabel afficheInformationDeCréation;	// donne des information sur la créatio du groupe
+	private JList<Utilisateur> membres;				// liste les membres du groupe
+	private JButton supprimerUtilisateur;			// supprime du groupe l'utilisateur selectionné (seulement si modérateur)
+	private JComboBox<Utilisateur> choixAjout;		// choisir un utilisateur à ajouter au groupe (seulement si modérateur)
+	private JComboBox<Utilisateur> choixNomine;		// choisir un utilisateur à nommé modérateur du groupe (seulement si modérateur)
+	private JButton ajouter;						// ajoute l'utilisateur au groupe
+	private JButton nomination;						// nomme l'utilisateur modérateur
+	private JButton quitter;						// permet de quitter le groupe 
+	private JButton discussion;						// permet de rejoindre la conversation
+	private Vector<GroupeDiscussion> groupes;		// liste des groupes de l'utilisateur 
+	private JLabel nomGroupe;						// label affichant le nom du groupe selectionné
+	private JLabel moderateur;						// label affichant le nom du modérateur du groupe selectionné							
+	private Vector<Utilisateur> recupMembres;		// liste des membres du groupe
 	
 	public EcranGroupe (Fenetre fen , EcranUtilisateur accueil){
-		this.fen = fen;
 		this.accueil = accueil;
 		this.setLayout(null);
 		fen.changerTitre("Réseau social - Mes groupes");
-		this.add(new Scrollbar());
 		
 		// Retour
 		
-		this.retour = new JButton ("Retour");
+		retour = new JButton ("Retour");
 		retour.setBounds (100,40,150,30);
 		retour.setForeground(Color.WHITE);
 		retour.setBackground(Fenetre.BLEU_CIEL);
 		retour.addActionListener(this);
 		retour.setBorder(new CompoundBorder(new LineBorder(Color.white),new EmptyBorder(5,15,5,15)));
+		
 		this.add(retour);
 		
 		// Création groupe
 		
 		JLabel creerGroupe = new JLabel ("Créer groupe");
-				
+		JLabel labelNomDuGroupe = new JLabel ("Nom du groupe : ");
+		
+		nomDuGroupe = new JTextField();
+		créationGroupe = new JButton ("Créer le groupe");
+		afficheInformationDeCréation = new JLabel ();
+		
 		creerGroupe.setBounds(220,100,250, 20);
 		creerGroupe.setForeground(Fenetre.BLEU_CIEL);
-		this.add(creerGroupe);
-			
-		JLabel labelNomDuGroupe = new JLabel ("Nom du groupe : ");
 			
 		labelNomDuGroupe.setBounds(80, 150, 200, 30);
 		labelNomDuGroupe.setForeground(Color.WHITE);
-		this.add(labelNomDuGroupe);
-			
-		this.nomDuGroupe = new JTextField();
+		
 		nomDuGroupe.setBounds(240, 150, 200, 30);
-		this.add(nomDuGroupe);
-				
-		this.créationGroupe = new JButton ("Créer le groupe");
-				
+		
 		créationGroupe.setBounds(240, 250, 200, 30);
 		créationGroupe.setForeground(Color.WHITE);
 		créationGroupe.setBackground(Fenetre.BLEU_CIEL);
 		créationGroupe.addActionListener(this);
 		créationGroupe.setBorder(new CompoundBorder(new LineBorder(Color.white),new EmptyBorder(5,15,5,15)));
-		this.add(créationGroupe);
-			
-		this.afficheInformationDeCréation = new JLabel ();
+		
 		afficheInformationDeCréation.setForeground(Color.white);
-			
 		afficheInformationDeCréation.setBounds(80, 300, 400, 30);
+		
+		this.add(creerGroupe);
+		this.add(labelNomDuGroupe);
+		this.add(nomDuGroupe);	
+		this.add(créationGroupe);
 		this.add(afficheInformationDeCréation);
 		
 		// Mes groupes
 		
 		JLabel mesGroupes = new JLabel ("Mes groupes");
 		
-		mesGroupes.setBounds(220, 340,250, 20);
-		mesGroupes.setForeground(Fenetre.BLEU_CIEL);
-				
-		this.add(mesGroupes);
-		
 		groupes = new Vector<GroupeDiscussion> ();
 		for (GroupeDiscussion grp : accueil.getU().getGroupeDiscussion()){
 			groupes.add(grp);
 		}
 		
-		this.listeGroupes = new JList<GroupeDiscussion> (groupes);
+		listeGroupes = new JList<GroupeDiscussion> (groupes);
+		
+		mesGroupes.setBounds(220, 340,250, 20);
+		mesGroupes.setForeground(Fenetre.BLEU_CIEL);
 		
 		listeGroupes.setBackground(Color.white);
 		listeGroupes.setForeground(Fenetre.BLEU_CIEL);
 		listeGroupes.setBorder(new CompoundBorder(new LineBorder(Color.white),new EmptyBorder(5,15,5,15)));
 		listeGroupes.addListSelectionListener(this);
+		
+		this.add(mesGroupes);
+		
 		ScrollPane panelGrp = new ScrollPane();
 		
 		panelGrp.add(listeGroupes);
@@ -136,26 +135,27 @@ public class EcranGroupe extends JPanel implements ActionListener, ListSelection
 		
 		JLabel modifierGroupe = new JLabel ("Modifier groupe");
 			
+		nomGroupe = new JLabel("Nom : ");
+		moderateur = new JLabel ("Modérateur : ");
+		recupMembres = new Vector<Utilisateur>();
+		membres = new JList<Utilisateur>(recupMembres);
+		supprimerUtilisateur = new JButton ("Supprimer");
+		choixAjout = new JComboBox<Utilisateur>();
+		ajouter = new JButton ("Ajouter membre");
+		choixNomine = new JComboBox<Utilisateur>();
+		nomination = new JButton("Nommer modérateur");
+		discussion = new JButton ("Conversation");
+		quitter = new JButton ("Quitter groupe");
+		
 		modifierGroupe.setBounds(690, 30,250, 20);
 		modifierGroupe.setForeground(Fenetre.BLEU_CIEL);
-		this.add(modifierGroupe);
 			
-		nomGroupe = new JLabel("Nom : ");
 		nomGroupe.setBounds(540,80,200,30);
 		nomGroupe.setForeground(Color.WHITE);
-			
-		this.add(nomGroupe);
-			
-		moderateur = new JLabel ("Modérateur : ");
+		
 		moderateur.setBounds(540,130,200,30);
 		moderateur.setForeground(Color.WHITE);
-			
-		this.add(moderateur);
-			
-		recupMembres = new Vector<Utilisateur>();
-			
-		membres = new JList<Utilisateur>(recupMembres);
-			
+		
 		membres.setBackground(Color.white);
 		membres.setForeground(Fenetre.BLEU_CIEL);
 		membres.setBorder(new CompoundBorder(new LineBorder(Color.white),new EmptyBorder(5,15,5,15)));
@@ -164,77 +164,59 @@ public class EcranGroupe extends JPanel implements ActionListener, ListSelection
 			
 		panelMembres.add(membres);
 		panelMembres.setBounds(540, 180, 390, 130);
-			
-		this.add(panelMembres);
 		
-		this.supprimerUtilisateur = new JButton ("Supprimer");
 		supprimerUtilisateur.setForeground(Color.white);
 		supprimerUtilisateur.setBackground(Fenetre.BLEU_CIEL);
 		supprimerUtilisateur.setBorder(new CompoundBorder(new LineBorder(Color.white),new EmptyBorder(5,15,5,15)));
 		supprimerUtilisateur.addActionListener(this);
 		supprimerUtilisateur.setBounds(540, 340,390, 30);
 		supprimerUtilisateur.setEnabled(false);
-		this.add(supprimerUtilisateur);
-				
-		choixAjout = new JComboBox<Utilisateur>();
 		
 		choixAjout.addActionListener(this);
 		choixAjout.setEnabled(false);		
 		choixAjout.setBounds(540, 390, 180, 30);
-				
-		this.add(choixAjout);
-				
-		ajouter = new JButton ("Ajouter membre");
+		
 		ajouter.addActionListener(this);
 		ajouter.setEnabled(false);		
-		ajouter.setBounds(750, 390, 180, 30);
-				
+		ajouter.setBounds(750, 390, 180, 30);		
 		ajouter.setForeground(Color.white);
 		ajouter.setBackground(Fenetre.BLEU_CIEL);
 		ajouter.setBorder(new CompoundBorder(new LineBorder(Color.white),new EmptyBorder(5,15,5,15)));
-				
-		this.add(ajouter);
-				
-		choixNomine = new JComboBox<Utilisateur>();
+		
 		choixNomine.setSelectedItem(null);
 		choixNomine.addActionListener(this);
 		choixNomine.setEnabled(false);		
 		choixNomine.setBounds(540,440,180,30);
-				
-		this.add(choixNomine);
-				
-		nomination = new JButton("Nommer modérateur");
+		
 		nomination.addActionListener(this);
 		nomination.setEnabled(false);		
 		nomination.setForeground(Color.white);
 		nomination.setBackground(Fenetre.BLEU_CIEL);
 		nomination.setBorder(new CompoundBorder(new LineBorder(Color.white),new EmptyBorder(5,15,5,15)));
-				
 		nomination.setBounds(750, 440, 180, 30);
-				
-		this.add(nomination);
-				
-		discussion = new JButton ("Conversation");
 				
 		discussion.addActionListener(this);		
 		discussion.setForeground(Color.white);
 		discussion.setBackground(Fenetre.BLEU_CIEL);
 		discussion.setBorder(new CompoundBorder(new LineBorder(Color.white),new EmptyBorder(5,15,5,15)));
-				
 		discussion.setBounds(540, 490, 180, 30);
 				
-		this.add(discussion);
-				
-		quitter = new JButton ("Quitter groupe");
-				
 		quitter.addActionListener(this);
-				
 		quitter.setForeground(Color.white);
 		quitter.setBackground(Fenetre.BLEU_CIEL);
-		quitter.setBorder(new CompoundBorder(new LineBorder(Color.white),new EmptyBorder(5,15,5,15)));
-				
+		quitter.setBorder(new CompoundBorder(new LineBorder(Color.white),new EmptyBorder(5,15,5,15)));		
 		quitter.setBounds(750, 490, 180, 30);
-				
+		
+		this.add(modifierGroupe);
+		this.add(nomGroupe);	
+		this.add(moderateur);
+		this.add(panelMembres);
+		this.add(supprimerUtilisateur);				
+		this.add(choixAjout);		
+		this.add(ajouter);		
+		this.add(choixNomine);		
+		this.add(nomination);				
+		this.add(discussion);
 		this.add(quitter);
 	}
 	
@@ -277,9 +259,11 @@ public class EcranGroupe extends JPanel implements ActionListener, ListSelection
 	}
 
 	public void actionPerformed(ActionEvent e) {
+		// Retour à l'écran d'accueil
 		if (e.getSource()==retour){
 			accueil.refresh();
 		}
+		// supprimer le membre selectionné
 		if (e.getSource()==supprimerUtilisateur ){
 			Utilisateur u = membres.getSelectedValue();
 			if (u == null){
@@ -309,6 +293,7 @@ public class EcranGroupe extends JPanel implements ActionListener, ListSelection
 				}
 			}
 		}
+		// ajoute l'utilisateur au groupe
 		if (e.getSource()==ajouter){
 			Utilisateur u = (Utilisateur)choixAjout.getSelectedItem();
 			if (u == null){
@@ -330,6 +315,7 @@ public class EcranGroupe extends JPanel implements ActionListener, ListSelection
 				}
 			}
 		}
+		// nommé l'utilisateur modérateur du groupes
 		if (e.getSource()==nomination){
 			Utilisateur u = (Utilisateur)choixNomine.getSelectedItem();
 			if (u==null){
@@ -364,6 +350,7 @@ public class EcranGroupe extends JPanel implements ActionListener, ListSelection
 				}
 			}
 		}
+		// quitter le groupe
 		if (e.getSource()==this.quitter){
 			Utilisateur u = accueil.getU();
 			GroupeDiscussion selected = listeGroupes.getSelectedValue();
@@ -384,8 +371,6 @@ public class EcranGroupe extends JPanel implements ActionListener, ListSelection
 						}
 						groupes.remove(selected);
 						listeGroupes.setListData(groupes);
-						///////////////////////////////////////////////////////:
-						
 					} catch (ClassNotFoundException e1) {
 						JOptionPane.showMessageDialog(this, e1.getMessage());
 						e1.printStackTrace();
@@ -397,31 +382,19 @@ public class EcranGroupe extends JPanel implements ActionListener, ListSelection
 				}
 			}
 		}
+		// créer un groupe
 		if (e.getSource()==créationGroupe){
 			if (nomDuGroupe.getText().equals("")){
 				afficheInformationDeCréation.setText("Vous devez rentrer un nom pour créer le groupe");
 			}else{
 				try {
-					if (!Service.existenceNomDeGroupe(nomDuGroupe.getText())){
-						try {
-							GroupeDiscussion cree = Service.creerGroupe(nomDuGroupe.getText(),accueil.getU());
-							accueil.getU().getGroupeDiscussion().add(cree);
-							groupes.addElement(cree);
-							listeGroupes.setListData(groupes);
-						}catch (ClassNotFoundException e1) {
-							JOptionPane.showMessageDialog(this, e1.getMessage());
-							e1.printStackTrace();
-						} catch (SQLException e1) {
-							JOptionPane.showMessageDialog(this, e1.getMessage());
-							e1.printStackTrace();
-						}
-					}else{ 
-						afficheInformationDeCréation.setText("Ce nom de groupe existe déjà");
-					}
-				} catch (HeadlessException e1) {
-					JOptionPane.showMessageDialog(this, e1.getMessage());
-					e1.printStackTrace();
-				} catch (ClassNotFoundException e1) {
+					GroupeDiscussion cree = Service.creerGroupe(nomDuGroupe.getText(),accueil.getU());
+					accueil.getU().getGroupeDiscussion().add(cree);
+					groupes.addElement(cree);
+					listeGroupes.setListData(groupes);
+				}catch (MySQLIntegrityConstraintViolationException e1){
+					afficheInformationDeCréation.setText("Ce nom de groupe existe déjà");
+				}catch (ClassNotFoundException e1) {
 					JOptionPane.showMessageDialog(this, e1.getMessage());
 					e1.printStackTrace();
 				} catch (SQLException e1) {
@@ -430,11 +403,16 @@ public class EcranGroupe extends JPanel implements ActionListener, ListSelection
 				}
 			}
 		}
+		// accéder à la discussion du groupe
 		if (e.getSource()==discussion){
-			fen.changerEcran(new EcranDiscussions(fen,accueil));
+			accueil.fen.changerEcran(new EcranDiscussions(accueil.fen,accueil));
 		}
 	}
 
+	/**
+	 * permet d'afficher les info du groupe selectionné et de donner les droits selon son statut 
+	 * (modérateur / utilisateur)
+	 */
 	public void valueChanged(ListSelectionEvent e) {
 		GroupeDiscussion selected = listeGroupes.getSelectedValue();
 		if (!e.getValueIsAdjusting()){

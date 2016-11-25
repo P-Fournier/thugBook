@@ -6,11 +6,13 @@ import domaine.Utilisateur;
 
 public class Message {
 	
-	private Utilisateur expediteur;
-	private int id;
-	private String contenu;
-	private String dateEnvoie;
-	private ArrayList<Option> options;
+	private Utilisateur expediteur;		// Utilisateur qui a envoyé le message
+	private int id;						// id du message en base
+	private String contenu;				// texte (contenu) du message
+	private String dateEnvoie;			// date à laquelle a été envoyé le message
+	private ArrayList<Option> options;	// liste des options du messages (prioritaire,chiffré,...)
+	
+	//	CONSTRUCTEUR(S)
 	
 	public Message (Utilisateur expediteur, String contenu, String dateEnvoie ,ArrayList<Option> options){
 		this.expediteur=expediteur;
@@ -26,7 +28,9 @@ public class Message {
 		this.options = options;
 		this.dateEnvoie = dateEnvoie;
 	}
-
+	
+	//	ACCESSEUR(S)
+	
 	public Utilisateur getExpediteur() {
 		return expediteur;
 	}
@@ -67,6 +71,12 @@ public class Message {
 		this.options = options;
 	}
 
+	//	FONCTION(S)
+	
+	/**
+	 * test si le message à l'option prioritaire
+	 * @return
+	 */
 	public boolean isPrioritaire() {
 		for (Option o : options){
 			if (o instanceof Prioritaire){

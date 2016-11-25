@@ -7,7 +7,9 @@ import domaine.messages.Discussion;
 
 public class NotificationDiscussion extends Notification{
 
-	private Discussion discussion;
+	private Discussion discussion;			// Discussion concerné par la notification
+	
+	// CONSTRUCTEUR(S)
 	
 	public NotificationDiscussion(String message, boolean vue, int id,
 			String dateEnvoie, Utilisateur destinataire, Discussion discussion) {
@@ -20,6 +22,8 @@ public class NotificationDiscussion extends Notification{
 		this.discussion = discussion;
 	}
 
+	// ACCESSEUR(S)
+	
 	public Discussion getDiscussion() {
 		return discussion;
 	}
@@ -28,6 +32,9 @@ public class NotificationDiscussion extends Notification{
 		this.discussion = discussion;
 	}
 	
+	//	FONCTION(S)
+	
+	@Override
 	public void accepter(VisiteurNotification v) throws ClassNotFoundException, SQLException {
 		v.visiter(this);
 	}

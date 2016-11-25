@@ -8,9 +8,9 @@ import java.util.HashMap;
 
 import persistence.virtualproxy.VirtualUtilisateur;
 
-import domaine.GroupeDiscussion;
 import domaine.SousCategorieCI;
 import domaine.Utilisateur;
+import domaine.messages.GroupeDiscussion;
 
 public class UtilisateurMapper {
 	
@@ -204,7 +204,7 @@ public class UtilisateurMapper {
 		
 		for (GroupeDiscussion grp : u.getGroupeDiscussion()){
 			if (grp.getModerateur()==u){
-				DiscussionMapper.getInstance().supprimer(grp.getDiscussion());
+				DiscussionMapper.getInstance().supprimer(grp);
 			}
 		}
 		

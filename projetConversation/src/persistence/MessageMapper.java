@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import domaine.Utilisateur;
-import domaine.VisiteurOption;
 import domaine.messages.AccuseReception;
 import domaine.messages.Chiffrement;
 import domaine.messages.DelaiExpiration;
@@ -15,6 +14,7 @@ import domaine.messages.Discussion;
 import domaine.messages.Message;
 import domaine.messages.Option;
 import domaine.messages.Prioritaire;
+import domaine.messages.VisiteurOption;
 
 public class MessageMapper extends VisiteurOption{
 	
@@ -43,8 +43,15 @@ public class MessageMapper extends VisiteurOption{
 		}
 	}
 
-	public Discussion findByIdDiscussion(int idD) throws ClassNotFoundException, SQLException {
-		ArrayList<Message> lesMessages = new ArrayList<Message>();
+	/**
+	 * trouver les messages d'une discussion par son id
+	 * @param idD
+	 * @return
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
+	public ArrayList<Message> findByIdDiscussion(int idD) throws ClassNotFoundException, SQLException {
+		ArrayList<Message> result = new ArrayList<Message>();
 		String req = "SELECT m.id, m.idExp, m.contenu, m.dateEnvoie FROM Message m WHERE m.idDiscussion = ?";
 		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
 		ps.setInt(1, idD);
@@ -55,13 +62,18 @@ public class MessageMapper extends VisiteurOption{
 			String contenu = rs.getString("m.contenu");
 			String dateEnvoie = rs.getString("m.dateEnvoie").substring(0,19);
 			ArrayList<Option> options = MessageMapper.getInstance().findOptionById(idM);
-			lesMessages.add(new Message(idM,exp,contenu,dateEnvoie,options));
+			result.add(new Message(idM,exp,contenu,dateEnvoie,options));
 		}
-		Discussion result = new Discussion (idD);
-		result.setMessages(lesMessages);
 		return result;
 	} 
 	
+	/**
+	 * trouve les options relative à l'id du message passé en paramètre
+	 * @param idM
+	 * @return
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
 	public ArrayList<Option> findOptionById(int idM) throws ClassNotFoundException, SQLException{
 		ArrayList<Option> result = new ArrayList<Option> ();
 		String req = "SELECT idM FROM Chiffrement WHERE idM = ?";
@@ -101,6 +113,13 @@ public class MessageMapper extends VisiteurOption{
 		return result;
 	}
 
+	/**
+	 * permet d'insérer le message dans la discussion 
+	 * @param selected
+	 * @param msg
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
 	public void insert(Discussion selected, Message msg) throws ClassNotFoundException, SQLException {
 		String req = "INSERT INTO Message VALUES (?,?,?,?,?)";
 		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);

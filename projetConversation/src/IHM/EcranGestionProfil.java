@@ -3,7 +3,6 @@ package IHM;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.ScrollPane;
-import java.awt.Scrollbar;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -36,43 +35,42 @@ public class EcranGestionProfil extends JPanel implements ActionListener{
 	 * 
 	 */
 	private static final long serialVersionUID = -3897710674881354442L;
-	private EcranUtilisateur accueil;
-	private JTextField nom;
-	private JTextField prenom;
-	private JPasswordField password;
-	private JPasswordField confirmPassword;
-	private Utilisateur modif;
-	private JComboBox<CategorieCI> comboCate;
-	private JComboBox<SousCategorieCI> comboCi; 
-	private JLabel messageSauvegarde;
-	private JButton bouttonSuppression;
-	private JButton bouttonAjout;
-	private JButton bouttonRetour ; 
-	private JButton bouttonSauvegarde ; 
-	private JList<SousCategorieCI> listCI;
+	
+	private EcranUtilisateur accueil;		// écran d'accueil
+	
+	private JTextField nom;					// nom de l'utilisateur (peux être modifié)		
+	private JTextField prenom;				// prenom de l'utilisateur (peux être modifié)
+	private JPasswordField password;		// mot de passe l'utilisateur en édition
+	private JPasswordField confirmPassword;	// confirmation du mot de passe précédent
+	
+	private Utilisateur modif;				// Utilisateur temporaire (avant confirmation des modifications
+	
+	private JComboBox<CategorieCI> comboCate;		// choix d'une catégorie CI pour ajout CI
+	private JComboBox<SousCategorieCI> comboCi; 	// choix d'une sous catégorie CI pour ajout CI
+	
+	private JLabel messageSauvegarde;			// message d'information sur la sauvegarde des mise à jour
+	private JButton bouttonSuppression;			// boutton permettant la suppresion d'un CI
+	
+	private JButton bouttonAjout;				// permet l'ajout d'un CI
+	private JButton bouttonRetour ; 			// retour à la page d'accueil
+	private JButton bouttonSauvegarde ; 		// sauvegarde les modifications
+	private JList<SousCategorieCI> listCI;		// liste des CI de l'utilisateur
 	
 	public EcranGestionProfil(Fenetre fen, EcranUtilisateur accueil,Utilisateur modif){
 		fen.changerTitre("Réseau social - Mon profil");
 		this.accueil=accueil;
 		this.modif = modif;
-		
-		this.add(new Scrollbar());
 		this.setLayout(null);
 		
 		//identité
 		
 		JLabel identi = new JLabel("Identité");
-		
-		identi.setBounds(220, 35,150, 10);
-		identi.setForeground(Fenetre.BLEU_CIEL);
-		
-		this.add(identi);
-		
 		JLabel labelNom = new JLabel ("Nom : ");
 		JLabel labelPrenom = new JLabel("Prénom : ");
 		JLabel ndc = new JLabel ("Nom de compte : "+accueil.getU().getNdc());
 		JLabel labelPassword = new JLabel ("Nouveau mot de passe : ");
-		JLabel labelConfirmPassword = new JLabel ("Confirmer mot de passe : ");
+		JLabel labelConfirmPassword = new JLabel ("Confirmer mot de passe : ");		
+		
 		nom = new JTextField(modif.getNom());
 		prenom = new JTextField(modif.getPrenom());
 		password = new JPasswordField();
@@ -80,19 +78,31 @@ public class EcranGestionProfil extends JPanel implements ActionListener{
 		
 		ndc.setForeground(Color.white);
 		ndc.setBounds(90, 60, 150, 30);
+		
 		labelNom.setForeground(Color.white);
 		labelNom.setBounds(90, 110, 200, 30);
+		
 		labelPrenom.setForeground(Color.white);
 		labelPrenom.setBounds(90,160,200,30);
+		
 		labelPassword.setForeground(Color.white);
 		labelPassword.setBounds(90,210,200,30);
+		
 		labelConfirmPassword.setForeground(Color.white);
 		labelConfirmPassword.setBounds(90,260,200,30);
+		
+		identi.setBounds(220, 35,150, 10);
+		identi.setForeground(Fenetre.BLEU_CIEL);
+		
 		nom.setBounds(280, 110, 150, 30);
+		
 		prenom.setBounds(280, 160, 150, 30);
+		
 		password.setBounds(280, 210, 150, 30);
+		
 		confirmPassword.setBounds(280, 260, 150, 30);
 		
+		this.add(identi);
 		this.add(nom);
 		this.add(prenom);
 		this.add(ndc);
@@ -106,22 +116,22 @@ public class EcranGestionProfil extends JPanel implements ActionListener{
 		// carré ajouter centre d'intérêt
 		
 		JLabel ajoutCi = new JLabel("Ajout intérêt");
+		JLabel labelComboCate = new JLabel ("Catégorie :");
+		JLabel labelComboCi = new JLabel ("Centre d'interët :");
+		
+		comboCate = new JComboBox<CategorieCI> ();
+		comboCi = new JComboBox<SousCategorieCI>();
+		bouttonAjout = new JButton("Ajouter");
 		
 		ajoutCi.setBounds(220, 340,150, 20);
 		ajoutCi.setForeground(Fenetre.BLEU_CIEL);
 		
-		this.add(ajoutCi);
-		
-		JLabel labelComboCate = new JLabel ("Catégorie :");
-		JLabel labelComboCi = new JLabel ("Centre d'interët :");
-		this.comboCate = new JComboBox<CategorieCI> ();
-		this.comboCi = new JComboBox<SousCategorieCI>();
-		this.bouttonAjout = new JButton("Ajouter");
-		
 		labelComboCate.setForeground(Color.white);
 		labelComboCate.setBounds(90, 380, 150, 30);
+		
 		labelComboCi.setForeground(Color.white);
 		labelComboCi.setBounds(90, 430, 150, 30);
+		
 		comboCate.setBounds(240, 380, 150, 30);
 		try {
 			for (CategorieCI cate : Service.recupererLesCategories()){
@@ -136,13 +146,16 @@ public class EcranGestionProfil extends JPanel implements ActionListener{
 		}
 		comboCate.setSelectedItem(null);
 		comboCate.addActionListener(this);
+		
 		comboCi.setBounds(240, 430, 150, 30);
+		
 		bouttonAjout.setBounds(260, 470, 150, 30);
 		bouttonAjout.setForeground(Color.white);
 		bouttonAjout.setBackground(Fenetre.BLEU_CIEL);
 		bouttonAjout.addActionListener(this);
 		bouttonAjout.setBorder(new CompoundBorder(new LineBorder(Color.white),new EmptyBorder(5,15,5,15)));
 		
+		this.add(ajoutCi);
 		this.add(labelComboCate);
 		this.add(labelComboCi);
 		this.add(comboCate);
@@ -153,35 +166,33 @@ public class EcranGestionProfil extends JPanel implements ActionListener{
 		
 		JLabel centreInte = new JLabel ("Centres d'intérêts");
 		
-		centreInte.setBounds(740, 35,150, 10);
-		centreInte.setForeground(Fenetre.BLEU_CIEL);
-		
-		this.add(centreInte);
-		
 		Vector<SousCategorieCI> mesCI = new Vector<SousCategorieCI>();
 		for (SousCategorieCI sscate : modif.getListeInteret()){
 			mesCI.addElement(sscate);
 		}
 		
 		listCI = new JList<SousCategorieCI> (mesCI);
+		ScrollPane panelCI = new ScrollPane();
+		bouttonSuppression = new JButton("Supprimer");
+		
+		centreInte.setBounds(740, 35,150, 10);
+		centreInte.setForeground(Fenetre.BLEU_CIEL);
+		
 		listCI.setBackground(Color.white);
 		listCI.setForeground(Fenetre.BLEU_CIEL);
 		listCI.setBorder(new CompoundBorder(new LineBorder(Color.white),new EmptyBorder(5,15,5,15)));
 		
-		ScrollPane panelCI = new ScrollPane();
-		
 		panelCI.add(listCI);
-		
 		panelCI.setBounds(500,80,420,160);
 		
-		this.add(panelCI);
-		
-		this.bouttonSuppression = new JButton("Supprimer");
 		bouttonSuppression.setBounds(780,260,150,30);
 		bouttonSuppression.setForeground(Color.white);
 		bouttonSuppression.setBackground(Fenetre.BLEU_CIEL);
 		bouttonSuppression.addActionListener(this);
 		bouttonSuppression.setBorder(new CompoundBorder(new LineBorder(Color.white),new EmptyBorder(5,15,5,15)));
+		
+		this.add(panelCI);
+		this.add(centreInte);
 		this.add(bouttonSuppression);
 		
 		// carre sauvegarde
@@ -256,6 +267,7 @@ public class EcranGestionProfil extends JPanel implements ActionListener{
 	}
 
 	public void actionPerformed(ActionEvent e) {
+		// supprime le CI selectionné
 		if (e.getSource()==bouttonSuppression){
 			SousCategorieCI scci = listCI.getSelectedValue();
 			if (scci != null){
@@ -264,6 +276,7 @@ public class EcranGestionProfil extends JPanel implements ActionListener{
 				modif.setPrenom(prenom.getText());
 			}
 		}
+		// renseigne les sous cate pour la catégorie selectionnée
 		if (e.getSource()==comboCate){
 			comboCi.removeAllItems();
 			CategorieCI selected = (CategorieCI)comboCate.getSelectedItem();
@@ -284,12 +297,14 @@ public class EcranGestionProfil extends JPanel implements ActionListener{
 				e1.printStackTrace();
 			}
 		}
+		//	ajoute un CI à l'utilisateur
 		if (e.getSource()==bouttonAjout && comboCate.getSelectedItem()!= null && comboCi.getSelectedItem() != null){
 			SousCategorieCI sousCategorie = (SousCategorieCI)comboCi.getSelectedItem();
 			modif.getListeInteret().add(sousCategorie);
 			modif.setNom(nom.getText());
 			modif.setPrenom(prenom.getText());
 		}
+		// sauvegarde les modification apportées à l'utilisateur
 		if (e.getSource()==bouttonSauvegarde){
 			accueil.getU().setNom(nom.getText());
 			accueil.getU().setPrenom(prenom.getText());
@@ -316,6 +331,7 @@ public class EcranGestionProfil extends JPanel implements ActionListener{
 			this.messageSauvegarde.setText(currentTime+" : Sauvegarde effectuée");
 			
 		}
+		// retour à la page d'accueil
 		if (e.getSource()==bouttonRetour){
 			int result = JOptionPane.showConfirmDialog(this, "Voulez-vous sauvegarder les changements ?");
 			switch (result){

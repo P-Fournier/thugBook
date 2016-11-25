@@ -14,8 +14,7 @@ public class CategorieCIMapper {
 	
 	private static CategorieCIMapper inst;
 	private static int id;
-	
-	private static HashMap<Integer,CategorieCI> loaded;
+	private static HashMap<Integer,CategorieCI> loaded;		//ensemble des objets déjà chargés
 	
 	public static CategorieCIMapper getInstance() throws ClassNotFoundException, SQLException{
 		if (inst == null){
@@ -40,6 +39,13 @@ public class CategorieCIMapper {
 		}
 	}
 	
+	/**
+	 * insère la catégorie en base
+	 * @param cate
+	 * @throws MySQLIntegrityConstraintViolationException
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
 	public void insert (CategorieCI cate) throws MySQLIntegrityConstraintViolationException,ClassNotFoundException, SQLException{
 		String req = "INSERT INTO CategorieCI VALUES (?,?)";
 		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
@@ -51,6 +57,13 @@ public class CategorieCIMapper {
 		id ++;
 	}
 
+	/**
+	 * trouve la catégorie ayant l'id passé en paramètre
+	 * @param idC
+	 * @return
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
 	public CategorieCI findById(int idC) throws ClassNotFoundException, SQLException {
 		if (loaded.containsKey(idC)){
 			return loaded.get(idC);
@@ -67,6 +80,12 @@ public class CategorieCIMapper {
 		return null;
 	}
 
+	/**
+	 * retourne toutes les catégories
+	 * @return
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
 	public ArrayList<CategorieCI> all() throws ClassNotFoundException, SQLException {
 		ArrayList<CategorieCI> result = new ArrayList<CategorieCI>();
 		String req = "SELECT id , nom FROM CategorieCI";
@@ -83,7 +102,13 @@ public class CategorieCIMapper {
 		}
 		return result;
 	}
-
+	
+	/**
+	 * supprime la catégorie
+	 * @param cate
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
 	public void delete(CategorieCI cate) throws ClassNotFoundException, SQLException {
 		String req = "DELETE FROM CategorieCI WHERE id = ?";
 		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
@@ -91,6 +116,12 @@ public class CategorieCIMapper {
 		ps.executeUpdate();
 	}
 
+	/**
+	 * met à jour la catégorie
+	 * @param cate
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
 	public void update(CategorieCI cate) throws ClassNotFoundException, SQLException {
 		String req = "UPDATE CategorieCI SET nom = ? WHERE id = ? ";
 		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);

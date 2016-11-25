@@ -1,9 +1,12 @@
 package domaine;
 
 public class CategorieCI {
-	private String nom;
-	private int idCat;
+	
+	private String nom;				// nom de la catégorie
+	private int idCat;				// id de la catégorie en base
 
+	//	CONSTRUCTEUR(S)
+	
 	public CategorieCI (int idCat , String nom){
 		this.idCat = idCat;
 		this.nom = nom;
@@ -12,6 +15,8 @@ public class CategorieCI {
 	public CategorieCI (String nom){
 		this.nom = nom;
 	}
+	
+	//	ACCESSEUR(S)
 	
 	public String getNom() {
 		return nom;
@@ -28,6 +33,8 @@ public class CategorieCI {
 	public void setIdCat(int idCat) {
 		this.idCat = idCat;
 	}
+	
+	//	FONCTION(S)
 	
 	public String toString (){
 		return this.nom;

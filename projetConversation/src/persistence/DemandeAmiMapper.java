@@ -81,7 +81,7 @@ public class DemandeAmiMapper {
 	 */
 	public void accepterDemande(Utilisateur dest, Utilisateur exp) throws ClassNotFoundException, SQLException{
 		DemandeAmiMapper.getInstance().delete(exp, dest);
-		AmiMapper.getInstance().insert(dest,exp);
+		DiscussionPriveMapper.getInstance().insert(dest,exp);
 		dest.getDemandeAmisRecues().remove(exp);
 	}
 

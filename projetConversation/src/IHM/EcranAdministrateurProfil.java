@@ -37,29 +37,30 @@ public class EcranAdministrateurProfil extends JPanel implements ActionListener,
 	 * 
 	 */
 	private static final long serialVersionUID = 2443332206693667322L;
-	private EcranAdministrateur ecranAdmin;
-	private JList<Utilisateur> list;
+	
+	private EcranAdministrateur ecranAdmin;		// ecran d'accueil depuis lequel on est arrivé sur cet écran
+	private JList<Utilisateur> list;			// liste de l'ensemble des utilisateurs que l'admin peux gérer
 
 	
-	private JButton supprimerBoutton;
-	private JButton donnerDroitAdmin;
-	private JButton createBoutton;
+	private JButton supprimerBoutton;			// boutton permettant la suppresion de l'utilisateur selectionné
+	private JButton donnerDroitAdmin;			// boutton permettant de céder son droit d'administration à l'utilisateur selectionné
+	private JButton createBoutton;				// boutton permettant la création de l'utilisateur dont les infos on été renseigné
 
-	private JButton validerBoutton;
-	private JButton retourBoutton ; 
+	private JButton validerBoutton;				// boutton permettant de valider les modification apportées à l'utilisateur
+	private JButton retourBoutton ; 			// boutton permettant de retourner à l'écran d'accueil
 	
 	
-	private JTextField fieldCreateNDC;
-	private JTextField fieldCreateNom;
-	private JTextField fieldCreatePrenom;
-	private JTextField fieldModifNDC;
-	private JTextField fieldModifNom;
-	private JTextField fieldModifPrenom;
-	private JPasswordField fieldCreatePassword;
-	private JPasswordField fieldConfirmationPassword;
-	private JPasswordField fieldModifPassword;
-	private JPasswordField fieldModifConfirmationPassword;
-	private Vector<Utilisateur> ut;
+	private JTextField fieldCreateNDC;			// champ permettant de renseigner le nom de compte créé
+	private JTextField fieldCreateNom;			// champ permettant de renseigner le nom de l'utilisateur propriétaire du compte créé
+	private JTextField fieldCreatePrenom;		// champ permettant de renseigner le prenom de l'utilisateur propriétaire du compte créé
+	private JTextField fieldModifNDC;			// champ permettant de renseigner le nom de compte modifié
+	private JTextField fieldModifNom;			// champ permettant de renseigner le nom de l'utilisateur propriétaire du compte modifié
+	private JTextField fieldModifPrenom;		// champ permettant de renseigner le prénom de l'utilisateur propriétaire du compte modifié
+	private JPasswordField fieldCreatePassword;	// champ permettant de renseigner le mot de passe du compte créé
+	private JPasswordField fieldConfirmationPassword;	// champ permmettant de tester que le mot de passe du compte crée ne contienne pas de faute de frappe
+	private JPasswordField fieldModifPassword;	// champ permettant de renseigner le mot de passe du compte modifié		
+	private JPasswordField fieldModifConfirmationPassword;	// champ permmettant de tester que le mot de passe du compte modifié ne contienne pas de faute de frappe
+	private Vector<Utilisateur> ut;				// liste de tout les utilisateur permettant d'alimenter la JList 'list'
 
 	public EcranAdministrateurProfil(Fenetre fen, EcranAdministrateur ecranAdmin) {
 		fen.changerTitre("Réseau social - gestion utilisateur");
@@ -277,8 +278,11 @@ public class EcranAdministrateurProfil extends JPanel implements ActionListener,
 		g.drawRoundRect(550, 10, 250, 40, 50, 50);
 	}
 
+	// FONCTIONNALITES DES BOUTTONS
+	
 	public void actionPerformed(ActionEvent e) {
-		Utilisateur selected = list.getSelectedValue(); 
+		Utilisateur selected = list.getSelectedValue();
+		// Suppression d'un utilisateur
 		if (e.getSource() == supprimerBoutton) {
 			try {
 				Service.supprimerUtilisateur(selected);
@@ -292,6 +296,7 @@ public class EcranAdministrateurProfil extends JPanel implements ActionListener,
 				x.printStackTrace();
 			}
 		}
+		// création d'un utilisateur
 		if (e.getSource() == createBoutton) {
 			try {
 				Utilisateur create = Service.creerUtilisateur(fieldCreateNDC.getText(), fieldCreatePassword.getPassword(),
@@ -309,13 +314,14 @@ public class EcranAdministrateurProfil extends JPanel implements ActionListener,
 				JOptionPane.showMessageDialog(this, e1.getMessage());
 				e1.printStackTrace();
 			} catch (ConnexionException e1) {
-				JOptionPane.showMessageDialog(this, e1.getMessageErreur());
+				JOptionPane.showMessageDialog(this, e1.getMessage());
 				e1.printStackTrace();
 			} catch (SQLException e1) {
 				JOptionPane.showMessageDialog(this, e1.getMessage());
 				e1.printStackTrace();
 			}
 		}
+		// modification d'un utilisateur
 		if (e.getSource() == validerBoutton) {
 			if (fieldModifNDC.getText().equals("")){
 				JOptionPane.showMessageDialog(this,"Le nom de compte est vide");
@@ -348,15 +354,19 @@ public class EcranAdministrateurProfil extends JPanel implements ActionListener,
 				JOptionPane.showMessageDialog(this, currentTime + " : Sauvegarde effectuée");
 			}
 		}
+		// retour à la page d'accueil
 		if (e.getSource() == retourBoutton){
 			ecranAdmin.refresh() ; 
 		}
 	}
 
+	// mise à jour suite à la selection d'un utilisateur dans list
+	
 	public void valueChanged(ListSelectionEvent e) {
 		if (e.getSource() == list && !e.getValueIsAdjusting()) {
 			Utilisateur selected = list.getSelectedValue();
 			if (selected != null){
+				// si un utilisateur est selectionné on renseigne ses infos et on active les champs et bouttons
 				fieldModifNDC.setEnabled(true);
 				fieldModifNDC.setText(selected.getNdc());
 				fieldModifNom.setEnabled(true);
@@ -369,6 +379,7 @@ public class EcranAdministrateurProfil extends JPanel implements ActionListener,
 				supprimerBoutton.setEnabled(true);
 				donnerDroitAdmin.setEnabled(true);
 			}else{
+				// si aucun utilisateur n'est selectionné on désactive tout
 				fieldModifNDC.setEnabled(false);
 				fieldModifNDC.setText(null);
 				fieldModifNom.setEnabled(false);

@@ -5,28 +5,29 @@ import java.util.ArrayList;
 
 import persistence.GroupeDiscussionMapper;
 import persistence.MessageMapper;
-import domaine.GroupeDiscussion;
 import domaine.Utilisateur;
-import domaine.messages.Discussion;
+import domaine.messages.GroupeDiscussion;
+import domaine.messages.Message;
 
 public class VirtualGroupeDiscussion extends GroupeDiscussion {
 
 	public VirtualGroupeDiscussion(int id, String nom,Utilisateur moderateur) {
 		super(id, nom,moderateur);
+		this.messages = null;
 	}
 	
 	@Override
-	public Discussion getDiscussion (){
-		if (discussion == null){
+	public ArrayList<Message> getMessages (){
+		if (messages == null){
 			try {
-				discussion = MessageMapper.getInstance().findByIdDiscussion(this.id);
+				messages = MessageMapper.getInstance().findByIdDiscussion(this.id);
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
 		}
-		return discussion;
+		return messages;
 	}
 	
 	@Override

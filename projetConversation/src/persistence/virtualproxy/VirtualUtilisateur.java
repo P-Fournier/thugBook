@@ -4,16 +4,16 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import persistence.AmiMapper;
+import persistence.DiscussionPriveMapper;
 import persistence.DemandeAmiMapper;
 import persistence.GroupeDiscussionMapper;
 import persistence.NotificationMapper;
 import persistence.SousCategorieCIMapper;
 
-import domaine.GroupeDiscussion;
 import domaine.SousCategorieCI;
 import domaine.Utilisateur;
-import domaine.messages.Discussion;
+import domaine.messages.DiscussionPrive;
+import domaine.messages.GroupeDiscussion;
 import domaine.notification.Notification;
 
 public class VirtualUtilisateur extends Utilisateur{
@@ -55,10 +55,10 @@ public class VirtualUtilisateur extends Utilisateur{
 	}
 	
 	@Override
-	public HashMap<Utilisateur,Discussion> getAmis(){
+	public HashMap<Utilisateur,DiscussionPrive> getAmis(){
 		if (amis == null){
 			try {
-				amis = AmiMapper.getInstance().restituerAmis(this);
+				amis = DiscussionPriveMapper.getInstance().restituerAmis(this);
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			} catch (SQLException e) {

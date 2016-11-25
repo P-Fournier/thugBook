@@ -7,12 +7,13 @@ import java.util.ArrayList;
 
 import persistence.virtualproxy.VirtualGroupeDiscussion;
 
-import domaine.GroupeDiscussion;
 import domaine.Utilisateur;
+import domaine.messages.GroupeDiscussion;
 
 public class GroupeDiscussionMapper {
 	
 	public static GroupeDiscussionMapper inst;
+	
 	
 	public static GroupeDiscussionMapper getInstance() throws ClassNotFoundException, SQLException{
 		if(inst == null){
@@ -90,6 +91,13 @@ public class GroupeDiscussionMapper {
 		return null;
 	}
 	
+	/**
+	 * trouver les membres du groupe
+	 * @param grp
+	 * @return
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
 	public ArrayList<Utilisateur> trouverMembres(GroupeDiscussion grp) throws ClassNotFoundException, SQLException{
 		ArrayList<Utilisateur> result = new ArrayList<Utilisateur>();
 		String req = "SELECT idU FROM AssociationGroupe WHERE idG = ?";
@@ -103,6 +111,13 @@ public class GroupeDiscussionMapper {
 		return result;
 	}
 
+	/**
+	 * supprime l'utilisateur du groupe
+	 * @param u
+	 * @param grp
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
 	public void supprimerUtilisateur(Utilisateur u, GroupeDiscussion grp) throws ClassNotFoundException, SQLException {
 		String req = "DELETE FROM AssociationGroupe WHERE idG = ? and idU = ?";
 		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
@@ -113,6 +128,13 @@ public class GroupeDiscussionMapper {
 		u.getGroupeDiscussion().remove(grp);
 	}
 
+	/**
+	 * ajoute l'utilisateur au groupe
+	 * @param u
+	 * @param grp
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
 	public void ajouterAuGroupe(Utilisateur u, GroupeDiscussion grp) throws ClassNotFoundException, SQLException {
 		String req = "INSERT INTO AssociationGroupe VALUES (?,?)";
 		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
@@ -122,6 +144,13 @@ public class GroupeDiscussionMapper {
 		grp.getListeUser().add(u);
 	}
 
+	/**
+	 * nommer l'utilisateur modérateur du groupe
+	 * @param u
+	 * @param grp
+	 * @throws SQLException
+	 * @throws ClassNotFoundException
+	 */
 	public void changerModerateur(Utilisateur u, GroupeDiscussion grp) throws SQLException, ClassNotFoundException {
 		Utilisateur ancienModerateur = grp.getModerateur();
 		grp.getListeUser().remove(u);
@@ -134,6 +163,14 @@ public class GroupeDiscussionMapper {
 		ps.executeUpdate();
 	}
 
+	/**
+	 * créer le groupe en base
+	 * @param nomDuGroupe
+	 * @param moderateur
+	 * @return
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
 	public GroupeDiscussion creerGroupe(String nomDuGroupe, Utilisateur moderateur) throws ClassNotFoundException, SQLException {
 		String req= "INSERT INTO Discussion VALUES (?)";
 		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);
@@ -155,11 +192,20 @@ public class GroupeDiscussionMapper {
 		
 		GroupeDiscussion grp = new GroupeDiscussion (DiscussionMapper.id,nomDuGroupe,moderateur);
 		
+		DiscussionMapper.loaded.put(DiscussionMapper.id, grp);
+		
 		DiscussionMapper.id ++;
 		
 		return grp;
 	}
 
+	/**
+	 * test si le nom de groupe est déjà attribué
+	 * @param nom
+	 * @return
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
 	public boolean existenceNomDeGroupe(String nom) throws ClassNotFoundException, SQLException {
 		String req = "SELECT * FROM DiscussionGroupe WHERE nom = ?";
 		PreparedStatement ps = DBConfig.getInstance().getConnection().prepareStatement(req);

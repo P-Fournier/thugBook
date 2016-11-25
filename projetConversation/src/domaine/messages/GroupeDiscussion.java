@@ -1,28 +1,25 @@
-package domaine;
+package domaine.messages;
 
 import java.util.ArrayList;
 
-import domaine.messages.Discussion;
-public class GroupeDiscussion {
-	protected String nom;
-	protected Utilisateur moderateur;
-	protected ArrayList<Utilisateur> listeUser;
-	protected int id;
-	protected Discussion discussion ;
+import domaine.Utilisateur;
+public class GroupeDiscussion extends Discussion{
+	
+	protected String nom;						// nom du groupe de discussion
+	protected Utilisateur moderateur;			// utilisateur modérateur du groupe
+	protected ArrayList<Utilisateur> listeUser;	// liste des membres du groupe (hors modérateur)
+	
+	// CONSTRUCTEUR(S)
 	
 	public GroupeDiscussion (int id , String nom , Utilisateur moderateur){
-		this.id = id;
+		super(id);
 		this.nom = nom;
 		this.moderateur = moderateur;
+		this.listeUser = new ArrayList<Utilisateur>();
 	}
 	
-	public void addUser (Utilisateur u){
-		if (!listeUser.contains(u)&&u!=moderateur){
-			listeUser.add(u);
-			u.getGroupeDiscussion().add(this);
-		}
-	}
-
+	// ACCESSEUR(S)
+	
 	public Utilisateur getModerateur() {
 		return moderateur;
 	}
@@ -55,16 +52,22 @@ public class GroupeDiscussion {
 		this.nom = nom;
 	}
 
-	public Discussion getDiscussion() {
-		return discussion;
-	}
-
-	public void setDiscussion(Discussion discussion) {
-		this.discussion = discussion;
+	// FONCTION(S)
+	
+	/**
+	 * ajoute un membre au groupe de discussion
+	 * @param u
+	 */
+	public void addUser (Utilisateur u){
+		if (!listeUser.contains(u)&&u!=moderateur){
+			listeUser.add(u);
+			u.getGroupeDiscussion().add(this);
+		}
 	}
 	
 	public String toString (){
 		return this.nom;
 	}
+
 
 }

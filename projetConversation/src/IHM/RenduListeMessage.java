@@ -11,19 +11,19 @@ import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 
 import domaine.Utilisateur;
-import domaine.VisiteurOption;
 import domaine.messages.AccuseReception;
 import domaine.messages.Chiffrement;
 import domaine.messages.DelaiExpiration;
 import domaine.messages.Message;
 import domaine.messages.Option;
 import domaine.messages.Prioritaire;
+import domaine.messages.VisiteurOption;
 
-public class RenduListeMessage extends VisiteurOption implements ListCellRenderer {
+public class RenduListeMessage extends VisiteurOption implements ListCellRenderer<Message> {
 
 	private JLabel current;
 	
-	public Component getListCellRendererComponent(JList list, Object value,
+	public Component getListCellRendererComponent(JList<? extends Message> list, Message value,
 			int index, boolean isSelected, boolean cellHasFocus) {
 			Message msg = (Message) value;
 			String s = msg.getContenu();
